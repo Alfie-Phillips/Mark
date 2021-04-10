@@ -1,0 +1,1 @@
+# Here we write the docs of all the stock terms
