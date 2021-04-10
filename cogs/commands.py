@@ -25,7 +25,7 @@ class Commands(commands.Cog):
     async def users(self, ctx):
         """Information about users"""
         members = self.members()
-        await ctx.send(***Users Description***
+        await ctx.send(f'***Users Description***'
                        f'```Online: {members["online"]}\n'
                        f'Idle: {members["idle"]}\n'
                        f'DND: {members["dnd"]}\n'
