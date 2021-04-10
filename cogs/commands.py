@@ -4,10 +4,6 @@ import discord
 from datetime import datetime, timedelta
 from discord.utils import get
 import aiohttp
-import zlib
-import re
-import os
-import io
 from time import sleep
 
 class Commands(commands.Cog):
