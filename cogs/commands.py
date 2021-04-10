@@ -14,6 +14,29 @@ class Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def members(self):
+        members = set(self.bot.get_all_members())
+        d = {'online': 0, 'idle': 0, 'dnd': 0, 'offline': 0}
+        for member in members:
+            d[str(member.status)] += 1
+        return d
+
+    @commands.command(name="users")
+    async def users(self, ctx):
+        """Information about users"""
+        members = self.members()
+        await ctx.send(***Users Description***
+                       f'```Online: {members["online"]}\n'
+                       f'Idle: {members["idle"]}\n'
+                       f'DND: {members["dnd"]}\n'
+                       f'Offline: {members["offline"]}```')
+
+    @commands.command(name="members")
+    async def member_count(self, ctx):
+        """Member Count"""
+        await ctx.send(f"```Members Of The Mark Tilbury Discord: {ctx.guild.member_count}```")
+
+
     @commands.command(name="website", aliases=["web", "webpage"])
     async def website(self, ctx):
         """Links for Mark's Website"""
