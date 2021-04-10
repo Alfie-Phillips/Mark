@@ -17,12 +17,13 @@ os.environ["JISHAKU_HIDE"] = "True"
 
 initial_cogs = [
     'jishaku',
-    'cogs.commands'
+    'cogs.commands',
+    'cogs.reporting'
 ]
 
 print("Bot is connecting...")
 
-class Margeret(commands.AutoShardedBot):
+class Mark(commands.AutoShardedBot):
     def __init__(self, **kwargs):
         super().__init__(command_prefix=kwargs.pop('command_prefix', ('m.', 'M.', 'Margeret.', 'Granny.')),
                         intents=discord.Intents.all(),
@@ -91,9 +92,13 @@ class Margeret(commands.AutoShardedBot):
             elif isinstance(error, CheckFailure):
                 return ""
 
-            if isinstance(error, (BadUnionArgument, CommandOnCooldown, PrivateMessageOnly,
+            if isinstance(error, (BadUnionArgument, PrivateMessageOnly,
                             NoPrivateMessage, MissingRequiredArgument, ConversionError)):
                 return await ctx.send(str(error))
+
+            elif isinstance(error, commands.CommandOnCooldown):
+                    em = discord.Embed(title=f"Slow it down bro!",description=f"Try again in {error.retry_after:.2f}s.")
+                    return await ctx.send(embed=em)
 
             elif isinstance(error, BotMissingPermissions):
                 return await ctx.send('I am missing these permissions to do this command:'
@@ -140,7 +145,7 @@ class Margeret(commands.AutoShardedBot):
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(Margeret.setup())
+    loop.run_until_complete(Mark.setup())
         
         
 

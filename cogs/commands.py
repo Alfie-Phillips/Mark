@@ -144,6 +144,12 @@ class Commands(commands.Cog):
         sleep(1.5)
         await ctx.message.delete()
 
+    @commands.command(name="stock-types")
+    async def stock_type(self, ctx):
+        embed = discord.Embed(title="Stock Types", description='✦ What types of stocks are there? - There are different groups of stock that serve different purposes in your portfolio. • Income/Dividend Stock - These stocks usually do not have crazy growth but rather high dividends yields which usually comes with higher payout ratios. These companies will usually payout every month, quarter, semi-annually, or yearly. • Cyclical Stock - These are stocks who will have ups and downs based on the economy and are more sensitive when there is an economic downturn. •Blue Chip Stocks -  Very safe stocks usually from big companies with large market caps. These companies will usually be a well known name like Walmart, Apple, or Coca Cola. These companies are more than likely to be financially sound and survive economic crashes. • Tech Stocks - Companies based around technology. These usually have the most growth but also come with an associated risk. Technology advances fast meaning if the company does not keep up it can fall out of favor. • Speculative Stocks - Usually extreme risk, these are companies that are new and usually don’t have much history or financial stability. These companies can bring immense profits as well as risk. • Defensive Stocks - Stocks that are extremely safe, these companies have been around for centuries sometimes and are impossible to stop. These stocks will do good and recover from crashes and sometimes even profit. Examples are prominent in the consumer staples sector, an example is Walmart. • Growth Stocks - Most do not pay out dividends as they would rather keep that money and reinvest it into their company for more growth. These stocks will bring good growth and profit is only made on capital gains. [More Info Here... :smile:](https://www.investopedia.com/terms/s/stockmarket.asp)')
+        await ctx.send(embed=embed)
+        sleep(1.5)
+        await ctx.message.delete()
     
         
 
