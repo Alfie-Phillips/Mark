@@ -1,0 +1,5 @@
+discord.py
+bs4
+aiohttp
+pymongo
+jisha
