@@ -161,6 +161,35 @@ class Commands(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
+    @commands.command(name="freetrade")
+    async def freetrade(self, ctx):
+        embed = discord.Embed(title="Get A Free Stock On FreeTrade!", description="[Mark Tilbury's Promo Code Here... :smile:](https://freetrade.app.link/DiVJxPU22bb?_p=c11c32dc9e0b7af1e61890f4e0)")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
+    @commands.command(name="public")
+    async def public(self, ctx):
+        embed = discord.Embed(title="Get A Free Stock On Public!", description="[Mark Tilbury's Promo Code Here... :smile:](https://public.com/mark)")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
+    @commands.command(name="free-stocks")
+    async def free_stocks(self, ctx):
+        embed = discord.Embed(title="Free Stocks Offered By Mark", description="[FreeTrade Promo Code](https://freetrade.app.link/DiVJxPU22bb?_p=c11c32dc9e0b7af1e61890f4e0)\n[Public Promo Code](https://public.com/mark)")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
+        
+    @commands.command(name="link-tree")
+    async def link_tree(self, ctx):
+        embed = discord.Embed(title="Mark's Link Tree!", description="[Link to it here... :smile:](https://marktilbury.net/clickhere)")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
 def setup(bot):
     bot.add_cog(Commands(bot))
         
