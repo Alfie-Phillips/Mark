@@ -193,6 +193,14 @@ class Commands(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
+    @commands.command(name="trading-patterns")
+    async def trading_patterns(self, ctx):
+        embed = discord.Embed(title="Trading Patterns", description="Throughout the trading scheme, we see many trading patterns which can somewhat predict what is going to happen next with a stock. We use these to be smart, and notice when it is the right time to buy or sell, it is essential to know some of these key features. [Link to key trading patterns](https://www.investopedia.com/articles/technical/112601.asp)\n[A PDF for analyzing chart patterns](http://i.investopedia.com/inv/pdf/tutorials/AnalyzingChartPatterns.pdf)")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
+        
 def setup(bot):
     bot.add_cog(Commands(bot))
         
