@@ -1,10 +1,12 @@
 import asyncio
 from discord.ext import commands
+from discord.ext.commands import has_permissions
 import discord
 from datetime import datetime, timedelta
 from discord.utils import get
 import aiohttp
 from time import sleep
+from .utils.time import human_timedelta
 
 class Commands(commands.Cog):
     def __init__(self, bot):
@@ -26,6 +28,7 @@ class Commands(commands.Cog):
                        f'Idle: {members["idle"]}\n'
                        f'DND: {members["dnd"]}\n'
                        f'Offline: {members["offline"]}```')
+    
 
     @commands.command(name="members")
     async def member_count(self, ctx):

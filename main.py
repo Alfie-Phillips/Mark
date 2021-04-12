@@ -18,7 +18,8 @@ os.environ["JISHAKU_HIDE"] = "True"
 initial_cogs = [
     'jishaku',
     'cogs.commands',
-    'cogs.reporting'
+    'cogs.reporting',
+    'cogs._help'
 ]
 
 print("Bot is connecting...")
