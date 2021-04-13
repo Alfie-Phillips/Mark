@@ -32,10 +32,12 @@ class Moderation(commands.Cog):
             await ctx.send(f"{author.mention} has reported {user.mention}\nReason: Not provided")
             await ctx.message.delete()
             await mod_channel.send(f"{author.mention} has reported {user.mention}\nReason: Not provided\n\n<@&734889524303495279>")
+
         else:
             await ctx.send(f"{author.mention} has reported {user.mention}\nReason: {rearray}")
             await ctx.message.delete()
             await mod_channel.send(f"{author.mention} has reported {user.mention}\nReason: {rearray}\n\n<@&734889524303495279>")
+    
 
 def setup(bot: commands.Bot):
     bot.add_cog(Moderation(bot=bot))

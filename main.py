@@ -26,7 +26,7 @@ print("Bot is connecting...")
 
 class Mark(commands.AutoShardedBot):
     def __init__(self, **kwargs):
-        super().__init__(command_prefix=kwargs.pop('command_prefix', ('m.', 'M.', 'Margeret.', 'Granny.')),
+        super().__init__(command_prefix=kwargs.pop('command_prefix', ('m.', 'M.', 'Mark.', 'mark.')),
                         intents=discord.Intents.all(),
                         case_insensitive=True,
                         **kwargs)
@@ -76,7 +76,7 @@ class Mark(commands.AutoShardedBot):
         if ctx.command is None:
             return ""
 
-        if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages']:
+        if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages', 'users', 'source']:
             if ctx.channel.id not in [806528778846994463, 806535704334303263]:
                 return await message.channel.send("**Please use the <#806528778846994463> channel**")
 
@@ -88,37 +88,37 @@ class Mark(commands.AutoShardedBot):
             error = getattr(exception, 'original', exception)
 
             if hasattr(ctx.command, 'on_error'):
-                return ""
+                return await ctx.send(str(error))
 
             elif isinstance(error, CheckFailure):
-                return ""
+                return await ctx.send(str(error))
 
             if isinstance(error, (BadUnionArgument, PrivateMessageOnly,
                             NoPrivateMessage, MissingRequiredArgument, ConversionError)):
                 return await ctx.send(str(error))
 
             elif isinstance(error, commands.CommandOnCooldown):
-                    em = discord.Embed(title=f"Slow it down bro!",description=f"Try again in {error.retry_after:.2f}s.")
-                    return await ctx.send(embed=em)
+                    em = discord.Embed(title=f"Slow it down!",description=f"Try again in {error.retry_after:.2f}s.")
+                    await ctx.send(embed=em)
 
             elif isinstance(error, BotMissingPermissions):
-                return await ctx.send('I am missing these permissions to do this command:'
+                await ctx.send('I am missing these permissions to do this command:'
                                 f'\n{self.lts(error.missing_perms)}')
 
             elif isinstance(error, MissingPermissions):
-                return await ctx.send('You are missing these permissions to do this command:'
+                await ctx.send('You are missing these permissions to do this command:'
                                 f'\n{self.lts(error.missing_perms)}')
 
             elif isinstance(error, (BotMissingAnyRole, BotMissingRole)):
-                return await ctx.send(f'I am missing these roles to do this command:'
+                await ctx.send(f'I am missing these roles to do this command:'
                                 f'\n{self.lts(error.missing_roles or [error.missing_role])}')
 
             elif isinstance(error, (MissingRole, MissingAnyRole)):
-                return await ctx.send(f'You are missing these roles to do this command:'
+                await ctx.send(f'You are missing these roles to do this command:'
                                 f'\n{self.lts(error.missing_roles or [error.missing_role])}')
 
             elif isinstance(error, BadArgument) and ctx.command.name in ('rep', 'report'):
-                return await ctx.send(f"Can't find that member. Please try again.")
+                await ctx.send(f"Can't find that member. Please try again.")
 
             else:
                 raise error

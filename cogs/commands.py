@@ -7,6 +7,7 @@ from discord.utils import get
 import aiohttp
 from time import sleep
 from .utils.time import human_timedelta
+import random
 
 class Commands(commands.Cog):
     def __init__(self, bot):
@@ -200,7 +201,36 @@ class Commands(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
-        
+    @commands.command(name="drop-shipping")
+    async def drop_shipping(self, ctx):
+        pass
+
+    @commands.command(name="crypto-currency")
+    async def crypto_currency(self, ctx):
+        pass
+
+    @commands.command(name="digital-marketing")
+    async def digital_marketing(self, ctx):
+        pass
+
+    @commands.command(name="real-estate")
+    async def real_estate(self, ctx):
+        pass
+
+    @commands.command(name="flipping")
+    async def real_estate(self, ctx):
+        pass
+
+    @commands.command(name="server-suggestion")
+    async def server_suggestion(self, ctx, suggestion: str):
+        user = ctx.author   
+        emojis = ["👀", "😄", "😇", "🤩", "😎", "👌", "👍", "👏"]
+        suggestionChannel = self.bot.get_channel(747165320510308393)
+        embed = discord.Embed(title=f"Server Suggestion {random.choice(emojis)} | Made by @{ctx.author}", description=str(suggestion))
+        message = await suggestionChannel.send(embed=embed)
+        await message.add_reaction('✅')
+        await message.add_reaction('❎')
+
 def setup(bot):
     bot.add_cog(Commands(bot))
         
