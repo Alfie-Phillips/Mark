@@ -23,11 +23,11 @@ class Commands(commands.Cog):
 
     @commands.command(name="ping")
     async def ping(self, ctx):
-        # embed = discord.Embed(title="My Current Ping!", description=f"{round(self.bot.latency, 1)}ms!")
-        # await ctx.send(embed=embed)
-        # await asyncio.sleep(1.5)
-        # await ctx.message.delete()
-        await ctx.send("Pong!")
+        embed = discord.Embed(title="My Current Ping!", description=f"{round(self.bot.latency, 1)}ms!")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+        # await ctx.send("Pong!")
 
 
     @commands.command(name="users")
