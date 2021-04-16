@@ -8,6 +8,7 @@ import aiohttp
 from time import sleep
 from .utils.time import human_timedelta
 import random
+import math
 
 class Commands(commands.Cog):
     def __init__(self, bot):
@@ -19,6 +20,15 @@ class Commands(commands.Cog):
         for member in members:
             d[str(member.status)] += 1
         return d
+
+    @commands.command(name="ping")
+    async def ping(self, ctx):
+        # embed = discord.Embed(title="My Current Ping!", description=f"{round(self.bot.latency, 1)}ms!")
+        # await ctx.send(embed=embed)
+        # await asyncio.sleep(1.5)
+        # await ctx.message.delete()
+        await ctx.send("Pong!")
+
 
     @commands.command(name="users")
     async def users(self, ctx):
@@ -201,9 +211,33 @@ class Commands(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
-    @commands.command(name="drop-shipping")
+    @commands.command(name="dropshipping", aliases=["drop-shipping", "dropship"])
     async def drop_shipping(self, ctx):
-        pass
+        embed = discord.Embed(title="Drop Shipping Commands", description="M.drop-shipping-definition\nM.drop-shipping-guide\nM.drop-shipping-profits")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
+    @commands.command(name="drop-shipping-def")
+    async def drop_shipping_definition(self, ctx):
+        embed = discord.Embed(title="What is dropshipping?", description="Dropshipping is a business model that you can use to run your store without ever holding any inventory. Once you've made a sale, your supplier will ship your products from their warehouse, straight to your customer's doorstep meaning that you'll never need to worry about stoing, packaging, or shipping your products. For example, you can sell an item for $20, give $5 and the address to your supplier, and your supplier will ship it directly to your customer, and you make $15 profit. Written by Frog#1582\n[More Info Here... :smile:](https://www.shopify.co.uk/blog/what-is-dropshipping#definition)")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
+    @commands.command(name="drop-shipping-guide")
+    async def drop_shipping_definition(self, ctx):
+        embed = discord.Embed(title="How does dropshipping work?", description="How Does Dropshipping Work? Dropshipping is a simple business model. Once a customer places an order from your store, you’ll simply purchase the product from your supplier, and instruct them to ship the product directly to your customer’s door. That means you can run your own business from anywhere in the world. Written by Frog#1582\n[More Info Here... :smile:](https://www.shopify.co.uk/blog/what-is-dropshipping#definition)")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
+    @commands.command(name="drop-shipping-profits")
+    async def drop_shipping_profits(self, ctx):
+        embed = discord.Embed(title="Is dropshipping profitable?", description="Is Dropshipping Profitable? Yes it is profitable, but you must put in the effort to research products, set up website, distribute well, and eventually scale your business. Distributing is very important! Written by Frog#1582\n[More Info Here... :smile:](https://www.shopify.co.uk/blog/what-is-dropshipping#benefits)")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
 
     @commands.command(name="crypto-currency")
     async def crypto_currency(self, ctx):
@@ -221,15 +255,15 @@ class Commands(commands.Cog):
     async def real_estate(self, ctx):
         pass
 
-    @commands.command(name="server-suggestion")
+    @commands.command(name="server-suggestion", aliases=["suggestion", "suggest"])
     async def server_suggestion(self, ctx, suggestion: str):
         user = ctx.author   
         emojis = ["👀", "😄", "😇", "🤩", "😎", "👌", "👍", "👏"]
         suggestionChannel = self.bot.get_channel(747165320510308393)
         embed = discord.Embed(title=f"Server Suggestion {random.choice(emojis)} | Made by @{ctx.author}", description=str(suggestion))
         message = await suggestionChannel.send(embed=embed)
-        await message.add_reaction('✅')
-        await message.add_reaction('❎')
+        await message.add_reaction(':Yes:')
+        await message.add_reaction(':No:')
 
 def setup(bot):
     bot.add_cog(Commands(bot))
