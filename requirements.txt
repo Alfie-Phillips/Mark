@@ -2,3 +2,4 @@ discord
 datetime
 aiohttp
 distest
+urllib

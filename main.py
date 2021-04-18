@@ -19,7 +19,8 @@ initial_cogs = [
     'jishaku',
     'cogs.commands',
     'cogs.reporting',
-    'cogs._help'
+    'cogs._help',
+    'cogs.filtering'
 ]
 
 print("Bot is connecting...")

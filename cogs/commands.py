@@ -259,10 +259,6 @@ class Commands(commands.Cog):
     async def real_estate(self, ctx):
         pass
 
-    @commands.command(name="flipping")
-    async def real_estate(self, ctx):
-        pass
-
     @commands.command(name="server-suggestion", aliases=["suggestion", "suggest"])
     async def server_suggestion(self, ctx, suggestion: str):
         user = ctx.author   
