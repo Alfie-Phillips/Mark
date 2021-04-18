@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 from random import randrange
 import asyncio
-
+from main import db
+import pymongo
 
 class Games(commands.Cog):
     def __init__(self, bot):
@@ -28,25 +29,63 @@ class Games(commands.Cog):
             if answer.content == "h":
                 if second_random_number > random_number:
                     await ctx.send(f"Correct! The Number Was {str(second_random_number)}")
+                    collection = db["Points"]
+                    query = {"id": ctx.author.id, "points": 10}
+                    collection.insert_one(query)
+
                 elif second_random_number < random_number:
                     await ctx.send(f"Incorrect! The Number Was {str(second_random_number)}")
                 elif second_random_number == random_number:
                     await ctx.send(f"Draw! The Number Was {str(second_random_number)}")
+                    collection = db["Points"]
+                    query = {"id": ctx.author.id, "points": 5}
+                    collection.insert_one(query)
             elif answer.content == "l":
                 if second_random_number < random_number:
                     await ctx.send(f"Correct! The Number Was {str(second_random_number)}")
+                    collection = db["Points"]
+                    query = {"id": ctx.author.id, "points": 10}
+                    collection.insert_one(query)
                 elif second_random_number > random_number:
                     await ctx.send(f"Incorrect! The Number Was {str(second_random_number)}")
                 elif second_random_number == random_number:
                     await ctx.send(f"Draw! The Number Was {str(second_random_number)}")
+                    collection = db["Points"]
+                    query = {"id": ctx.author.id, "points": 5}
+                    collection.insert_one(query)
             else:
                 await ctx.send(f"{ctx.author.mention} | Invalid Input, type ***'h'*** for higher, and ***'l'*** for lower!")
         except asyncio.TimeoutError:
             return await ctx.send(f"You took too long to answer! {ctx.author.mention}")
 
+    @commands.command(name="game-init")
+    async def game_init(self, ctx):
+        collection = db["Points"]
+        user_id = {"id": ctx.author.id}
+        score = collection.find(user_id)
+        if not ctx.guild:
+            return
+        
+        for result in score:
+            if result["id"] == ctx.author.id:
+                return await ctx.send("You have already initialized your account!")
+        
+        query = {
+            "id": ctx.author.id,
+            "username": ctx.author.name,
+            "points": 0
+        }
+
+        message = await ctx.send("Loading...")
+        collection.insert_one(query)
+        await message.delete()
+        embed = discord.Embed(title=f"Account created for {ctx.author.name}", description="Please use M.help for guidance on the commands!")
+        await ctx.send(embed=embed)
+
+
     @commands.command(name="blackjack", aliases=["bj", "black-jack"])
     async def blackjack(self, ctx):
-        pass
+        print("Test")
 
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))

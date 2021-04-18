@@ -1,12 +1,13 @@
 from discord.ext.commands.errors import *
 from discord.ext import commands
 import discord
-
+import pymongo
+from pymongo import MongoClient
 from aiohttp import ClientSession
 import datetime
 import asyncio
 import os
-from config import TOKEN
+from config import TOKEN, MONGO_URI
 from datetime import timedelta
 
 from cogs.utils.context import TheContext
@@ -24,7 +25,8 @@ initial_cogs = [
     'cogs.game'
 ]
 
-print("Bot is connecting...")
+cluster = MongoClient(MONGO_URI)
+db = cluster["Games"]
 
 class Mark(commands.AutoShardedBot):
     def __init__(self, **kwargs):
@@ -39,7 +41,7 @@ class Mark(commands.AutoShardedBot):
         """ Listening for events """
 
     async def on_connect(self):
-        print("Bot is now connected...")
+        print("Bot is connected...")
 
     async def on_ready(self):
         print(f'Successfully logged in as {self.user}\nSharded to {len(self.guilds)} guilds')
@@ -78,7 +80,7 @@ class Mark(commands.AutoShardedBot):
         if ctx.command is None:
             return ""
 
-        if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages', 'users', 'source', 'hilo']:
+        if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages', 'users', 'source']:
             if ctx.channel.id not in [741634902851846195]:
                 return await message.channel.send("**Please use the <#741634902851846195> channel**")
 
