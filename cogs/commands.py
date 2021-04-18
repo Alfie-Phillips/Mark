@@ -239,6 +239,14 @@ class Commands(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
+    @commands.command(name="drop-shipping-purchasing")
+    async def drop_shipping_purchasing(self, ctx):
+        embed = discord.Embed(title="Do I need to purchase products for my online store?", description="No, the beauty of dropshipping is that you don’t need to hold any inventory yourself. You simply order it from your supplier once a customer has bought from you. That said, it’s a good idea to buy sample products from your suppliers before uploading them to your online store to make sure you are happy with the quality of the product. In fact, I would insist that you buy sample products! Written by Frog#1582")
+        await ctx.send(embed=embed)
+        await asyncio.sleep(1.5)
+        await ctx.message.delete()
+
+        
     @commands.command(name="crypto-currency")
     async def crypto_currency(self, ctx):
         pass
