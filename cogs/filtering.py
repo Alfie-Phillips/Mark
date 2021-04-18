@@ -33,8 +33,8 @@ class Filtering(commands.Cog):
     async def _do_filtering(self, message: discord.Message):
         message_content = message.content.strip().lower()
         user = message.author
-        valid_channels = [806530966105096195]
-        mod_channel = self.bot.get_channel(806530966105096195)
+        valid_channels = [734883606555656334, 831600676680499261]
+        mod_channel = self.bot.get_channel(734883606555656334)
         with open("bad-words.txt", 'r+') as f:
             words = [word.strip().lower() for word in f.readlines()]
         if message.channel.id in valid_channels:
@@ -57,7 +57,7 @@ class Filtering(commands.Cog):
 
     async def _do_parsing(self, message: discord.Message):
         user = message.author
-        mod_channel = self.bot.get_channel(806530966105096195)
+        mod_channel = self.bot.get_channel(734883606555656334)
         urls = re.findall(r"(https?://[^\s]+)", message.content, flags=re.IGNORECASE)
         for url in urls:
             try:

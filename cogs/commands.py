@@ -27,7 +27,6 @@ class Commands(commands.Cog):
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
-        # await ctx.send("Pong!")
 
 
     @commands.command(name="users")

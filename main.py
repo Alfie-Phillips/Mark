@@ -20,7 +20,8 @@ initial_cogs = [
     'cogs.commands',
     'cogs.reporting',
     'cogs._help',
-    'cogs.filtering'
+    'cogs.filtering',
+    'cogs.game'
 ]
 
 print("Bot is connecting...")
@@ -77,9 +78,9 @@ class Mark(commands.AutoShardedBot):
         if ctx.command is None:
             return ""
 
-        if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages', 'users', 'source']:
-            if ctx.channel.id not in [806528778846994463, 806535704334303263]:
-                return await message.channel.send("**Please use the <#806528778846994463> channel**")
+        if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages', 'users', 'source', 'hilo']:
+            if ctx.channel.id not in [741634902851846195]:
+                return await message.channel.send("**Please use the <#741634902851846195> channel**")
 
         return await self.invoke(ctx)
 
