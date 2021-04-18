@@ -46,7 +46,7 @@ class Games(commands.Cog):
 
     @commands.command(name="blackjack", aliases=["bj", "black-jack"])
     async def blackjack(self, ctx):
-        pass
+        print("Test")
 
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))
