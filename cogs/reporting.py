@@ -10,7 +10,7 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.cooldown(1, 30, commands.BucketType.user)
-    @commands.command("report")
+    @commands.command(name="report")
     async def report(self, ctx, user : discord.Member, *reason):
         mod_channel = self.bot.get_channel(734883606555656334)
         author = ctx.message.author
@@ -39,5 +39,10 @@ class Moderation(commands.Cog):
             await mod_channel.send(f"{author.mention} has reported {user.mention}\nReason: {rearray}\n\n<@&734889524303495279>")
     
 
+    @report.error
+    async def hilo_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            em = discord.Embed(title=f"Slow it down bro!",description=f"Try again in {error.retry_after:.2f}s.")
+            await ctx.send(embed=em)
 def setup(bot: commands.Bot):
     bot.add_cog(Moderation(bot=bot))
