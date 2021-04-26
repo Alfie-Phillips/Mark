@@ -165,9 +165,9 @@ class Games(commands.Cog):
         return await ctx.send("You have not created an account yet!")
 
 
-    @commands.command(name="blackjack", aliases=["bj", "black-jack"])
-    async def blackjack(self, ctx):
-        print("Test")
+    @commands.command(name="sm", aliases=["simulation"])
+    async def sm(self, method, ticker, shares=1):
+        pass
 
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))
