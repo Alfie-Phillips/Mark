@@ -1,11 +1,12 @@
 import discord
 from discord.ext import commands
-from random import randrange
+import random
 import asyncio
 from main import db
 import pymongo
 import datetime
 import itertools
+import yfinance
 
 class Games(commands.Cog):
     def __init__(self, bot):
@@ -24,73 +25,15 @@ class Games(commands.Cog):
         user_id = {"id": ctx.author.id}
         score = collection.find_one(user_id)
         if score:
-            _sum = 0
-            for i in score:
-                _sum += int(i['points'])
-            
-            embed = discord.Embed(title="Your Game Points!", description=f"{str(_sum)}")
+            points = str(score['points'])
+            embed = discord.Embed(title="Your Game Points!", description=f"{points}")
+            embed.set_footer(text="@Copyright Alfie Phillips")
             return await ctx.send(embed=embed)
 
         return await ctx.send("You have not created an account yet!")
 
-    @commands.cooldown(1, 120, commands.BucketType.user)
-    @commands.command(name="hilo", aliases=["highlow", "high-low", "hl", "higherorlower", "higher-or-lower"])
-    async def hilo(self, ctx):
-        if not ctx.guild:
-            return
-        
-        random_number = randrange(1, 100)
-        embed = discord.Embed(title="Pick a random number between 1 and 100! :smile:", description=f"Your Number Is {str(random_number)}", color=14177041)
-        embed.set_footer(text="10 Seconds | Higher Or Lower")
-        await ctx.message.delete()
-        await ctx.send(embed=embed)
-
-        def check(m):
-            return m.channel == ctx.message.channel and m.author == ctx.message.author
-        
-        try:
-            answer = await self.bot.wait_for('message', timeout=10.0, check=check)
-            second_random_number = randrange(1, 100)
-            if answer.content.lower() == "h" or answer.content.lower() == "higher":
-                if second_random_number > random_number:
-                    await ctx.send(f"Correct! The Number Was {str(second_random_number)}")
-                    collection = db["Points"]
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 10}})
-
-                elif second_random_number < random_number:
-                    await ctx.send(f"Incorrect! The Number Was {str(second_random_number)}")
-                    collection = db["Points"]
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -5}})
-                elif second_random_number == random_number:
-                    await ctx.send(f"Draw! The Number Was {str(second_random_number)}")
-                    collection = db["Points"]
-                    query = {"id": ctx.author.id, "points": 5}
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 5}})
-            elif answer.content.lower == "l" or answer.content.lower() == "lower":
-                if second_random_number < random_number:
-                    await ctx.send(f"Correct! The Number Was {str(second_random_number)}")
-                    collection = db["Points"]
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 10}})
-                elif second_random_number > random_number:
-                    await ctx.send(f"Incorrect! The Number Was {str(second_random_number)}")
-                    collection = db["Points"]
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -5}})
-                elif second_random_number == random_number:
-                    await ctx.send(f"Draw! The Number Was {str(second_random_number)}")
-                    collection = db["Points"]
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 5}})
-            else:
-                await ctx.send(f"{ctx.author.mention} | Invalid Input, type ***'h'*** for higher, and ***'l'*** for lower!")
-        except asyncio.TimeoutError:
-            return await ctx.send(f"You took too long to answer! {ctx.author.mention}")
-
-    @hilo.error
-    async def hilo_error(self, ctx, error):
-        if isinstance(error, commands.CommandOnCooldown):
-            em = discord.Embed(title=f"Slow it down bro!",description=f"Try again in {error.retry_after:.2f}s.")
-            await ctx.send(embed=em)
-
-    @commands.command(name="game-init")
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.command(name="init")
     async def game_init(self, ctx):
         collection = db["Points"]
         user_id = {"id": ctx.author.id}
@@ -115,15 +58,17 @@ class Games(commands.Cog):
         collection.insert_one(query)
         await message.delete()
         embed = discord.Embed(title=f"Account created for {ctx.author.name}", description="Please use M.help for guidance on the commands!")
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
 
-
-    @commands.command(name="del-game-account")
-    async def del_game_account(self, ctx):
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.command(name="del-account")
+    async def del_account(self, ctx):
         collection = db["Points"]
         user = collection.find_one({"id": ctx.author.id})
         if user:
             embed = discord.Embed(title="Deleting Your Account", description="From this, you will lose all of your points, and your user data will be erased, and will not be able to be recovered. Please click the tick down below if you are sure you want to delete your account!")
+            embed.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=embed)
             message = await ctx.send(f"{ctx.author.mention}. Are you sure you want to delete your account?")
             await message.add_reaction("✅")
@@ -146,7 +91,9 @@ class Games(commands.Cog):
                 return await ctx.send("Timed Out!")
 
         return await ctx.send("You do not have an account to delete!")
-    @commands.command(name="game-account")
+
+
+    @commands.command(name="account")
     async def game_account(self, ctx):
         if not ctx.guild:
             return
@@ -165,9 +112,112 @@ class Games(commands.Cog):
         return await ctx.send("You have not created an account yet!")
 
 
-    @commands.command(name="sm", aliases=["simulation"])
-    async def sm(self, method, ticker, shares=1):
-        pass
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.command(name="hilo")
+    async def hilo(self, ctx):
+        collection = db["Points"]
+        stocks = [
+            'GME', 'TSLA', 'GOOGL', 'NCR', 'NIO',
+            'AMC', "AMZN", "AAPL", "TWTR", "MSFT",
+            "MVIS", "NOK", "NVDA"
+        ]
+
+        query = {"id": ctx.author.id, "username": ctx.author.name}
+        user = collection.find_one(query)
+
+        if not user:
+            return await ctx.send("You have not initialized an account yet! M.game-init to create an account.")
+
+        if not ctx.guild:
+            return
+        
+        symbol1 = random.choice(stocks)
+        stocks.remove(symbol1)
+        symbol2 = random.choice(stocks)
+        stocks.remove(symbol2)
+        stock_count = len(stocks)
+
+        try:
+            ticker_one = yfinance.Ticker(symbol1)
+            ticker_two = yfinance.Ticker(symbol2)
+            ticker_one_data = ticker_one.history(period="1d")
+            ticker_two_data = ticker_two.history(period="1d")
+
+        except Exception as e:
+            print(e)
+            await ctx.send("Error grabbing current stock prices!")
+
+        stock_one = round(ticker_one_data['Close'][0], 2)
+        stock_two = round(ticker_two_data['Close'][0], 2)
+        
+
+        embed = discord.Embed(title="Choose which stock you believe is higher in price!", description=f"Your two stocks are: \n1. {str(symbol1)}\n2. {str(symbol2)}\nYou only have 10 seconds to answer! Reply (1) for stock one, and (2) for stock two!", color=14177041)
+        embed.set_footer(text="Higher Or Lower. @Copyright Alfie Phillips")
+        await ctx.message.delete()
+        await ctx.send(embed=embed)
+
+        def check(m):
+            return m.channel == ctx.message.channel and m.author == ctx.message.author
+
+        def winning_embed(winner, symbol1, symbol2, stock_one, stock_two):
+            embed = discord.Embed(title=f"{winner} is a Winner!", description=f"10 Points have been awarded to you!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=3066993)
+            embed.set_footer(text="Higher Or Lower. @Copyright Alfie Phillips")
+            return embed
+
+        def losing_embed(loser, symbol1, symbol2, stock_one, stock_two):
+            embed = discord.Embed(title=f"{loser} has lost!", description=f"5 Points have been deducted from you!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=15158332)
+            embed.set_footer(text="Higher Or Lower. @Copyright Alfie Phillips")
+            return embed
+
+        def drawing_embed(draw, symbol1, symbol2, stock_one, stock_two):
+            embed = discord.Embed(title=f"{draw}, it is a draw!", description=f"5 Points have been given to you for your luck!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=9807270)
+            embed.set_footer(text="Higher Or Lower. @Copyright Alfie Phillips")
+            return embed
+
+
+        try:
+            reply = await self.bot.wait_for('message', timeout=10.0, check=check)
+            reply = reply.content.lower().strip()
+            collection = db["Points"]
+            if reply == "1":
+                if stock_one > stock_two:
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 10}})
+                    return await ctx.send(embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+
+                elif stock_one < stock_two:
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -5}})
+                    return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+
+                elif stock_one == stock_two:
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 5}})
+                    return await ctx.send(embed=drawing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+
+            elif reply == "2":
+                if stock_two > stock_one:
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 10}})
+                    return await ctx.send(embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+
+                elif stock_two < stock_one:
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -5}})
+                    return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+
+                elif stock_two == stock_one:
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 5}})
+                    return await ctx.send(embed=drawing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+            else:
+                return await ctx.send("Invalid reply! Please try again.")
+
+        except asyncio.TimeoutError:
+            return await ctx.send("Time has ran out!")
+
+        
+
+    @hilo.error
+    async def hilo_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            em = discord.Embed(title=f"Slow it down!",description=f"Try again in {error.retry_after:.2f}s.")
+            await ctx.send(embed=em)
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))

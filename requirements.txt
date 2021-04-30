@@ -3,3 +3,4 @@ datetime
 aiohttp
 distest
 urllib
+yfinance

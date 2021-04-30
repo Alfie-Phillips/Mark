@@ -21,6 +21,10 @@ class Commands(commands.Cog):
             d[str(member.status)] += 1
         return d
 
+    def em(title, description):
+            embed = discord.Embed(title=title, description=description)
+            return embed
+
     @commands.command(name="ping")
     async def ping(self, ctx):
         embed = discord.Embed(title="My Current Ping!", description=f"{round(self.bot.latency, 1)}ms!")
@@ -131,6 +135,23 @@ class Commands(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
+    @commands.command(name="stock")
+    async def stock(self, ctx, args):
+        def em(title, description):
+            embed = discord.Embed(title=title, description=description)
+            return embed
+
+
+        if args == "market":
+            await ctx.send(embed=em("The Stock Market", "✦ What is the stock market? - The stock market is what allows people to buy and sell investments. On the stock market you can trade stocks, index funds, bonds, ETFs, reits, options, mutual funds, these are all ways you can invest in the stock market. Nerdwallet does a great example at defining the stock market, they state the following, “The concept behind how the stock market works is pretty simple. Operating much like an auction house, the stock market enables buyers and sellers to negotiate prices and make trades.” This basically means you are buying a small part of a company for a price determined on supply and demand. [More Info Here... :smile:](https://www.investopedia.com/terms/s/stockmarket.asp)"))
+            await asyncio.sleep(1.5)
+            await ctx.message.delete()
+
+        elif args == "shares":
+            await ctx.send(embed=em("Stock Shares", "✦ What are stocks and shares? - Stocks are a small percent of a company sold on the stock market in the form of shares. Investopedia defines stocks as the following, “A stock (also known as equity) is a security that represents the ownership of a fraction of a corporation. This entitles the owner of the stock to a proportion of the corporations assets and profits equal to how much stock they own. Units of stock are called shares. [More Info Here... :smile:](https://www.investopedia.com/terms/s/stockmarket.asp)"))
+            await asyncio.sleep(1.5)
+            await ctx.message.delete()
+
     @commands.command(name="stock-market")
     async def stock_market(self, ctx):
         embed = discord.Embed(title="The Stock Market", description="✦ What is the stock market? - The stock market is what allows people to buy and sell investments. On the stock market you can trade stocks, index funds, bonds, ETFs, reits, options, mutual funds, these are all ways you can invest in the stock market. Nerdwallet does a great example at defining the stock market, they state the following, “The concept behind how the stock market works is pretty simple. Operating much like an auction house, the stock market enables buyers and sellers to negotiate prices and make trades.” This basically means you are buying a small part of a company for a price determined on supply and demand. [More Info Here... :smile:](https://www.investopedia.com/terms/s/stockmarket.asp)")
@@ -141,7 +162,7 @@ class Commands(commands.Cog):
 
     @commands.command(name="stock-shares")
     async def stock_shares(self, ctx):
-        embed = discord.Embed(title="Stock Shares", description="✦ What are stocks and shares? - Stocks are a small percent of a company sold on the stock market in the form of shares. Investopedia defines stocks as the following, “A stock (also known as equity) is a security that represents the ownership of a fraction of a corporation. This entitles the owner of the stock to a proportion of the corporation's assets and profits equal to how much stock they own. Units of stock are called 'shares'. [More Info Here... :smile:](https://www.investopedia.com/terms/s/stockmarket.asp)")
+        embed = discord.Embed(title="Stock Shares", description="")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
