@@ -27,7 +27,7 @@ initial_cogs = [
 ]
 
 cluster = MongoClient(MONGO_URI)
-db = cluster["Games"]
+db = cluster["Users"]
 
 class Mark(commands.AutoShardedBot):
     def __init__(self, **kwargs):
