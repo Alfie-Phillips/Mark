@@ -14,7 +14,7 @@ class Moderation(commands.Cog):
     @commands.command(name="report")
     async def report(self, ctx, user : discord.Member, *reason):
         collection = db["Reports"]
-        mod_channel = self.bot.get_channel(734883606555656334)
+        mod_channel = self.bot.get_channel(806530966105096195)
         author = ctx.message.author
         now = datetime.now()
         rearray = ' '.join(reason[:]) 

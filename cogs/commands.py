@@ -297,11 +297,13 @@ class Commands(commands.Cog):
             "author-id": ctx.author.id,
             "author-name": ctx.author.name,
             "suggestion": str(suggestion),
-            "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}" 
+            "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}" ,
+            "count-yes": 0,
+            "count-no": 0
         }
         collection.insert_one(query)
 
-    
+
 def setup(bot):
     bot.add_cog(Commands(bot))
         

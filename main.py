@@ -22,7 +22,6 @@ initial_cogs = [
     'cogs.commands',
     'cogs.moderation',
     'cogs._help',
-    'cogs.filtering',
     'cogs.game'
 ]
 
@@ -59,6 +58,25 @@ class Mark(commands.AutoShardedBot):
             await member.send('Welcome to the Mark Tilbury Server, we hope you have a great time here!')
 
 
+    async def on_raw_reaction_add(self, payload):
+        collection = db["Suggestions"]
+        member_id = payload.member.id
+        if payload.channel_id == 806584030908645486:
+            collection = db["Suggestions"]
+            if payload.emoji.name == "✅":
+                collection.find_one_and_update({"id": member_id}, {"$inc":{"count-yes": 1}})
+            
+            elif payload.emoji.name == "❌":
+                channel = self.get_channel(806584030908645486)
+                message = await channel.fetch_message(payload.message_id)
+                content = message.embeds[0].description
+                collection.update_one({"username": payload.member.name, "suggestion": content}, {"$inc":{"count-no": 1}})
+                return 
+
+        else:
+            print("nope")
+
+
     async def on_message(self, message):
         await self.wait_until_ready()
 
@@ -82,7 +100,7 @@ class Mark(commands.AutoShardedBot):
             return ""
 
         if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages', 'users', 'source']:
-            if ctx.channel.id not in [741634902851846195]:
+            if ctx.channel.id not in [741634902851846195, 806528778846994463]:
                 return await message.channel.send("**Please use the <#741634902851846195> channel**")
 
         return await self.invoke(ctx)

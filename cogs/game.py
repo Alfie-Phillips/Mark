@@ -98,16 +98,25 @@ class Games(commands.Cog):
 
     @commands.command(name="leaderboard", aliases=["lb"])
     async def leaderboard(self, ctx, amount=3):
+        if amount > 10:
+            return await ctx.send("You can't have a higher amount than 10 players!")
         collection = db["Points"]
-        leaderboard = []
+        leaderboard = {}
+        total = []
         query = {}
-        data = collection.find(query).limit(amount)
+        data = collection.find(query).limit(amount).sort('points', -1)
+        index = 1
+        em = discord.Embed(title=f"Top {str(amount)} Players on {ctx.guild}", description="This is decided upon the amount of points you have in your game account. If you don't have one, do M.account init!", color=discord.Color(0xfa43ee))
         for item in data:
-            leaderboard.append({'name': item['username'], 'points': item['points']})
+            em.add_field(name=f"{str(index)}. {item['username']}", value=f"{str(item['points'])} points", inline=False)
+            if index == amount:
+                break
+            else:
+                index += 1
 
-        print(leaderboard)
+        return await ctx.send(embed=em)
 
-    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command(name="hilo")
     async def hilo(self, ctx):
         collection = db["Points"]
@@ -115,7 +124,7 @@ class Games(commands.Cog):
             'GME', 'TSLA', 'GOOGL', 'NCR', 'NIO',
             'AMC', "AMZN", "AAPL", "TWTR", "MSFT",
             "MVIS", "NOK", "NVDA", "ATVI", "PLTR",
-            "SNDL", "VGAC", "VUSA", "BP"
+            "SNDL", "VGAC", "BP"
         ]
 
         query = {"id": ctx.author.id, "username": ctx.author.name}
