@@ -106,7 +106,8 @@ class Games(commands.Cog):
         stocks = [
             'GME', 'TSLA', 'GOOGL', 'NCR', 'NIO',
             'AMC', "AMZN", "AAPL", "TWTR", "MSFT",
-            "MVIS", "NOK", "NVDA"
+            "MVIS", "NOK", "NVDA", "ATVI", "PLTR",
+            "SNDL", "VGAC", "VUSA", "RR", "BP"
         ]
 
         query = {"id": ctx.author.id, "username": ctx.author.name}
