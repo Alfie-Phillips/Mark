@@ -9,6 +9,7 @@ import asyncio
 import os
 from config import TOKEN, MONGO_URI
 from datetime import timedelta
+from keep_alive import keep_alive
 
 from cogs.utils.context import TheContext
 
@@ -149,6 +150,7 @@ class Mark(commands.AutoShardedBot):
 
 
 if __name__ == "__main__":
+    keep_alive()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(Mark.setup())
         

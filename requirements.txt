@@ -2,5 +2,9 @@ discord
 datetime
 aiohttp
 distest
-urllib
+pymongo
+config
 yfinance
+dnspython
+jishaku
+flask
