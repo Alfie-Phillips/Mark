@@ -73,5 +73,6 @@ class Moderation(commands.Cog):
             print(error)
 
 
+
 def setup(bot: commands.Bot):
     bot.add_cog(Moderation(bot=bot))

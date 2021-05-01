@@ -95,9 +95,17 @@ class Games(commands.Cog):
 
             return await ctx.send("You have not created an account yet!")
 
-        elif args == "leaderboard":
-            pass
 
+    @commands.command(name="leaderboard", aliases=["lb"])
+    async def leaderboard(self, ctx, amount=3):
+        collection = db["Points"]
+        leaderboard = []
+        query = {}
+        data = collection.find(query).limit(amount)
+        for item in data:
+            leaderboard.append({'name': item['username'], 'points': item['points']})
+
+        print(leaderboard)
 
     @commands.cooldown(1, 30, commands.BucketType.user)
     @commands.command(name="hilo")
@@ -107,7 +115,7 @@ class Games(commands.Cog):
             'GME', 'TSLA', 'GOOGL', 'NCR', 'NIO',
             'AMC', "AMZN", "AAPL", "TWTR", "MSFT",
             "MVIS", "NOK", "NVDA", "ATVI", "PLTR",
-            "SNDL", "VGAC", "VUSA", "RR", "BP"
+            "SNDL", "VGAC", "VUSA", "BP"
         ]
 
         query = {"id": ctx.author.id, "username": ctx.author.name}

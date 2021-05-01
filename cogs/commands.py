@@ -60,7 +60,7 @@ class Commands(commands.Cog):
         await ctx.message.delete()
 
 
-    @commands.command(name="tiktok"])
+    @commands.command(name="tiktok")
     async def tiktok(self, ctx):
         """Links for Mark's socials"""
         embed = discord.Embed(title="Mark's TikTok", description="[Link Here... :smile:](https://www.tiktok.com/@marktilbury?lang=en)")
@@ -137,12 +137,12 @@ class Commands(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name="stock")
-    async def stock(self, ctx, args):
+    async def stock(self, ctx, args=""):
         def em(title, description):
             embed = discord.Embed(title=title, description=description)
             return embed
 
-
+ 
         if args == "market":
             await ctx.send(embed=em("The Stock Market", "✦ What is the stock market? - The stock market is what allows people to buy and sell investments. On the stock market you can trade stocks, index funds, bonds, ETFs, reits, options, mutual funds, these are all ways you can invest in the stock market. Nerdwallet does a great example at defining the stock market, they state the following, “The concept behind how the stock market works is pretty simple. Operating much like an auction house, the stock market enables buyers and sellers to negotiate prices and make trades.” This basically means you are buying a small part of a company for a price determined on supply and demand. [More Info Here... :smile:](https://www.investopedia.com/terms/s/stockmarket.asp)"))
             await asyncio.sleep(1.5)
@@ -215,7 +215,7 @@ class Commands(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
-    @commands.command(name="dropshipping", aliases="drop-shipping")
+    @commands.command(name="dropshipping", aliases=["drop-shipping"])
     async def drop_shipping(self, ctx, args=""):
         if args == "":
             embed = discord.Embed(title="Drop Shipping Commands", description="M.drop-shipping-definition\nM.drop-shipping-guide\nM.drop-shipping-profits")
@@ -264,7 +264,7 @@ class Commands(commands.Cog):
         else:
             pass
 
-    @commands.command(name="digital-marketing", aliases="marketing")
+    @commands.command(name="digital-marketing", aliases=["marketing"])
     async def digital_marketing(self, ctx, args):
         if args == "":
             pass
@@ -278,8 +278,8 @@ class Commands(commands.Cog):
         else:
             pass
 
-    @commands.command(name="server_suggestion", aliases=["suggestion", "suggest"])
-    async def serversuggestion(self, ctx, suggestion: str):
+    @commands.command(name="suggestion")
+    async def server_suggestion(self, ctx, *, suggestion: str):
         if not ctx.guild:
             return
 
@@ -288,7 +288,7 @@ class Commands(commands.Cog):
         user = ctx.author
         now = datetime.now()
         emojis = ["👀", "😄", "😇", "🤩", "😎", "👌", "👍", "👏"]
-        suggestionChannel = self.bot.get_channel(747165320510308393)
+        suggestionChannel = self.bot.get_channel(806584030908645486)
         embed = discord.Embed(title=f"Server Suggestion {random.choice(emojis)} | Made by @{ctx.author}", description=str(suggestion))
         message = await suggestionChannel.send(embed=embed)
         await message.add_reaction("✅")
@@ -300,9 +300,8 @@ class Commands(commands.Cog):
             "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}" 
         }
         collection.insert_one(query)
-        return 
 
-
+    
 def setup(bot):
     bot.add_cog(Commands(bot))
         

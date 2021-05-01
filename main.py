@@ -20,7 +20,7 @@ os.environ["JISHAKU_HIDE"] = "True"
 initial_cogs = [
     'jishaku',
     'cogs.commands',
-    'cogs.reporting',
+    'cogs.moderation',
     'cogs._help',
     'cogs.filtering',
     'cogs.game'
@@ -150,7 +150,7 @@ class Mark(commands.AutoShardedBot):
 
 
 if __name__ == "__main__":
-    keep_alive()
+    # keep_alive()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(Mark.setup())
         
