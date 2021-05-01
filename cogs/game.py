@@ -11,105 +11,92 @@ import yfinance
 class Games(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
-    @commands.command(name="game-leaderboard")
-    async def game_leaderboard(self, ctx, limit=None):
-        pass
 
-    @commands.command(name="game-points")
-    async def game_points(self, ctx):
+
+    @commands.command(name="account", aliases=["acc"])
+    async def account(self, ctx, args=""):
         if not ctx.guild:
             return
 
         collection = db["Points"]
-        user_id = {"id": ctx.author.id}
-        score = collection.find_one(user_id)
-        if score:
-            points = str(score['points'])
-            embed = discord.Embed(title="Your Game Points!", description=f"{points}")
+
+        if args == "":
+            query = {"id": ctx.author.id, "username": ctx.author.name}
+            score = collection.find_one(query)
+            if score:
+                _id = score["id"]
+                username = score["username"]
+                time_created = score["time-created"]
+                points = score["points"]
+                embed = discord.Embed(title="Your Game Account Stats", description=(f"Game ID: {_id}\nUsername: {username}\nDate Created: {time_created}\nPoints: {points}"))
+                return await ctx.send(embed=embed)
+
+            return await ctx.send("You have not created an account yet!")
+
+        elif args == "init":
+            user_id = {"id": ctx.author.id}
+            score = collection.find(user_id)
+            for result in score:
+                if result["id"] == ctx.author.id:
+                    return await ctx.send("You have already initialized your account!")
+            
+            now = datetime.datetime.now()
+
+            query = {
+                "id": ctx.author.id,
+                "username": ctx.author.name,
+                "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}",
+                "points": 0
+            }
+
+            message = await ctx.send("Loading...")
+            collection.insert_one(query)
+            await message.delete()
+            embed = discord.Embed(title=f"Account created for {ctx.author.name}", description="Please use M.help for guidance on the commands!")
             embed.set_footer(text="@Copyright Alfie Phillips")
             return await ctx.send(embed=embed)
 
-        return await ctx.send("You have not created an account yet!")
+        elif args == "delete":
+            user = collection.find_one({"id": ctx.author.id})
+            if user:
+                embed = discord.Embed(title="Deleting Your Account", description="From this, you will lose all of your points, and your user data will be erased, and will not be able to be recovered. Please click the tick down below if you are sure you want to delete your account!")
+                embed.set_footer(text="@Copyright Alfie Phillips")
+                await ctx.send(embed=embed)
+                message = await ctx.send(f"{ctx.author.mention}. Are you sure you want to delete your account?")
+                await message.add_reaction("✅")
+                try:
+                    reaction, user = await self.bot.wait_for("reaction_add", check=lambda reaction, user: str(reaction.emoji) == "✅" and user.id == ctx.author.id, timeout=15.0)
+                    if reaction:
+                        collection = db["Points"]
+                        query = {"id": ctx.author.id}
+                        delete = collection.delete_one(query)
 
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    @commands.command(name="init")
-    async def game_init(self, ctx):
-        collection = db["Points"]
-        user_id = {"id": ctx.author.id}
-        score = collection.find(user_id)
-        if not ctx.guild:
-            return
-        
-        for result in score:
-            if result["id"] == ctx.author.id:
-                return await ctx.send("You have already initialized your account!")
-        
-        now = datetime.datetime.now()
+                        if delete:
+                            await message.delete()
+                            return await ctx.send("Your account has been deleted!")
 
-        query = {
-            "id": ctx.author.id,
-            "username": ctx.author.name,
-            "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}",
-            "points": 0
-        }
-
-        message = await ctx.send("Loading...")
-        collection.insert_one(query)
-        await message.delete()
-        embed = discord.Embed(title=f"Account created for {ctx.author.name}", description="Please use M.help for guidance on the commands!")
-        embed.set_footer(text="@Copyright Alfie Phillips")
-        await ctx.send(embed=embed)
-
-    @commands.cooldown(1, 30, commands.BucketType.user)
-    @commands.command(name="del-account")
-    async def del_account(self, ctx):
-        collection = db["Points"]
-        user = collection.find_one({"id": ctx.author.id})
-        if user:
-            embed = discord.Embed(title="Deleting Your Account", description="From this, you will lose all of your points, and your user data will be erased, and will not be able to be recovered. Please click the tick down below if you are sure you want to delete your account!")
-            embed.set_footer(text="@Copyright Alfie Phillips")
-            await ctx.send(embed=embed)
-            message = await ctx.send(f"{ctx.author.mention}. Are you sure you want to delete your account?")
-            await message.add_reaction("✅")
-            try:
-                reaction, user = await self.bot.wait_for("reaction_add", check=lambda reaction, user: str(reaction.emoji) == "✅" and user.id == ctx.author.id, timeout=15.0)
-                if reaction:
-                    collection = db["Points"]
-                    query = {"id": ctx.author.id}
-                    delete = collection.delete_one(query)
-
-                    if delete:
                         await message.delete()
-                        return await ctx.send("Your account has been deleted!")
+                        return await ctx.send("There was an error deleting your account, please try again!")
 
-                    await message.delete()
-                    return await ctx.send("There was an error deleting your account, please try again!")
+                except asyncio.TimeoutError:
+                    message.delete()
+                    return await ctx.send("Timed Out!")
 
-            except asyncio.TimeoutError:
-                message.delete()
-                return await ctx.send("Timed Out!")
+            return await ctx.send("You do not have an account to delete!")
 
-        return await ctx.send("You do not have an account to delete!")
+        elif args == "points":
+            user_id = {"id": ctx.author.id}
+            score = collection.find_one(user_id)
+            if score:
+                points = str(score['points'])
+                embed = discord.Embed(title="Your Game Points!", description=f"{points}")
+                embed.set_footer(text="@Copyright Alfie Phillips")
+                return await ctx.send(embed=embed)
 
+            return await ctx.send("You have not created an account yet!")
 
-    @commands.command(name="account")
-    async def game_account(self, ctx):
-        if not ctx.guild:
-            return
-        
-        query = {"id": ctx.author.id, "username": ctx.author.name}
-        collection = db["Points"]
-        score = collection.find_one(query)
-        if score:
-            _id = score["id"]
-            username = score["username"]
-            time_created = score["time-created"]
-            points = score["points"]
-            embed = discord.Embed(title="Your Game Account Stats", description=(f"Game ID: {_id}\nUsername: {username}\nDate Created: {time_created}\nPoints: {points}"))
-            return await ctx.send(embed=embed)
-
-        return await ctx.send("You have not created an account yet!")
+        elif args == "leaderboard":
+            pass
 
 
     @commands.cooldown(1, 30, commands.BucketType.user)
