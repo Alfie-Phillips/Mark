@@ -297,9 +297,10 @@ class Commands(commands.Cog):
         await message.add_reaction("✅")
         await message.add_reaction("❌")
 
+
     @commands.command(name="accept")
     @commands.has_role("Admin")
-    async def accept(self, ctx, message_id: int, *, reason: str):
+    async def accept(self, ctx, message_id: int, *, reason="None"):
         if not ctx.guild:
             return
 

@@ -78,6 +78,7 @@ class Mark(commands.AutoShardedBot):
             message = await channel.fetch_message(payload.message_id)
             title = message.embeds[0].title
             description = message.embeds[0].description
+
             em = discord.Embed(title=f"{title}", description=f"{description}\n\n Message ID: {message.id}")
             for reaction in message.reactions:
                 if reaction.emoji == "✅":
@@ -87,6 +88,9 @@ class Mark(commands.AutoShardedBot):
                 elif reaction.emoji == "❌":
                     if int(reaction.count) == 10:
                         return await message.delete()
+
+
+            
 
     async def process_commands(self, message):
         if message.author.bot:
