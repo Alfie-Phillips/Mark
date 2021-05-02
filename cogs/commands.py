@@ -291,10 +291,10 @@ class Commands(commands.Cog):
         await ctx.message.delete()
 
         embed = discord.Embed(color=696969)
-        embed.set_author(name=f"✅ or ❌", icon_url=f"{ctx.author.avatar_url}")
+        embed.set_author(name=f"{ctx.author}", icon_url=f"{ctx.author.avatar_url}")
         embed.set_thumbnail(url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
-        embed.add_field(name=f"{ctx.author.name}", value=f"{suggestion}\n\n", inline=True)
-        embed.add_field(name=f"Status", value="Undecided", inline=False)
+        embed.add_field(name=f"Suggestion:", value=f"{suggestion}\n\n", inline=True)
+        embed.add_field(name=f"Status", value="This is still awaiting a response from a staff member!", inline=False)
         embed.set_footer(text="@Copyright Alfie Phillips")
         message = await channel.send(embed=embed)
         await message.add_reaction("✅")
@@ -315,12 +315,11 @@ class Commands(commands.Cog):
             author = message.embeds[0].author
             suggestion = message.embeds[0].fields[0].value
             name = author.name
-            print(author.name)
             icon_url = author.icon_url
             em = discord.Embed(color=3340850)
-            em.set_author(name=f"✅ or ❌", icon_url=f"{icon_url}")
+            em.set_author(name=f"{name}", icon_url=f"{icon_url}")
             em.set_thumbnail(url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
-            em.add_field(name=f"{name}", value=f"{suggestion}\n\n", inline=True)
+            em.add_field(name=f"Suggestion:", value=f"{suggestion}\n\n", inline=True)
             em.add_field(name=f"Status", value="Accepted ✅", inline=False)
             em.add_field(name=f"Staff answer by @{ctx.author.name}", value=f"{reason}")
             em.set_footer(text="@Copyright Alfie Phillips")
@@ -347,9 +346,9 @@ class Commands(commands.Cog):
             name = author.name
             icon_url = author.icon_url
             em = discord.Embed(color=16718080)
-            em.set_author(name=f"✅ or ❌", icon_url=f"{icon_url}")
+            em.set_author(name=f"{name}", icon_url=f"{icon_url}")
             em.set_thumbnail(url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
-            em.add_field(name=f"{name}", value=f"{suggestion}\n\n", inline=True)
+            em.add_field(name=f"Suggestion:", value=f"{suggestion}\n\n", inline=True)
             em.add_field(name=f"Status", value="Declined ❌", inline=False)
             em.add_field(name=f"Staff answer by @{ctx.author.name}", value=f"{reason}")
             em.set_footer(text="@Copyright Alfie Phillips")

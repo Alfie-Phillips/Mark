@@ -79,7 +79,6 @@ class Mark(commands.AutoShardedBot):
             author = message.embeds[0].author
             suggestion = message.embeds[0].fields[0].value
             name = author.name
-            print(author.name)
             icon_url = author.icon_url
             em = discord.Embed(color=696969)
             em.set_author(name=f"{name}", icon_url=f"{icon_url}")
