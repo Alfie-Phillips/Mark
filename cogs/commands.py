@@ -280,10 +280,8 @@ class Commands(commands.Cog):
         else:
             pass
 
-    @commands.command(name="suggestion")
-    async def server_suggestion(self, ctx, title, *, suggestion: str):
-        collection = db["Suggestions"]
-        user = ctx.author
+    @commands.command(name="suggestion", aliases=["suggest", "s"])
+    async def server_suggestion(self, ctx, *, suggestion: str):
         now = datetime.now()
         emojis = ["👀", "😄", "😇", "🤩", "😎", "👌", "👍", "👏"]
         channel = self.bot.get_channel(806584030908645486)
@@ -292,7 +290,12 @@ class Commands(commands.Cog):
 
         await ctx.message.delete()
 
-        embed = discord.Embed(title=f"{str(title)} {random.choice(emojis)} | Made by @{user}", description=str(suggestion))
+        embed = discord.Embed(color=696969)
+        embed.set_author(name=f"✅ or ❌", icon_url=f"{ctx.author.avatar_url}")
+        embed.set_thumbnail(url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
+        embed.add_field(name=f"{ctx.author.name}", value=f"{suggestion}\n\n", inline=True)
+        embed.add_field(name=f"Status", value="Undecided", inline=False)
+        embed.set_footer(text="@Copyright Alfie Phillips")
         message = await channel.send(embed=embed)
         await message.add_reaction("✅")
         await message.add_reaction("❌")
@@ -308,8 +311,20 @@ class Commands(commands.Cog):
         try:
             message = await channel.fetch_message(message_id)
             await ctx.message.delete()
-            embed = discord.Embed(title=message.embeds[0].title, description=f"{message.embeds[0].description}\n\n ACCEPTED ✅\n\n REASON: {str(reason)}")
-            return await message.edit(embed=embed)
+
+            author = message.embeds[0].author
+            suggestion = message.embeds[0].fields[0].value
+            name = author.name
+            print(author.name)
+            icon_url = author.icon_url
+            em = discord.Embed(color=3340850)
+            em.set_author(name=f"✅ or ❌", icon_url=f"{icon_url}")
+            em.set_thumbnail(url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
+            em.add_field(name=f"{name}", value=f"{suggestion}\n\n", inline=True)
+            em.add_field(name=f"Status", value="Accepted ✅", inline=False)
+            em.add_field(name=f"Staff answer by @{ctx.author.name}", value=f"{reason}")
+            em.set_footer(text="@Copyright Alfie Phillips")
+            await message.edit(embed=em)
 
         except:
             await ctx.message.delete()
@@ -318,7 +333,7 @@ class Commands(commands.Cog):
 
     @commands.command(name="decline")
     @commands.has_role("Admin")
-    async def decline(self, ctx, message_id: int, *, reason: str):
+    async def decline(self, ctx, message_id: int, *, reason="None"):
         if not ctx.guild:
             return
 
@@ -326,8 +341,19 @@ class Commands(commands.Cog):
         try:
             message = await channel.fetch_message(message_id)
             await ctx.message.delete()
-            embed = discord.Embed(title=message.embeds[0].title, description=f"{message.embeds[0].description}\n\n DECLINED ❌\n\n REASON: {str(reason)}")
-            return await message.edit(embed=embed)
+
+            author = message.embeds[0].author
+            suggestion = message.embeds[0].fields[0].value
+            name = author.name
+            icon_url = author.icon_url
+            em = discord.Embed(color=16718080)
+            em.set_author(name=f"✅ or ❌", icon_url=f"{icon_url}")
+            em.set_thumbnail(url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
+            em.add_field(name=f"{name}", value=f"{suggestion}\n\n", inline=True)
+            em.add_field(name=f"Status", value="Declined ❌", inline=False)
+            em.add_field(name=f"Staff answer by @{ctx.author.name}", value=f"{reason}")
+            em.set_footer(text="@Copyright Alfie Phillips")
+            await message.edit(embed=em)
         
         except:
             await ctx.message.delete()
