@@ -296,28 +296,41 @@ class Commands(commands.Cog):
         message = await channel.send(embed=embed)
         await message.add_reaction("✅")
         await message.add_reaction("❌")
-        query = {
-            "author-id": ctx.author.id,
-            "author-name": ctx.author.name,
-            "title": str(title),
-            "suggestion": str(suggestion),
-            "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}" ,
-            "yes": 0,
-            "no": 0
-        }
 
+    @commands.command(name="accept")
+    @commands.has_role("Admin")
+    async def accept(self, ctx, message_id: int, *, reason: str):
+        if not ctx.guild:
+            return
 
+        channel = self.bot.get_channel(806584030908645486)
         try:
-            collection.insert_one(query)
+            message = await channel.fetch_message(message_id)
+            await ctx.message.delete()
+            embed = discord.Embed(title=message.embeds[0].title, description=f"{message.embeds[0].description}\n\n ACCEPTED ✅\n\n REASON: {str(reason)}")
+            return await message.edit(embed=embed)
+
         except:
-            print("error")
-
-        # try:
-        #     collection.insert_one(query)
-        # except Exception as e:
-        #     print(e)
+            await ctx.message.delete()
+            return await ctx.send(f"{ctx.author.mention}. Message with id: {str(message_id)} was not found!")
 
 
+    @commands.command(name="decline")
+    @commands.has_role("Admin")
+    async def decline(self, ctx, message_id: int, *, reason: str):
+        if not ctx.guild:
+            return
+
+        channel = self.bot.get_channel(806584030908645486)
+        try:
+            message = await channel.fetch_message(message_id)
+            await ctx.message.delete()
+            embed = discord.Embed(title=message.embeds[0].title, description=f"{message.embeds[0].description}\n\n DECLINED ❌\n\n REASON: {str(reason)}")
+            return await message.edit(embed=embed)
+        
+        except:
+            await ctx.message.delete()
+            return await ctx.send(f"{ctx.author.mention}. Message with id: ({str(message_id)}) was not found!")
 
 def setup(bot):
     bot.add_cog(Commands(bot))

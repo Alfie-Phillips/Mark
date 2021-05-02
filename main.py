@@ -72,32 +72,21 @@ class Mark(commands.AutoShardedBot):
         await self.process_commands(message)
 
     async def on_raw_reaction_add(self, payload):
-        collection = db["Suggestions"]
-        _id = int(payload.member.id)
-        name = str(payload.member.name)
-        channel = payload.channel_id
-        try:
-            collection.update_one({"id": int(_id)}, {"$inc":{"yes": 5}})
-            print("done")
-        except Exception as e:
-            print(e)
+        if payload.channel_id == 806584030908645486:
+            channel = self.get_channel(payload.channel_id)
+            mod_channel = self.get_channel(806530966105096195)
+            message = await channel.fetch_message(payload.message_id)
+            title = message.embeds[0].title
+            description = message.embeds[0].description
+            em = discord.Embed(title=f"{title}", description=f"{description}\n\n Message ID: {message.id}")
+            for reaction in message.reactions:
+                if reaction.emoji == "✅":
+                    if int(reaction.count) == 2:
+                        return await mod_channel.send(embed=em)
 
-        
-        # if channel == 806584030908645486:
-        #     collection = db["Suggestions"]
-        #     emoji = payload.emoji.name
-        #     if emoji == "✅":
-        #         try:
-        #             collection.update_one({"id": _id, "username": name}, {"$inc":{"points": 1}})
-        #         except Exception as e:
-        #             print(e)
-
-        #     elif emoji == "❌":
-        #         print("Cross")
-
-        # else:
-        #     print("None")
-
+                elif reaction.emoji == "❌":
+                    if int(reaction.count) == 10:
+                        return await message.delete()
 
     async def process_commands(self, message):
         if message.author.bot:
