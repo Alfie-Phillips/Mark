@@ -72,32 +72,31 @@ class Mark(commands.AutoShardedBot):
         await self.process_commands(message)
 
     async def on_raw_reaction_add(self, payload):
-        collection = db["Suggestions"]
-        _id = int(payload.member.id)
-        name = str(payload.member.name)
-        channel = payload.channel_id
-        try:
-            collection.update_one({"id": int(_id)}, {"$inc":{"yes": 5}})
-            print("done")
-        except Exception as e:
-            print(e)
+        if payload.channel_id == 806584030908645486:
+            channel = self.get_channel(806584030908645486)
+            mod_channel = self.get_channel(806530966105096195)
+            message = await channel.fetch_message(payload.message_id)
+            author = message.embeds[0].author
+            suggestion = message.embeds[0].fields[0].value
+            name = author.name
+            icon_url = author.icon_url
+            em = discord.Embed(color=696969)
+            em.set_author(name=f"{name}", icon_url=f"{icon_url}")
+            em.set_thumbnail(url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
+            em.add_field(name=f"New Suggestion!", value=f"{suggestion}\n\n", inline=True)
+            em.add_field(name=f"Status", value="Undecided", inline=False)
+            em.set_footer(text="@Copyright Alfie Phillips")
+            for reaction in message.reactions:
+                if reaction.emoji == "✅":
+                    if int(reaction.count) == 2:
+                        return await mod_channel.send(embed=em)
 
-        
-        # if channel == 806584030908645486:
-        #     collection = db["Suggestions"]
-        #     emoji = payload.emoji.name
-        #     if emoji == "✅":
-        #         try:
-        #             collection.update_one({"id": _id, "username": name}, {"$inc":{"points": 1}})
-        #         except Exception as e:
-        #             print(e)
+                elif reaction.emoji == "❌":
+                    if int(reaction.count) == 10:
+                        return await message.delete()
 
-        #     elif emoji == "❌":
-        #         print("Cross")
 
-        # else:
-        #     print("None")
-
+            
 
     async def process_commands(self, message):
         if message.author.bot:
