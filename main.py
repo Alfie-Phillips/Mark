@@ -58,25 +58,6 @@ class Mark(commands.AutoShardedBot):
             await member.send('Welcome to the Mark Tilbury Server, we hope you have a great time here!')
 
 
-    async def on_raw_reaction_add(self, payload):
-        collection = db["Suggestions"]
-        member_id = payload.member.id
-        if payload.channel_id == 806584030908645486:
-            collection = db["Suggestions"]
-            if payload.emoji.name == "✅":
-                collection.find_one_and_update({"id": member_id}, {"$inc":{"count-yes": 1}})
-            
-            elif payload.emoji.name == "❌":
-                channel = self.get_channel(806584030908645486)
-                message = await channel.fetch_message(payload.message_id)
-                content = message.embeds[0].description
-                collection.update_one({"username": payload.member.name, "suggestion": content}, {"$inc":{"count-no": 1}})
-                return 
-
-        else:
-            print("nope")
-
-
     async def on_message(self, message):
         await self.wait_until_ready()
 
@@ -89,6 +70,34 @@ class Mark(commands.AutoShardedBot):
             return ""
 
         await self.process_commands(message)
+
+    async def on_raw_reaction_add(self, payload):
+        collection = db["Suggestions"]
+        _id = int(payload.member.id)
+        name = str(payload.member.name)
+        channel = payload.channel_id
+        try:
+            collection.update_one({"id": int(_id)}, {"$inc":{"yes": 5}})
+            print("done")
+        except Exception as e:
+            print(e)
+
+        
+        # if channel == 806584030908645486:
+        #     collection = db["Suggestions"]
+        #     emoji = payload.emoji.name
+        #     if emoji == "✅":
+        #         try:
+        #             collection.update_one({"id": _id, "username": name}, {"$inc":{"points": 1}})
+        #         except Exception as e:
+        #             print(e)
+
+        #     elif emoji == "❌":
+        #         print("Cross")
+
+        # else:
+        #     print("None")
+
 
     async def process_commands(self, message):
         if message.author.bot:

@@ -4,6 +4,7 @@ from discord.ext.commands import has_permissions
 import discord
 from datetime import datetime, timedelta
 from discord.utils import get
+from discord.ext.commands import Cog
 import aiohttp
 from time import sleep
 from .utils.time import human_timedelta
@@ -25,6 +26,7 @@ class Commands(commands.Cog):
     def em(title, description):
             embed = discord.Embed(title=title, description=description)
             return embed
+
 
     @commands.command(name="ping")
     async def ping(self, ctx):
@@ -279,29 +281,42 @@ class Commands(commands.Cog):
             pass
 
     @commands.command(name="suggestion")
-    async def server_suggestion(self, ctx, *, suggestion: str):
-        if not ctx.guild:
-            return
-
-        await ctx.message.delete()
+    async def server_suggestion(self, ctx, title, *, suggestion: str):
         collection = db["Suggestions"]
         user = ctx.author
         now = datetime.now()
         emojis = ["👀", "😄", "😇", "🤩", "😎", "👌", "👍", "👏"]
-        suggestionChannel = self.bot.get_channel(806584030908645486)
-        embed = discord.Embed(title=f"Server Suggestion {random.choice(emojis)} | Made by @{ctx.author}", description=str(suggestion))
-        message = await suggestionChannel.send(embed=embed)
+        channel = self.bot.get_channel(806584030908645486)
+        if not ctx.guild:
+            return
+
+        await ctx.message.delete()
+
+        embed = discord.Embed(title=f"{str(title)} {random.choice(emojis)} | Made by @{user}", description=str(suggestion))
+        message = await channel.send(embed=embed)
         await message.add_reaction("✅")
         await message.add_reaction("❌")
         query = {
             "author-id": ctx.author.id,
             "author-name": ctx.author.name,
+            "title": str(title),
             "suggestion": str(suggestion),
             "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}" ,
-            "count-yes": 0,
-            "count-no": 0
+            "yes": 0,
+            "no": 0
         }
-        collection.insert_one(query)
+
+
+        try:
+            collection.insert_one(query)
+        except:
+            print("error")
+
+        # try:
+        #     collection.insert_one(query)
+        # except Exception as e:
+        #     print(e)
+
 
 
 def setup(bot):
