@@ -118,7 +118,7 @@ class Games(commands.Cog):
 
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command(name="hilo")
-    async def hilo(self, ctx):
+    async def hilo(self, ctx, bet=5, leverage=1):
         collection = db["Points"]
         stocks = [
             'GME', 'TSLA', 'GOOGL', 'NCR', 'NIO',
@@ -135,6 +135,11 @@ class Games(commands.Cog):
 
         if not ctx.guild:
             return
+
+        if leverage > 50:
+            return await ctx.send("You must not use above 50x Leverage!")
+
+        user_points = int(user['points'])
         
         symbol1 = random.choice(stocks)
         stocks.remove(symbol1)
@@ -164,18 +169,18 @@ class Games(commands.Cog):
         def check(m):
             return m.channel == ctx.message.channel and m.author == ctx.message.author
 
-        def winning_embed(winner, symbol1, symbol2, stock_one, stock_two):
-            embed = discord.Embed(title=f"{winner} is a Winner!", description=f"10 Points have been awarded to you!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=3066993)
+        def winning_embed(winner, symbol1, symbol2, stock_one, stock_two, amount):
+            embed = discord.Embed(title=f"{winner} is a Winner!", description=f"{str(amount)} Points have been awarded to you!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=3066993)
             embed.set_footer(text="Higher Or Lower. @Copyright Alfie Phillips")
             return embed
 
-        def losing_embed(loser, symbol1, symbol2, stock_one, stock_two):
-            embed = discord.Embed(title=f"{loser} has lost!", description=f"5 Points have been deducted from you!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=15158332)
+        def losing_embed(loser, symbol1, symbol2, stock_one, stock_two, amount):
+            embed = discord.Embed(title=f"{loser} has lost!", description=f"{str(amount)} Points have been deducted from you!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=15158332)
             embed.set_footer(text="Higher Or Lower. @Copyright Alfie Phillips")
             return embed
 
-        def drawing_embed(draw, symbol1, symbol2, stock_one, stock_two):
-            embed = discord.Embed(title=f"{draw}, it is a draw!", description=f"5 Points have been given to you for your luck!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=9807270)
+        def drawing_embed(draw, symbol1, symbol2, stock_one, stock_two, amount):
+            embed = discord.Embed(title=f"{draw}, it is a draw!", description=f"{str(amount)} Points have been given to you for your luck!\n{symbol1}: ${stock_one}\n{symbol2}: ${stock_two}", color=9807270)
             embed.set_footer(text="Higher Or Lower. @Copyright Alfie Phillips")
             return embed
 
@@ -184,31 +189,35 @@ class Games(commands.Cog):
             reply = await self.bot.wait_for('message', timeout=10.0, check=check)
             reply = reply.content.lower().strip()
             collection = db["Points"]
+            winning_amount =  round((1.25 * float(bet) * float(leverage)), 1)
+            losing_amount = round((float(bet) * float(leverage)), 1)
+            print(str(losing_amount))
+            drawing_amount = int(bet)
             if reply == "1":
                 if stock_one > stock_two:
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 10}})
-                    return await ctx.send(embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": winning_amount}})
+                    return await ctx.send(embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=winning_amount))
 
                 elif stock_one < stock_two:
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -5}})
-                    return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -losing_amount}})
+                    return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=losing_amount))
 
                 elif stock_one == stock_two:
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 5}})
-                    return await ctx.send(embed=drawing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": drawing_amount}})
+                    return await ctx.send(embed=drawing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=drawing_amount))
 
             elif reply == "2":
                 if stock_two > stock_one:
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 10}})
-                    return await ctx.send(embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": winning_amount}})
+                    return await ctx.send(embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=winning_amount))
 
                 elif stock_two < stock_one:
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -5}})
-                    return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -losing_amount}})
+                    return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=losing_amount))
 
                 elif stock_two == stock_one:
-                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 5}})
-                    return await ctx.send(embed=drawing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two))
+                    collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": drawing_amount}})
+                    return await ctx.send(embed=drawing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=drawing_amount))
             else:
                 return await ctx.send("Invalid reply! Please try again.")
 
@@ -222,6 +231,8 @@ class Games(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             em = discord.Embed(title=f"Slow it down!",description=f"Try again in {error.retry_after:.2f}s.")
             await ctx.send(embed=em)
+
+
 
 
 def setup(bot: commands.Bot):
