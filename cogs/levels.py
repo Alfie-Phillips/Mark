@@ -138,6 +138,16 @@ class Levelling(commands.Cog):
         else:
             return await ctx.channel.send(embed=discord.Embed(title="Error!", description="Please use the bots channel!", color=discord.Color.red()))
 
+    @commands.command(name="add")
+    @commands.has_role("Admin")
+    async def add(self, ctx, name, user: discord.Member, amount=100):
+        if name == "xp":
+            try:
+                levelling.update_one({"id": user.id}, {"$inc": {"xp": amount}})
+                return await ctx.send(embed=discord.Embed(description=f"Score added to {user.display_name}"))
+            except Exception as e:
+                print(e)
+                return await ctx.send(embed=discord.Embed(title="Error!", description="Error adding score!"), color=discord.Color.red())
 
 def setup(bot):
     bot.add_cog(Levelling(bot))

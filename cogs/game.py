@@ -43,6 +43,7 @@ class Games(commands.Cog):
                         f"Game ID: {_id}\nUsername: {username}\nDate Created: {time_created}\nPoints: {points}")
                 )
 
+                embed.set_footer(text="@Copyright Alfie Phillips")
                 return await ctx.send(embed=embed)
 
             return await ctx.send("You have not created an account yet!")
@@ -78,7 +79,8 @@ class Games(commands.Cog):
             await message.delete()
 
             embed = discord.Embed(title=f"Account created for {ctx.author.name}",
-                                  description="Please use M.help for guidance on the commands!")
+                                  description="Please use M.help for guidance on the commands!",
+                                  color=discord.Color.red())
             embed.set_footer(text="@Copyright Alfie Phillips")
 
             return await ctx.send(embed=embed)
@@ -93,7 +95,9 @@ class Games(commands.Cog):
             if user:
 
                 embed = discord.Embed(title="Deleting Your Account",
-                                      description="From this, you will lose all of your points, and your user data will be erased, and will not be able to be recovered. Please click the tick down below if you are sure you want to delete your account!")
+                                      description="From this, you will lose all of your points, and your user data will be erased, and will not be able to be recovered. Please click the tick down below if you are sure you want to delete your account!",
+                                      color=discord.Color.red())
+
                 embed.set_footer(text="@Copyright Alfie Phillips")
 
                 await ctx.send(embed=embed)
@@ -149,7 +153,8 @@ class Games(commands.Cog):
 
                 embed = discord.Embed(
                     title="Your Game Points!",
-                    description=f"{points}"
+                    description=f"{points}",
+                    color=discord.Color.blue()
                 )
                 embed.set_footer(text="@Copyright Alfie Phillips")
 
@@ -174,7 +179,7 @@ class Games(commands.Cog):
                 description="This is decided upon the amount of points you have in your game account. If you don't have one, do M.account init!",
                 color=discord.Color(0xfa43ee)
             )
-
+            em.set_footer(text="@Copyright Alfie Phillips")
             for item in data:
                 em.add_field(name=f"{str(index)}. {item['username']}", value=f"{str(item['points'])} points",
                              inline=False)
@@ -377,7 +382,8 @@ class Games(commands.Cog):
     @hilo.error
     async def hilo_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
+            em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.", color=discord.Color.red())
+            em.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=em)
 
 def setup(bot: commands.Bot):

@@ -47,8 +47,9 @@ class Moderation(commands.Cog):
             return
         else:
             await ctx.message.delete()
-            await mod_channel.send(
-                f"{author.mention} has reported {user.mention}\nReason: {rearray}\n\n<@&734889524303495279>")
+            em = discord.Embed(title=f"{author.mention} has reported {user.mention}", color=discord.Color.light_grey())
+            em.add_field(name="Reason", value=f"{rearray}", inline=False)
+            await mod_channel.send(embed=embed)
             query = {
                 "author-id": ctx.author.id,
                 "author-name": ctx.author.name,
@@ -58,15 +59,17 @@ class Moderation(commands.Cog):
                 "message-link": f"https://discord.com/channels/{ctx.guild.id}/{message.channel.id}/{message.id}",
                 "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}"
             }
-            collection.insert_one(query)
-            return
+            try:
+                collection.insert_one(query)
+            except Exception as e:
+                print(e)
+                return await ctx.send(embed=discord.Embed(title="Error!", description="Error making the report! Please try again."))
 
     @report.error
     async def report_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
+            em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.", color=discord.Color.red())
             await ctx.send(embed=em)
-
         else:
             print(error)
 
