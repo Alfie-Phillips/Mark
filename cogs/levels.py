@@ -147,7 +147,7 @@ class Levelling(commands.Cog):
                 return await ctx.send(embed=discord.Embed(description=f"Score added to {user.display_name}"))
             except Exception as e:
                 print(e)
-                return await ctx.send(embed=discord.Embed(title="Error!", description="Error adding score!"), color=discord.Color.red())
+                return await ctx.send(embed=discord.Embed(title="Error!", description="Error adding score!", color=discord.Color.red()))
 
 def setup(bot):
     bot.add_cog(Levelling(bot))

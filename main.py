@@ -85,6 +85,7 @@ class Mark(commands.AutoShardedBot):
                 url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
             em.add_field(name=f"New Suggestion!", value=f"{suggestion}\n\n", inline=True)
             em.add_field(name=f"Status", value="Undecided", inline=False)
+            em.add_field(name="Message ID", value=f"{payload.message_id}", inline=False)
             em.set_footer(text="@Copyright Alfie Phillips")
             for reaction in message.reactions:
                 if reaction.emoji == "✅":
