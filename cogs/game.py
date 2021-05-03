@@ -158,7 +158,7 @@ class Games(commands.Cog):
             except:
                 return await ctx.send("You have not created an account yet!")
 
-    @commands.command(name="leaderboard", aliases=["lb", "leader-board"])
+    @commands.command(name="hilo-leaderboard", aliases=["hilo-lb", "hilo-leader-board"])
     async def leaderboard(self, ctx, amount=3):
         if amount > 20:
             return await ctx.send("You can't have a higher amount than 20 players!")
