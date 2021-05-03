@@ -46,12 +46,11 @@ class Levelling(commands.Cog):
 
                     xp -= ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
                     if xp == 0:
-                        await message.channel.send(f"Well done {message.author.mention}! You leveled up to **level {str(lvl)}**!")
+                        await message.channel.send(embed=discord.Embed(title="Levelled Up!", description=f"Well done {message.author.mention}! You leveled up to **level {str(lvl)}**!", color=discord.Color.green()))
                         for i in range(len(level)):
                             if lvl == levelnum[i]:
-                                await message.channel.send("Thingy")
                                 await message.author.add_roles(discord.utils.get(message.author.guild.roles, name=level[i]))
-                                embed = discord.Embed(description=f"{message.author.mention} you have gotten role **{level[i]}**!")
+                                embed = discord.Embed(title="New Role!", description=f"{message.author.mention} you have gotten role **{level[i]}**!", color=discord.Color.green())
                                 embed.set_thumbnail(url=message.author.avatar_url)
                                 await message.channel.send(embed=embed)
 
@@ -62,7 +61,7 @@ class Levelling(commands.Cog):
             if user == None:
                 stats = levelling.find_one({"id": ctx.author.id})
                 if stats is None:
-                    embed = discord.Embed(description="You haven't sent any messages!")
+                    embed = discord.Embed(title="Error!", description="You haven't sent any messages!", color=discord.Color.red())
                     return await ctx.send(embed=embed)
                 else:
                     xp = stats["xp"]
@@ -79,7 +78,7 @@ class Levelling(commands.Cog):
                         rank += 1
                         if stats["id"] == x["id"]:
                             break
-                    embed = discord.Embed(title=f"{ctx.author.name}'s level stats")
+                    embed = discord.Embed(title=f"{ctx.author.name}'s level stats", color=discord.Color.blue())
                     embed.add_field(name="Level", value=f"{lvl}")
                     embed.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}", inline=True)
                     embed.add_field(name="Rank", value=f"{rank}/{ctx.guild.member_count}", inline=True)
@@ -90,7 +89,7 @@ class Levelling(commands.Cog):
             else:
                 stats = levelling.find_one({"id": user.id})
                 if stats is None:
-                    embed = discord.Embed(description="You haven't sent any messages!")
+                    embed = discord.Embed(title="Error!", description="You haven't sent any messages!", color=discord.Color.red())
                     return await ctx.send(embed=embed)
                 else:
                     xp = stats["xp"]
@@ -107,7 +106,7 @@ class Levelling(commands.Cog):
                         rank += 1
                         if stats["id"] == x["id"]:
                             break
-                    embed = discord.Embed(title=f"{user.name}'s level stats")
+                    embed = discord.Embed(title=f"{user.name}'s level stats", color=discord.Color.blue())
                     embed.add_field(name="Level", value=f"{lvl}")
                     embed.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}", inline=True)
                     embed.add_field(name="Rank", value=f"{rank}/{ctx.guild.member_count}", inline=True)
@@ -116,7 +115,7 @@ class Levelling(commands.Cog):
                     return await ctx.channel.send(embed=embed)
 
         else:
-            return await ctx.send("Please use the bots channel!")
+            return await ctx.send(embed=discord.Embed(title="Error!", description="Please use the bots channel!", color=discord.Color.red()))
 
 
     @commands.command(name="lb", aliases=["leaderboard", "leader-board"])
@@ -124,7 +123,7 @@ class Levelling(commands.Cog):
         if ctx.channel.id == bot_channel:
             rankings = levelling.find({}).sort("xp", -1)
             i = 1
-            embed = discord.Embed(title="Top 10 Rankings")
+            embed = discord.Embed(title="Top 10 Rankings", color=discord.Color.blue())
             for x in rankings:
                 try:
                     temp = ctx.guild.get_member(x["id"])
@@ -132,13 +131,13 @@ class Levelling(commands.Cog):
                     embed.add_field(name=f"{i}: {temp.name}", value=f"Total XP: {tempxp}", inline=False)
                     i+= 1
                 except:
-                    return await ctx.send(embed=discord.Embed(description="Failed getting the leaderboard!"))
+                    return await ctx.send(embed=discord.Embed(title="Error!", description="Failed getting the leaderboard!", color=discord.Color.red()))
                 if i == 11:
                     break
             await ctx.channel.send(embed=embed)
         else:
-            return await ctx.channel.send("Please use the bots channel!")
+            return await ctx.channel.send(embed=discord.Embed(title="Error!", description="Please use the bots channel!", color=discord.Color.red()))
 
-            
+
 def setup(bot):
     bot.add_cog(Levelling(bot))
