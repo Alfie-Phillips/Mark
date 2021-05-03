@@ -28,12 +28,13 @@ initial_cogs = [
 cluster = MongoClient(MONGO_URI)
 db = cluster["Users"]
 
+
 class Mark(commands.AutoShardedBot):
     def __init__(self, **kwargs):
         super().__init__(command_prefix=kwargs.pop('command_prefix', ('m.', 'M.', 'Mark.', 'mark.')),
-                        intents=discord.Intents.all(),
-                        case_insensitive=True,
-                        **kwargs)
+                         intents=discord.Intents.all(),
+                         case_insensitive=True,
+                         **kwargs)
         self.session = ClientSession(loop=self.loop)
         self.start_time = datetime.datetime.utcnow()
         self.clean_text = commands.clean_content(escape_markdown=True, fix_channel_mentions=True)
@@ -57,13 +58,12 @@ class Mark(commands.AutoShardedBot):
         if member.guild.id == 806526222884143116:
             await member.send('Welcome to the Mark Tilbury Server, we hope you have a great time here!')
 
-
     async def on_message(self, message):
         await self.wait_until_ready()
 
         if message.author.bot:
             return ""
-            
+
         print(f"{message.channel}: {message.author}: {message.clean_content}")
 
         if not message.guild:
@@ -82,7 +82,8 @@ class Mark(commands.AutoShardedBot):
             icon_url = author.icon_url
             em = discord.Embed(color=696969)
             em.set_author(name=f"{name}", icon_url=f"{icon_url}")
-            em.set_thumbnail(url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
+            em.set_thumbnail(
+                url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
             em.add_field(name=f"New Suggestion!", value=f"{suggestion}\n\n", inline=True)
             em.add_field(name=f"Status", value="Undecided", inline=False)
             em.set_footer(text="@Copyright Alfie Phillips")
@@ -94,9 +95,6 @@ class Mark(commands.AutoShardedBot):
                 elif reaction.emoji == "❌":
                     if int(reaction.count) == 10:
                         return await message.delete()
-
-
-            
 
     async def process_commands(self, message):
         if message.author.bot:
@@ -125,28 +123,28 @@ class Mark(commands.AutoShardedBot):
                 return await ctx.send(str(error))
 
             if isinstance(error, (BadUnionArgument, PrivateMessageOnly,
-                            NoPrivateMessage, MissingRequiredArgument, ConversionError)):
+                                  NoPrivateMessage, MissingRequiredArgument, ConversionError)):
                 return await ctx.send(str(error))
 
             elif isinstance(error, commands.CommandOnCooldown):
-                    em = discord.Embed(title=f"Slow it down!",description=f"Try again in {error.retry_after:.2f}s.")
-                    await ctx.send(embed=em)
+                em = discord.Embed(title=f"Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
+                await ctx.send(embed=em)
 
             elif isinstance(error, BotMissingPermissions):
                 await ctx.send('I am missing these permissions to do this command:'
-                                f'\n{self.lts(error.missing_perms)}')
+                               f'\n{self.lts(error.missing_perms)}')
 
             elif isinstance(error, MissingPermissions):
                 await ctx.send('You are missing these permissions to do this command:'
-                                f'\n{self.lts(error.missing_perms)}')
+                               f'\n{self.lts(error.missing_perms)}')
 
             elif isinstance(error, (BotMissingAnyRole, BotMissingRole)):
                 await ctx.send(f'I am missing these roles to do this command:'
-                                f'\n{self.lts(error.missing_roles or [error.missing_role])}')
+                               f'\n{self.lts(error.missing_roles or [error.missing_role])}')
 
             elif isinstance(error, (MissingRole, MissingAnyRole)):
                 await ctx.send(f'You are missing these roles to do this command:'
-                                f'\n{self.lts(error.missing_roles or [error.missing_role])}')
+                               f'\n{self.lts(error.missing_roles or [error.missing_role])}')
 
             elif isinstance(error, BadArgument) and ctx.command.name in ('rep', 'report'):
                 await ctx.send(f"Can't find that member. Please try again.")
@@ -157,10 +155,10 @@ class Mark(commands.AutoShardedBot):
     """ Bot Functions """
 
     async def get_context(self, message, *, cls=TheContext):
-            return await super().get_context(message=message, cls=cls or TheContext)
+        return await super().get_context(message=message, cls=cls or TheContext)
 
     def em(self, **kwargs):
-            return discord.Embed(**kwargs)
+        return discord.Embed(**kwargs)
 
     @staticmethod
     def lts(list_: list):
@@ -179,6 +177,3 @@ if __name__ == "__main__":
     # keep_alive()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(Mark.setup())
-        
-        
-

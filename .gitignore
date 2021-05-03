@@ -3,3 +3,4 @@ __pycache__
 .vscode
 bad-words.txt
 blacklisted-urls.txt
+venv

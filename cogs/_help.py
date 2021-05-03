@@ -1,8 +1,7 @@
-from discord.ext import commands
 import discord
-
 import itertools
 from datetime import datetime as dt
+from discord.ext import commands
 
 
 class Help(commands.HelpCommand):
@@ -30,9 +29,9 @@ class Help(commands.HelpCommand):
         return 'No Category'
 
     def get_opening_note(self) -> str:
-        return 'A discord bot.\n'\
-                f'Use **`{self.clean_prefix}help "command name"`** for more info on a command\n'\
-                f'You can also use **`{self.clean_prefix}help "category name"`** for more info on a category\n'
+        return 'A discord bot.\n' \
+               f'Use **`{self.clean_prefix}help "command name"`** for more info on a command\n' \
+               f'You can also use **`{self.clean_prefix}help "category name"`** for more info on a category\n'
 
     @staticmethod
     def command_or_group(*obj):
