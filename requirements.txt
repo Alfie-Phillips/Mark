@@ -8,3 +8,4 @@ yfinance
 dnspython
 jishaku
 flask
+python-dotenv

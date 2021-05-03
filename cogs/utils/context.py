@@ -1,7 +1,9 @@
-from discord.ext import commands
-import discord
-from typing import Union
 import asyncio
+from typing import Union
+
+import discord
+from discord.ext import commands
+
 
 class TheContext(commands.Context):
     async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None) \
