@@ -164,7 +164,6 @@ class Games(commands.Cog):
             return await ctx.send("You can't have a higher amount than 20 players!")
         collection = db["Points"]
         leaderboard = {}
-        total = []
         query = {}
 
         try:
