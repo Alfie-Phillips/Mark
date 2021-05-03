@@ -1,0 +1,16 @@
+name: Greetings
+
+on: [pull_request, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: 'Welcome to your first ISSUE! Please make sure this is a worthy issue to be publishing, and please state the issue in full, links to the line of code, and what the issue has caused the bot to do.'
+        pr-message: 'Welcome to your first PR! Please make sure this is a worthy issue to be fixing, and please state whether it fixes an issue, brings something new to the discord bot, or is something totally unnecessary!'
