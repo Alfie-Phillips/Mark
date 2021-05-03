@@ -168,7 +168,7 @@ class Games(commands.Cog):
         query = {}
 
         try:
-            data = collection.find_one(query).limit(amount).sort('points', -1)
+            data = collection.find(query).limit(amount).sort('points', -1)
             index = 1
             em = discord.Embed(
                 title=f"Top {str(amount)} Players on {ctx.guild}",
