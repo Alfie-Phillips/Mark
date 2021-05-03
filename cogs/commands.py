@@ -16,9 +16,9 @@ class Commands(commands.Cog):
             d[str(member.status)] += 1
         return d
 
-    def em(title, description):
-        embed = discord.Embed(title=title, description=description)
-        return embed
+    @staticmethod
+    def em(title: str, description: str):
+        return discord.Embed(title=title, description=description)
 
     @commands.command(name="ping")
     async def ping(self, ctx):
