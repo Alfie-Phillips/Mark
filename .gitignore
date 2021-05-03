@@ -4,3 +4,4 @@ __pycache__
 bad-words.txt
 blacklisted-urls.txt
 venv
+.env
