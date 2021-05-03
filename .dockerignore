@@ -1,1 +1,4 @@
 venv
+.env.example
+sider.yml
+.github
