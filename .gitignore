@@ -4,3 +4,4 @@ bad-words.txt
 blacklisted-urls.txt
 venv
 .env
+.idea
