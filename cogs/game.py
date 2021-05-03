@@ -55,8 +55,8 @@ class Games(commands.Cog):
             users = collection.find(user_id)
 
             for result in users:
-                if result[
-                    "id"] == ctx.author.id:  # Iterating through all the users to check if the author id, matches the result id's
+                # Iterating through all the users to check if the author id, matches the result id's
+                if result["id"] == ctx.author.id:
                     return await ctx.send("You have already initialized your account!")
 
             now = datetime.datetime.now()  # Time of creation
@@ -378,7 +378,7 @@ class Games(commands.Cog):
     @hilo.error
     async def hilo_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            em = discord.Embed(title=f"Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
+            em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
             await ctx.send(embed=em)
 
 

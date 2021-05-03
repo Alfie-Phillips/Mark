@@ -68,7 +68,7 @@ class Moderation(commands.Cog):
     @report.error
     async def report_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            em = discord.Embed(title=f"Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
+            em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
             await ctx.send(embed=em)
 
         else:

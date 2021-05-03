@@ -109,46 +109,46 @@ class Mark(commands.AutoShardedBot):
 
         return await self.invoke(ctx)
 
-        async def on_command_error(self, ctx, exception):
-            await self.wait_until_ready()
+    async def on_command_error(self, ctx, exception):
+        await self.wait_until_ready()
 
-            error = getattr(exception, 'original', exception)
+        error = getattr(exception, 'original', exception)
 
-            if hasattr(ctx.command, 'on_error'):
-                return await ctx.send(str(error))
+        if hasattr(ctx.command, 'on_error'):
+            return await ctx.send(str(error))
 
-            elif isinstance(error, CheckFailure):
-                return await ctx.send(str(error))
+        elif isinstance(error, CheckFailure):
+            return await ctx.send(str(error))
 
-            if isinstance(error, (BadUnionArgument, PrivateMessageOnly,
-                                  NoPrivateMessage, MissingRequiredArgument, ConversionError)):
-                return await ctx.send(str(error))
+        if isinstance(error, (BadUnionArgument, PrivateMessageOnly,
+                              NoPrivateMessage, MissingRequiredArgument, ConversionError)):
+            return await ctx.send(str(error))
 
-            elif isinstance(error, commands.CommandOnCooldown):
-                em = discord.Embed(title=f"Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
-                await ctx.send(embed=em)
+        elif isinstance(error, commands.CommandOnCooldown):
+            em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
+            await ctx.send(embed=em)
 
-            elif isinstance(error, BotMissingPermissions):
-                await ctx.send('I am missing these permissions to do this command:'
-                               f'\n{self.lts(error.missing_perms)}')
+        elif isinstance(error, BotMissingPermissions):
+            await ctx.send('I am missing these permissions to do this command:'
+                           f'\n{self.lts(error.missing_perms)}')
 
-            elif isinstance(error, MissingPermissions):
-                await ctx.send('You are missing these permissions to do this command:'
-                               f'\n{self.lts(error.missing_perms)}')
+        elif isinstance(error, MissingPermissions):
+            await ctx.send('You are missing these permissions to do this command:'
+                           f'\n{self.lts(error.missing_perms)}')
 
-            elif isinstance(error, (BotMissingAnyRole, BotMissingRole)):
-                await ctx.send(f'I am missing these roles to do this command:'
-                               f'\n{self.lts(error.missing_roles or [error.missing_role])}')
+        elif isinstance(error, (BotMissingAnyRole, BotMissingRole)):
+            await ctx.send(f'I am missing these roles to do this command:'
+                           f'\n{self.lts(error.missing_roles or [error.missing_role])}')
 
-            elif isinstance(error, (MissingRole, MissingAnyRole)):
-                await ctx.send(f'You are missing these roles to do this command:'
-                               f'\n{self.lts(error.missing_roles or [error.missing_role])}')
+        elif isinstance(error, (MissingRole, MissingAnyRole)):
+            await ctx.send(f'You are missing these roles to do this command:'
+                           f'\n{self.lts(error.missing_roles or [error.missing_role])}')
 
-            elif isinstance(error, BadArgument) and ctx.command.name in ('rep', 'report'):
-                await ctx.send(f"Can't find that member. Please try again.")
+        elif isinstance(error, BadArgument) and ctx.command.name in ('rep', 'report'):
+            await ctx.send(f"Can't find that member. Please try again.")
 
-            else:
-                raise error
+        else:
+            raise error
 
     """ Bot Functions """
 
