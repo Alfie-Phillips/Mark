@@ -136,15 +136,14 @@ class Games(commands.Cog):
         if not ctx.guild:
             return
 
-        if leverage > 50:
-            return await ctx.send("You must not use above 50x Leverage!")
+        if leverage > 5:
+            return await ctx.send("You must not use above 5x Leverage!")
         
-        if bet > bet * 2:
-            return await ctx.send("You can only bet double the amount of your money or less.")
-        if user["points"] == 0 and bet > 5:
-            return await ctx.send("Your on 0 points! You can't bet more than 5.")
-        user_points = int(user['points'])
-        
+        points = user["points"]
+
+        if bet > points + 5:
+            return await ctx.send("You can't bet more than what you already have!")
+
         symbol1 = random.choice(stocks)
         stocks.remove(symbol1)
         symbol2 = random.choice(stocks)
@@ -202,9 +201,9 @@ class Games(commands.Cog):
                     return await ctx.send(embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=winning_amount))
 
                 elif stock_one < stock_two:
-                    if user["points"] <= 0:
-                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 0}})
-                        return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=0))
+                    if user["points"] - losing_amount <= 0:
+                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$set":{"points": 0}})
+                        return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=losing_amount))
                     collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -losing_amount}})
                     return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=losing_amount))
                 elif stock_one == stock_two:
@@ -217,9 +216,9 @@ class Games(commands.Cog):
                     return await ctx.send(embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=winning_amount))
 
                 elif stock_two < stock_one:
-                    if user["points"] <= 0:
-                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": 0}})
-                        return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=0))
+                    if user["points"] - losing_amount <= 0:
+                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$set":{"points": 0}})
+                        return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=losing_amount))
                     collection.update_one({"id": ctx.author.id, "username": ctx.author.name}, {"$inc":{"points": -losing_amount}})
                     return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one, stock_two=stock_two, amount=losing_amount))
 
