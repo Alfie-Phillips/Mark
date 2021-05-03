@@ -1,5 +1,6 @@
-from flask import Flask, redirect
 from threading import Thread
+
+from flask import Flask
 
 app = Flask('')
 

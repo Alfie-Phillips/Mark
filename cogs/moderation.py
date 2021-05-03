@@ -1,9 +1,8 @@
 import asyncio
-import discord
 from datetime import datetime
+
+import discord
 from discord.ext import commands
-from discord.ext.commands import cooldown, BucketType
-from time import sleep
 
 from main import db
 

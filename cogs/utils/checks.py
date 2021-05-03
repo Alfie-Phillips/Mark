@@ -1,4 +1,3 @@
-from discord import Member
 from discord.ext.commands import check
 
 

@@ -1,15 +1,13 @@
-from discord.ext.commands.errors import *
-from discord.ext import commands
-import discord
-import pymongo
-from pymongo import MongoClient
-from aiohttp import ClientSession
-import datetime
 import asyncio
+import datetime
 import os
+
+import discord
+from aiohttp import ClientSession
 from config import TOKEN, MONGO_URI
-from datetime import timedelta
-from keep_alive import keep_alive
+from discord.ext import commands
+from discord.ext.commands.errors import *
+from pymongo import MongoClient
 
 from cogs.utils.context import TheContext
 

@@ -1,17 +1,8 @@
-import aiohttp
 import asyncio
-import discord
-import math
-import random
-from datetime import datetime, timedelta
-from discord.ext import commands
-from discord.ext.commands import Cog
-from discord.ext.commands import has_permissions
-from discord.utils import get
-from time import sleep
+from datetime import datetime
 
-from main import db
-from .utils.time import human_timedelta
+import discord
+from discord.ext import commands
 
 
 class Commands(commands.Cog):

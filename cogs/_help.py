@@ -1,6 +1,7 @@
-import discord
 import itertools
 from datetime import datetime as dt
+
+import discord
 from discord.ext import commands
 
 

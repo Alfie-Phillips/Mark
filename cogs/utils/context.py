@@ -1,7 +1,8 @@
 import asyncio
+from typing import Union
+
 import discord
 from discord.ext import commands
-from typing import Union
 
 
 class TheContext(commands.Context):

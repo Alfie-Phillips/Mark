@@ -1,10 +1,6 @@
-import asyncio
-import asyncio
 import sys
-import sys
-from discord import Embed, Member, Status
+
 from distest import TestCollector
-from distest import TestInterface
 from distest import run_dtest_bot
 
 test_collector = TestCollector()

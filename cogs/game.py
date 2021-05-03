@@ -2,10 +2,9 @@
 
 import asyncio
 import datetime
-import discord
-import itertools
-import pymongo
 import random
+
+import discord
 import yfinance
 from discord.ext import commands
 
