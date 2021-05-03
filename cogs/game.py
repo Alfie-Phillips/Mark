@@ -380,6 +380,5 @@ class Games(commands.Cog):
             em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
             await ctx.send(embed=em)
 
-
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))

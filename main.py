@@ -20,7 +20,8 @@ initial_cogs = [
     'cogs.commands',
     'cogs.moderation',
     'cogs._help',
-    'cogs.game'
+    'cogs.game',
+    'cogs.levels'
 ]
 
 cluster = MongoClient(MONGO_URI)

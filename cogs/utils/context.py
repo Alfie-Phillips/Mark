@@ -1,3 +1,5 @@
+# Imports here...
+
 import asyncio
 from typing import Union
 
@@ -5,9 +7,9 @@ import discord
 from discord.ext import commands
 
 
-class TheContext(commands.Context):
+class TheContext(commands.Context): # Context for every command, and checking if it is false or true.
     async def send(self, content=None, *, tts=False, embed=None, file=None, files=None, delete_after=None, nonce=None) \
-            -> Union[discord.Message, None]:
+            -> Union[discord.Message, None]: # Doesn't allow text to speech, and sets all params to none as a default value.
         destination = self.channel
         if self.guild:
             permissions = self.guild.me.permissions_in(self.channel)

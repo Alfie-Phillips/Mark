@@ -1,3 +1,5 @@
+# Imports here...
+
 import asyncio
 from datetime import datetime
 
@@ -21,19 +23,14 @@ class Moderation(commands.Cog):
         rearray = ' '.join(reason[:])
         if user.bot:
             message = await ctx.send(f"You can't report a bot! {ctx.author.mention}")
-            await asyncio.sleep(2)
             await ctx.message.delete()
-            await asyncio.sleep(2)
             await message.delete()
         elif user == ctx.message.author:
             message = await ctx.send(f"You can't report yourself! {ctx.author.mention}")
-            await asyncio.sleep(2)
             await ctx.message.delete()
-            await asyncio.sleep(2)
             await message.delete()
 
         elif not rearray:
-            message = await ctx.send(f"{author.mention} has reported {user.mention}\nReason: Not provided")
             await ctx.message.delete()
             await mod_channel.send(
                 f"{author.mention} has reported {user.mention}\nReason: Not provided\n\n<@&734889524303495279>")
@@ -49,7 +46,6 @@ class Moderation(commands.Cog):
             collection.insert_one(query)
             return
         else:
-            message = await ctx.send(f"{author.mention} has reported {user.mention}\nReason: {rearray}")
             await ctx.message.delete()
             await mod_channel.send(
                 f"{author.mention} has reported {user.mention}\nReason: {rearray}\n\n<@&734889524303495279>")
