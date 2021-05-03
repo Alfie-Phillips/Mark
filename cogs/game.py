@@ -207,7 +207,7 @@ class Games(commands.Cog):
         user = collection.find_one(query)
 
         if not user:
-            return await ctx.send("You have not initialized an account yet! M.game-init to create an account.")
+            return await ctx.send("You have not initialized an account yet! M.account init to start!")
 
         if not ctx.guild:
             return
