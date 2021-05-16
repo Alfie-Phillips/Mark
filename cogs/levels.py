@@ -5,10 +5,11 @@ from datetime import datetime
 from random import randrange
 
 bot_channel = 806528778846994463
+invalid_channels = []
 talk_channels = [806526223483535372]
 
 level = ["Caveman", "Noob", "Amateur", "Professional", "Expert", "God", "Mark"]
-levelnum = [2, 5, 10, 15, 20, 30, 50]
+levelnum = [1, 5, 10, 15, 20, 30, 50]
 
 levelling = db["Levelling"]
 
@@ -34,6 +35,9 @@ class Levelling(commands.Cog):
                         levelling.insert_one(new_user)
                     except Exception as e:
                         print(e)
+                    
+                    await message.channel.send(embed=discord.Embed(title="Your First Message!", description=f"Well done {message.author.mention}! You have sent your first message!", color=discord.Color.green()))
+                    await message.author.add_roles(discord.utils.get(message.author.guild.roles, name=level[0]))
 
                 else:
                     xp = stats["xp"] + 5
@@ -126,11 +130,12 @@ class Levelling(commands.Cog):
             embed = discord.Embed(title="Top 10 Rankings", color=discord.Color.blue())
             for x in rankings:
                 try:
-                    temp = ctx.guild.get_member(x["id"])
                     tempxp = x["xp"]
-                    embed.add_field(name=f"{i}: {temp.name}", value=f"Total XP: {tempxp}", inline=False)
+                    tempname = x["user"]
+                    embed.add_field(name=f"{i}: {tempname}", value=f"Total XP: {tempxp}", inline=False)
                     i+= 1
-                except:
+                except Exception as e:
+                    print(e)
                     return await ctx.send(embed=discord.Embed(title="Error!", description="Failed getting the leaderboard!", color=discord.Color.red()))
                 if i == 11:
                     break
