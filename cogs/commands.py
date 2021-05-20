@@ -356,7 +356,7 @@ class Commands(commands.Cog):
             em.add_field(name=f"Status", value="Accepted ✅", inline=False)
             em.add_field(name=f"Staff answer by @{ctx.author.name}", value=f"{reason}")
             em.set_footer(text="@Copyright Alfie Phillips")
-            await message.edit(embed=em)
+            return await message.edit(embed=em)
 
         except:
             await ctx.message.delete()

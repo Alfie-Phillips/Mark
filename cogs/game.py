@@ -49,7 +49,7 @@ class Games(commands.Cog):
                     embed = discord.Embed(
                         title="Your Game Account Stats",
                         description=(
-                            f"Game ID: {_id}\nUsername: {nickname}\nDate Created: {time_created}\nPoints: {points}")
+                            f"Game ID: {_id}\nUsername: {username}\nNickname: {nickname}\nDate Created: {time_created}\nPoints: {points}")
                     )
 
                     embed.set_footer(text="@Copyright Alfie Phillips")
