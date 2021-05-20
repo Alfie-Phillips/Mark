@@ -30,21 +30,33 @@ class Games(commands.Cog):
                 "username": ctx.author.name
             }
 
-            score = collection.find_one(query)
-            if score:
-                _id = score["id"]
-                username = score["username"]
-                time_created = score["time-created"]
-                points = score["points"]
+            user = collection.find_one(query)
+            if user:
+                _id = user["id"]
+                username = user["username"]
+                time_created = user["time-created"]
+                points = user["points"]
+                nickname = user['nickname']
 
-                embed = discord.Embed(
-                    title="Your Game Account Stats",
-                    description=(
-                        f"Game ID: {_id}\nUsername: {username}\nDate Created: {time_created}\nPoints: {points}")
-                )
+                if nickname is None:
+                    embed = discord.Embed(
+                        title="Your Game Account Stats",
+                        description=(
+                            f"Game ID: {_id}\nUsername: {username}\nDate Created: {time_created}\nPoints: {points}")
+                    )
 
-                embed.set_footer(text="@Copyright Alfie Phillips")
-                return await ctx.send(embed=embed)
+                    embed.set_footer(text="@Copyright Alfie Phillips")
+                    return await ctx.send(embed=embed)
+
+                else:
+                    embed = discord.Embed(
+                        title="Your Game Account Stats",
+                        description=(
+                            f"Game ID: {_id}\nUsername: {nickname}\nDate Created: {time_created}\nPoints: {points}")
+                    )
+
+                    embed.set_footer(text="@Copyright Alfie Phillips")
+                    return await ctx.send(embed=embed)
 
             return await ctx.send("You have not created an account yet!")
 
@@ -65,6 +77,7 @@ class Games(commands.Cog):
             query = {
                 "id": ctx.author.id,
                 "username": ctx.author.name,
+                "nickname": None,
                 "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}",
                 "points": 0
             }  # Our query for User accounts

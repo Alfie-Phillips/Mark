@@ -5,16 +5,19 @@ import discord
 from discord.ext import commands
 
 
+from main import db
+
+
 class Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     def members(self):
         members = set(self.bot.get_all_members())
-        d = {'online': 0, 'idle': 0, 'dnd': 0, 'offline': 0}
+        stats = {'online': 0, 'idle': 0, 'dnd': 0, 'offline': 0}
         for member in members:
-            d[str(member.status)] += 1
-        return d
+            stats[str(member.status)] += 1
+        return stats
 
     @staticmethod
     def em(title: str, description: str):
@@ -26,6 +29,11 @@ class Commands(commands.Cog):
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
+
+    @commands.command(name="nick")
+    async def nick(self, ctx, name):
+        pass
+        
 
     @commands.command(name="users")
     async def users(self, ctx):
