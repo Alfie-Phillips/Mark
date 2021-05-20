@@ -4,8 +4,14 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 
+import inspect
+
+from flask import helpers
+from .utils.helpers import to_pages_by_lines
 
 from main import db
+
+collection = db["Points"]
 
 
 class Commands(commands.Cog):
@@ -32,8 +38,18 @@ class Commands(commands.Cog):
 
     @commands.command(name="nick")
     async def nick(self, ctx, name):
-        pass
-        
+        user_id = {
+            "id": ctx.author.id
+        }
+
+        try:
+            user = collection.find_one(user_id)
+        except:
+            return await ctx.send("You have not created an account yet!")
+
+        collection.update_one({"id": ctx.author.id}, {"$set": {"nickname": name}})
+
+        return await ctx.send(f"I will now refer to you as '{name}'")
 
     @commands.command(name="users")
     async def users(self, ctx):
@@ -48,7 +64,8 @@ class Commands(commands.Cog):
     @commands.command(name="members")
     async def member_count(self, ctx):
         """Member Count"""
-        await ctx.send(discord.Embed(title=f"Members Of The Mark Tilbury Discord", description=f"{ctx.guild.member_count} members!"), color=discord.Color.green())
+        embed = discord.Embed(title=f"Members Of The Mark Tilbury Discord", description=f"{ctx.guild.member_count} members!", color=discord.Color.green())
+        await ctx.send(embed=embed)
 
     @commands.command(name="website", aliases=["web", "webpage"])
     async def website(self, ctx):

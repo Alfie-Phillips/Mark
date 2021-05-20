@@ -18,6 +18,8 @@ class Games(commands.Cog):
 
     @commands.command(name="account", aliases=["acc"])
     async def account(self, ctx, args=""):
+        user_id = {"id": ctx.author.id}
+
         if not ctx.guild:
             return  # Check if it is written in the server.
 
@@ -25,12 +27,7 @@ class Games(commands.Cog):
 
         if args == "":  # We check if the argument given is empty, to be able to show just the account
 
-            query = {
-                "id": ctx.author.id,
-                "username": ctx.author.name
-            }
-
-            user = collection.find_one(query)
+            user = collection.find_one(user_id)
             if user:
                 _id = user["id"]
                 username = user["username"]
@@ -61,16 +58,13 @@ class Games(commands.Cog):
             return await ctx.send("You have not created an account yet!")
 
         elif args == "init":  # Initiating an account
-            user_id = {
-                "id": ctx.author.id
-            }
-
             users = collection.find(user_id)
 
             for result in users:
                 # Iterating through all the users to check if the author id, matches the result id's
                 if result["id"] == ctx.author.id:
                     return await ctx.send("You have already initialized your account!")
+
 
             now = datetime.datetime.now()  # Time of creation
 
@@ -99,11 +93,7 @@ class Games(commands.Cog):
             return await ctx.send(embed=embed)
 
         elif args == "delete":  # Deleting accounts
-            user = collection.find_one(
-                {
-                    "id": ctx.author.id
-                }
-            )
+            user = collection.find_one(user_id)
 
             if user:
 
@@ -158,8 +148,6 @@ class Games(commands.Cog):
             return await ctx.send("You do not have an account to delete!")
 
         elif args == "points":
-            user_id = {"id": ctx.author.id}
-
             try:
                 score = collection.find_one(user_id)
                 points = str(score["points"])
