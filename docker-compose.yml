@@ -1,7 +1,9 @@
 version: "3.9"
+name: Discord Bot Container
 
 services:
   app:
+    image: alfiephillips/discord-bot:latest
     restart: always
     build:
       context: .
