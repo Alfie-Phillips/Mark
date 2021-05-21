@@ -1,0 +1,13 @@
+name: Docker Builds
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker build 
+      run: |
+        docker build -t alfiephillips/discord-bot:1.0.1 .
+    
