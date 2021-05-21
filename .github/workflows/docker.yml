@@ -17,4 +17,7 @@ jobs:
     - name: docker build 
       run: |
         docker build -t alfiephillips/discord-bot:1.0.1 .
+    - name: docker push
+      run: |
+        docker push alfiephillips/discord-bot:1.0.1
     
