@@ -42,14 +42,30 @@ class Commands(commands.Cog):
             "id": ctx.author.id
         }
 
+
         try:
             user = collection.find_one(user_id)
+            nickname = user['nickname']
+
+            if nickname != None:
+                if name == nickname:
+                    return await ctx.send("You can't change your nickname to your current nickname, pick a different one!")
+                elif name == ctx.author.name:
+                    return await ctx.send("You can't change your nickname to your current discord name, what is the point?")
         except:
             return await ctx.send("You have not created an account yet!")
 
         collection.update_one({"id": ctx.author.id}, {"$set": {"nickname": name}})
 
-        return await ctx.send(f"I will now refer to you as '{name}'")
+        embed = discord.Embed(
+            title="New Nickname!",
+            description=f"I will now refer to you as {name}!",
+            color=discord.Color.green()
+        )
+
+        embed.set_footer(text=)
+
+        return await ctx.send(embed=embed)
 
     @commands.command(name="users")
     async def users(self, ctx):
@@ -65,12 +81,14 @@ class Commands(commands.Cog):
     async def member_count(self, ctx):
         """Member Count"""
         embed = discord.Embed(title=f"Members Of The Mark Tilbury Discord", description=f"{ctx.guild.member_count} members!", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
 
     @commands.command(name="website", aliases=["web", "webpage"])
     async def website(self, ctx):
         """Links for Mark's Website"""
         embed = discord.Embed(title="Mark's Website", description="[Link Here... :smile:](https://marktilbury.net/)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -80,6 +98,7 @@ class Commands(commands.Cog):
         """Links for Mark's socials"""
         embed = discord.Embed(title="Mark's TikTok",
                               description="[Link Here... :smile:](https://www.tiktok.com/@marktilbury?lang=en)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -89,6 +108,7 @@ class Commands(commands.Cog):
         """Links for Mark's Instagram"""
         embed = discord.Embed(title="Mark's Instagram",
                               description="[Link Here... :smile:](https://www.instagram.com/marktilbury)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -98,6 +118,7 @@ class Commands(commands.Cog):
         """Links for Mark's Facebook"""
         embed = discord.Embed(title="Mark's Facebook",
                               description="[Link Here... :smile:](https://www.facebook.com/RealMarkTilbury)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -107,6 +128,7 @@ class Commands(commands.Cog):
         """Links for Mark's Youtube"""
         embed = discord.Embed(title="Mark's Youtube Channel",
                               description="[Link Here... :smile:](https://www.youtube.com/channel/UCxgAuX3XZROujMmGphN_scA)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -152,6 +174,7 @@ class Commands(commands.Cog):
     async def socials(self, ctx):
         embed = discord.Embed(title="Mark's Social Links! :smile:",
                               description="[Website](https://marktilbury.net/)\n[TikTok](https://www.tiktok.com/@marktilbury?lang=en)\n[Instagram](https://www.instagram.com/marktilbury)\n[Facebook](https://www.facebook.com/RealMarkTilbury)\n[Youtube](https://www.youtube.com/channel/UCxgAuX3XZROujMmGphN_scA)\n", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -160,6 +183,7 @@ class Commands(commands.Cog):
     async def stock(self, ctx, args=""):
         def em(title, description):
             embed = discord.Embed(title=title, description=description, color=discord.Color.green())
+            embed.set_footer(text="@Copyright Alfie Phillips")
             return embed
 
         if args == "market":
@@ -200,6 +224,7 @@ class Commands(commands.Cog):
     async def index_and_etf(self, ctx):
         embed = discord.Embed(title="Index Funds And ETF'S",
                               description='- ETFs and Index Funds are both great ways to diversify investments, but how are they different? The main and biggest differences for the investor is cost, ETFs and Index Funds will have different costs associated with them for the investor. Index Funds are rebalanced daily which come in the form of commissions and other costs. ETFs on the other hand have another system as defined by Investopedia, " ETFs have a unique process called creation/redemption in-kind (meaning shares of ETFs can be created and redeemed with a like basket of securities) that avoids these transaction costs." Index Funds also have the cost of cash drag, which  ETFs do not have to deal with. However an advantage that Index Funds have over ETFs is when it comes to dividends. Index Funds will immediately reinvest their dividends compared to ETFs which pool them up and pay them out at the end of each quarter. ETFs also have lower management fees. However the biggest cost in ETFs is the shareholder transaction cost, which is usually 0 for Index Funds. \n[Index Funds](https://www.investopedia.com/terms/i/indexfund.asp) \n[ETF](https://www.investopedia.com/terms/e/etf.asp)', color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -208,6 +233,7 @@ class Commands(commands.Cog):
     async def freetrade(self, ctx):
         embed = discord.Embed(title="Get A Free Stock On FreeTrade!",
                               description="[Mark Tilbury's Promo Code Here... :smile:](https://freetrade.app.link/DiVJxPU22bb?_p=c11c32dc9e0b7af1e61890f4e0)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -216,6 +242,7 @@ class Commands(commands.Cog):
     async def public(self, ctx):
         embed = discord.Embed(title="Get A Free Stock On Public!",
                               description="[Mark Tilbury's Promo Code Here... :smile:](https://public.com/mark)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -224,6 +251,7 @@ class Commands(commands.Cog):
     async def free_stocks(self, ctx):
         embed = discord.Embed(title="Free Stocks Offered By Mark",
                               description="[FreeTrade Promo Code](https://freetrade.app.link/DiVJxPU22bb?_p=c11c32dc9e0b7af1e61890f4e0)\n[Public Promo Code](https://public.com/mark)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -232,6 +260,7 @@ class Commands(commands.Cog):
     async def link_tree(self, ctx):
         embed = discord.Embed(title="Mark's Link Tree!",
                               description="[Link to it here... :smile:](https://marktilbury.net/clickhere)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -240,6 +269,7 @@ class Commands(commands.Cog):
     async def trading_patterns(self, ctx):
         embed = discord.Embed(title="Trading Patterns",
                               description="Throughout the trading scheme, we see many trading patterns which can somewhat predict what is going to happen next with a stock. We use these to be smart, and notice when it is the right time to buy or sell, it is essential to know some of these key features. [Link to key trading patterns](https://www.investopedia.com/articles/technical/112601.asp)\n[A PDF for analyzing chart patterns](http://i.investopedia.com/inv/pdf/tutorials/AnalyzingChartPatterns.pdf)", color=discord.Color.green())
+        embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -249,6 +279,7 @@ class Commands(commands.Cog):
         if args == "":
             embed = discord.Embed(title="Drop Shipping Commands",
                                   description="M.drop-shipping-definition\nM.drop-shipping-guide\nM.drop-shipping-profits", color=discord.Color.green())
+            embed.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=embed)
             await asyncio.sleep(1.5)
             await ctx.message.delete()
@@ -256,6 +287,7 @@ class Commands(commands.Cog):
         elif args == "definition":
             embed = discord.Embed(title="What is dropshipping?",
                                   description="Dropshipping is a business model that you can use to run your store without ever holding any inventory. Once you've made a sale, your supplier will ship your products from their warehouse, straight to your customer's doorstep meaning that you'll never need to worry about stoing, packaging, or shipping your products. For example, you can sell an item for $20, give $5 and the address to your supplier, and your supplier will ship it directly to your customer, and you make $15 profit. Written by Frog#1582\n[More Info Here... :smile:](https://www.shopify.co.uk/blog/what-is-dropshipping#definition)", color=discord.Color.green())
+            embed.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=embed)
             await asyncio.sleep(1.5)
             await ctx.message.delete()
@@ -263,6 +295,7 @@ class Commands(commands.Cog):
         elif args == "guide":
             embed = discord.Embed(title="How does dropshipping work?",
                                   description="How Does Dropshipping Work? Dropshipping is a simple business model. Once a customer places an order from your store, you’ll simply purchase the product from your supplier, and instruct them to ship the product directly to your customer’s door. That means you can run your own business from anywhere in the world. Written by Frog#1582\n[More Info Here... :smile:](https://www.shopify.co.uk/blog/what-is-dropshipping#definition)", color=discord.Color.green())
+            embed.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=embed)
             await asyncio.sleep(1.5)
             await ctx.message.delete()
@@ -270,6 +303,8 @@ class Commands(commands.Cog):
         elif args == "profits":
             embed = discord.Embed(title="Is dropshipping profitable?",
                                   description="Is Dropshipping Profitable? Yes it is profitable, but you must put in the effort to research products, set up website, distribute well, and eventually scale your business. Distributing is very important! Written by Frog#1582\n[More Info Here... :smile:](https://www.shopify.co.uk/blog/what-is-dropshipping#benefits)", color=discord.Color.green())
+            
+            embed.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=embed)
             await asyncio.sleep(1.5)
             await ctx.message.delete()
@@ -277,6 +312,7 @@ class Commands(commands.Cog):
         elif args == "products":
             embed = discord.Embed(title="Do I need to purchase products for my online store?",
                                   description="No, the beauty of dropshipping is that you don’t need to hold any inventory yourself. You simply order it from your supplier once a customer has bought from you. That said, it’s a good idea to buy sample products from your suppliers before uploading them to your online store to make sure you are happy with the quality of the product. In fact, I would insist that you buy sample products! Written by Frog#1582", color=discord.Color.green())
+            embed.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=embed)
             await asyncio.sleep(1.5)
             await ctx.message.delete()
@@ -288,9 +324,12 @@ class Commands(commands.Cog):
             pass
 
         else:
-            return await ctx.send(embed=discord.Embed(title="Please use these commands for help on dropshipping!",
-                                                      description="M.dropshipping, M.dropshipping definition, M.dropshipping guide, M.dropshippinh profits, M.dropshipping products, M.dropshipping setup, M.dropshipping links", color=discord.Color.green()))
+            embed = discord.Embed(title="Please use these commands for help on dropshipping!", 
+                                    description="M.dropshipping, M.dropshipping definition, M.dropshipping guide, M.dropshippinh profits, M.dropshipping products, M.dropshipping setup, M.dropshipping links", color=discord.Color.green())
+            
+            return await ctx.send(embed=embed)
 
+            
     @commands.command(name="crypto", aliases=["crypto-currency"])
     async def crypto_currency(self, ctx, args):
         if args == "":

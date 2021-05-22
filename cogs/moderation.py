@@ -61,8 +61,8 @@ class Moderation(commands.Cog):
             }
             try:
                 collection.insert_one(query)
-            except Exception as e:
-                print(e)
+            except Exception as error:
+                print(error)
                 return await ctx.send(embed=discord.Embed(title="Error!", description="Error making the report! Please try again."))
 
     @report.error
