@@ -1,11 +1,10 @@
 import asyncio
-from curses.panel import bottom_panel
 from datetime import datetime
 
 import discord
 from discord.ext import commands
 
-class Links(commands.Cog()):
+class Links(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

@@ -20,10 +20,10 @@ initial_cogs = [
     'cogs.commands',
     'cogs.moderation',
     'cogs.advice',
-    'cogs.links'
     'cogs._help',
     'cogs.game',
     'cogs.levels',
+    'cogs.links'
 ]
 
 cluster = MongoClient(MONGO_URI)
@@ -91,7 +91,7 @@ class Mark(commands.AutoShardedBot):
             em.set_footer(text="@Copyright Alfie Phillips")
             for reaction in message.reactions:
                 if reaction.emoji == "✅":
-                    if int(reaction.count) == 2:
+                    if int(reaction.count) == 10:
                         return await mod_channel.send(embed=em)
 
                 elif reaction.emoji == "❌":
