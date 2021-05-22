@@ -1,5 +1,3 @@
-name: Sider
-
 linter:
   CodeQL:
     config: ".github/workflows/codeql-analysis.yml"
