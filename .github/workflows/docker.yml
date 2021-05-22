@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: docker build
         run: |
-          docker build -t alfiephillips/discord-bot:1.0.2 .
+          docker build -t alfiephillips/discord-bot:latest .
       - name: docker push
         run: |
-          docker push alfiephillips/discord-bot:1.0.2
+          docker push alfiephillips/discord-bot:latest
