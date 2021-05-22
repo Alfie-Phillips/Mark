@@ -19,9 +19,11 @@ initial_cogs = [
     'jishaku',
     'cogs.commands',
     'cogs.moderation',
+    'cogs.advice',
+    'cogs.links'
     'cogs._help',
     'cogs.game',
-    'cogs.levels'
+    'cogs.levels',
 ]
 
 cluster = MongoClient(MONGO_URI)
@@ -38,7 +40,7 @@ class Mark(commands.AutoShardedBot):
         self.start_time = datetime.datetime.utcnow()
         self.clean_text = commands.clean_content(escape_markdown=True, fix_channel_mentions=True)
 
-        """ Listening for events """
+        " Listening for events "
 
     async def on_connect(self):
         print("Bot is connected...")
@@ -61,12 +63,12 @@ class Mark(commands.AutoShardedBot):
         await self.wait_until_ready()
 
         if message.author.bot:
-            return ""
+            return 
 
         print(f"{message.channel}: {message.author}: {message.clean_content}")
 
         if not message.guild:
-            return ""
+            return 
 
         await self.process_commands(message)
 
@@ -98,12 +100,12 @@ class Mark(commands.AutoShardedBot):
 
     async def process_commands(self, message):
         if message.author.bot:
-            return ""
+            return 
 
         ctx = await self.get_context(message=message)
 
         if ctx.command is None:
-            return ""
+            return 
 
         if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages', 'users', 'source']:
             if ctx.channel.id not in [741634902851846195, 806528778846994463]:
@@ -152,7 +154,7 @@ class Mark(commands.AutoShardedBot):
         else:
             raise error
 
-    """ Bot Functions """
+    " Bot Functions "
 
     async def get_context(self, message, *, cls=TheContext):
         return await super().get_context(message=message, cls=cls or TheContext)
