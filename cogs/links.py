@@ -8,7 +8,7 @@ class Links(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="website", aliases=["web", "webpage"])
+    @commands.command(name="website")
     async def website(self, ctx):
         """Links for Mark's Website"""
         embed = discord.Embed(title="Mark's Website", description="[Link Here... :smile:](https://marktilbury.net/)", color=discord.Color.green())

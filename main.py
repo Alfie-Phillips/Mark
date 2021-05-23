@@ -18,7 +18,6 @@ os.environ["JISHAKU_HIDE"] = "True"
 initial_cogs = [
     'jishaku',
     'cogs.commands',
-    'cogs.moderation',
     'cogs.advice',
     'cogs._help',
     'cogs.game',

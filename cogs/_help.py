@@ -41,7 +41,7 @@ class Help(commands.HelpCommand):
         names = []
         for command in obj:
             if isinstance(command, commands.Group):
-                names.append('Group: ' + f'*{command.name}*')
+                names.append('Group: ' + f'*{command.name.capitalize()}*')
             else:
                 names.append(f'*{command.name}*')
         return names
