@@ -126,7 +126,6 @@ class Commands(commands.Cog):
     @commands.command(name="suggestion", aliases=["suggest", "s"])
     async def server_suggestion(self, ctx, *, suggestion: str):
         now = datetime.now()
-        emojis = ["👀", "😄", "😇", "🤩", "😎", "👌", "👍", "👏"]
         channel = self.bot.get_channel(806584030908645486)
         if not ctx.guild:
             return
@@ -141,8 +140,8 @@ class Commands(commands.Cog):
         embed.add_field(name=f"Status", value="This is still awaiting a response from a staff member!", inline=False)
         embed.set_footer(text="@Copyright Alfie Phillips")
         message = await channel.send(embed=embed)
-        await message.add_reaction("✅")
-        await message.add_reaction("❌")
+        await message.add_reaction(":Yes:")
+        await message.add_reaction(":No:")
 
     @commands.command(name="accept")
     @commands.has_role("Admin")

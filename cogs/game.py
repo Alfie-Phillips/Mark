@@ -168,7 +168,7 @@ class Games(commands.Cog):
             except:
                 return await ctx.send("You have not created an account yet!")
 
-    @commands.command(name="hilo-leaderboard", aliases=["hilo-lb", "hilo-leader-board"])
+    @commands.command(name="games-leaderboard")
     async def leaderboard(self, ctx, amount=3):
         if amount > 20:
             return await ctx.send("You can't have a higher amount than 20 players!")
@@ -390,14 +390,6 @@ class Games(commands.Cog):
             em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.", color=discord.Color.red())
             em.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=em)
-
-    @commands.command(name="blackjack", aliases=["bj"])
-    async def blackjack(self, ctx, bet=5):
-        self.in_session = True
-        self.channel = ctx.message.channel
-        await self.run_session()
-        self.in_session = False
-        return await ctx.send("Finished")
 
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))
