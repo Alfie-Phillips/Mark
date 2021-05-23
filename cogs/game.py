@@ -3,18 +3,57 @@
 import asyncio
 import datetime
 import random
+import logging
 
 import discord
+from proto import MESSAGE
 import yfinance
 from discord.ext import commands
+from time import sleep
 
 from main import db
+
+from .blackjack.Card import Card
+from .blackjack.Dealer import Dealer
+
+from config import INTERMISSION_TIME, BETTING_TIME, PLAYING_TIME, MESSAGE_GAP
 
 
 # Start Games Class
 class Games(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.in_session = False
+        self.players = list()
+        self.channel = None
+        self.dealer = Dealer(self.user)
+
+    # BlackJack Game Methods
+
+    async def run_session(self):
+        await self.send_message(self.channel, "Blackjack game commencing. Creating table.")
+        sleep(MESSAGE_GAP)
+        counter = 0
+        while self.still_playing_session() or counter == 0:
+            await self.run_intermission()
+            if self.still_playing_session():
+                await self.print_players_with_bank()
+                sleep(MESSAGE_GAP)
+                await self.run_game()
+                for player in self.players:
+                    self.write_user(player)
+            counter += 1
+        
+        await self.send_message(self.channel, "Session ending, destroying table. Thanks for playing!")
+        self.reset_bot()
+
+    async def run_game(self):
+        await self.run_betting()
+        self.force_bet()
+        await self.print_players_with_bet()
+        sleep(MESSAGE_GAP)
+        cardMsg = await self.send_message(self.channel, "Retrieving a new deck, shuffling and dealing cards. Please wait!")
+        self.deal_cards()
 
     @commands.command(name="account", aliases=["acc"])
     async def account(self, ctx, args=""):
@@ -386,6 +425,14 @@ class Games(commands.Cog):
             em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.", color=discord.Color.red())
             em.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=em)
+
+    @commands.command(name="blackjack", aliases=["bj"])
+    async def blackjack(self, ctx, bet=5):
+        self.in_session = True
+        self.channel = ctx.message.channel
+        await self.run_session()
+        self.in_session = False
+        return await ctx.send("Finished")
 
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))

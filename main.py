@@ -11,6 +11,8 @@ from pymongo import MongoClient
 
 from cogs.utils.context import TheContext
 
+import logging
+
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
 os.environ["JISHAKU_HIDE"] = "True"
@@ -38,6 +40,8 @@ class Mark(commands.AutoShardedBot):
         self.session = ClientSession(loop=self.loop)
         self.start_time = datetime.datetime.utcnow()
         self.clean_text = commands.clean_content(escape_markdown=True, fix_channel_mentions=True)
+
+        logging.basicConfig(level=logging.INFO)
 
         " Listening for events "
 
