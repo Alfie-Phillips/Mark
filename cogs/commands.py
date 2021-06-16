@@ -29,9 +29,9 @@ class Commands(commands.Cog):
     def em(title: str, description: str):
         return discord.Embed(title=title, description=description)
 
-    @commands.command(name="ping")
+    @commands.command(name="ping", help="test")
     async def ping(self, ctx):
-        embed = discord.Embed(title="My Current Ping!", description=f"{round(self.bot.latency, 1)}ms!", color=discord.Color.green())
+        embed = discord.Embed(title="My Current Ping!", description=f"{round(self.bot.latency * 1000, 1)}ms!", color=discord.Color.green())
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -126,7 +126,7 @@ class Commands(commands.Cog):
     @commands.command(name="suggestion", aliases=["suggest", "s"])
     async def server_suggestion(self, ctx, *, suggestion: str):
         now = datetime.now()
-        channel = self.bot.get_channel(806584030908645486)
+        channel = self.bot.get_channel(747165320510308393)
         if not ctx.guild:
             return
 
@@ -144,12 +144,12 @@ class Commands(commands.Cog):
         await message.add_reaction(":No:")
 
     @commands.command(name="accept")
-    @commands.has_role("Admin")
+    @commands.has_role("Moderator")
     async def accept(self, ctx, message_id: int, *, reason="None"):
         if not ctx.guild:
             return
 
-        channel = self.bot.get_channel(806584030908645486)
+        channel = self.bot.get_channel(747165320510308393)
         try:
             message = await channel.fetch_message(message_id)
             await ctx.message.delete()
@@ -178,7 +178,7 @@ class Commands(commands.Cog):
         if not ctx.guild:
             return
 
-        channel = self.bot.get_channel(806584030908645486)
+        channel = self.bot.get_channel(747165320510308393)
         try:
             message = await channel.fetch_message(message_id)
             await ctx.message.delete()

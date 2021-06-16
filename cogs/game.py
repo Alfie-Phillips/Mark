@@ -67,6 +67,9 @@ class Games(commands.Cog):
             for result in users:
                 # Iterating through all the users to check if the author id, matches the result id's
                 if result["id"] == ctx.author.id:
+                    if result["nickname"] != None:
+                        nickname = result["nickname"]
+                        return await ctx.send(f"You have already initialized your account {nickname}!")
                     return await ctx.send("You have already initialized your account!")
 
 
