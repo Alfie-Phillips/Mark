@@ -20,7 +20,7 @@ class Games(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="account", aliases=["acc"])
+    @commands.command(name="account", help="init, delete, points")
     async def account(self, ctx, args=""):
         user_id = {"id": ctx.author.id}
 
@@ -171,7 +171,7 @@ class Games(commands.Cog):
             except:
                 return await ctx.send("You have not created an account yet!")
 
-    @commands.command(name="games-leaderboard")
+    @commands.command(name="glb", aliases=["games-leaderboard"], help="Games leaderboard.")
     async def leaderboard(self, ctx, amount=3):
         if amount > 20:
             return await ctx.send("You can't have a higher amount than 20 players!")
@@ -205,7 +205,7 @@ class Games(commands.Cog):
             return await ctx.send("Showing the leaderboards has failed!")
 
     @commands.cooldown(1, 20, commands.BucketType.user)
-    @commands.command(name="hilo")
+    @commands.command(name="hilo", help="Higher or Lower game.")
     async def hilo(self, ctx, bet=5, leverage=1):
         collection = db["Points"]
         stocks = [

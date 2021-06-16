@@ -21,10 +21,12 @@ initial_cogs = [
     'jishaku',
     'cogs.commands',
     'cogs.advice',
+    'cogs.moderation',
     'cogs._help',
     'cogs.game',
     'cogs.levels',
-    'cogs.links'
+    'cogs.links',
+    'cogs.admin'
 ]
 
 cluster = MongoClient(MONGO_URI)

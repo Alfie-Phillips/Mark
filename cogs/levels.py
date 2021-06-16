@@ -34,6 +34,7 @@ class Levelling(commands.Cog):
                         levelling.insert_one(new_user)
                     except Exception as e:
                         print(e)
+                        return await message.channel.send("There has been an error registering your message, please report this to a staff member!")
                     
                     await message.channel.send(embed=discord.Embed(title="Your First Message!", description=f"Well done {message.author.mention}! You have sent your first message!", color=discord.Color.green()))
                     # await message.author.add_roles(discord.utils.get(message.author.guild.roles, name=level[0]))
@@ -58,7 +59,7 @@ class Levelling(commands.Cog):
                                 await message.channel.send(embed=embed)
 
 
-    @commands.command(name="rank")
+    @commands.command(name="rank", help="Check your xp.")
     async def rank(self, ctx, user: discord.Member=None):
         if ctx.channel.id == bot_channel:
             if user == None:
@@ -121,7 +122,7 @@ class Levelling(commands.Cog):
             return await ctx.send(embed=discord.Embed(title="Error!", description="Please use the bots channel!", color=discord.Color.red()))
 
 
-    @commands.command(name="lb", aliases=["leaderboard", "leader-board"])
+    @commands.command(name="lb", aliases=["leaderboard", "leader-board"], help="XP leaderboard")
     async def leaderboard(self, ctx):
         if ctx.channel.id == bot_channel:
             rankings = levelling.find({}).sort("xp", -1)
@@ -142,16 +143,6 @@ class Levelling(commands.Cog):
         else:
             return await ctx.channel.send(embed=discord.Embed(title="Error!", description="Please use the bots channel!", color=discord.Color.red()))
 
-    @commands.command(name="add")
-    @commands.has_role("Admin")
-    async def add(self, ctx, name, user: discord.Member, amount=100):
-        if name == "xp":
-            try:
-                levelling.update_one({"id": user.id}, {"$inc": {"xp": amount}})
-                return await ctx.send(embed=discord.Embed(description=f"Score added to {user.display_name}"))
-            except Exception as e:
-                print(e)
-                return await ctx.send(embed=discord.Embed(title="Error!", description="Error adding score!", color=discord.Color.red()))
 
 def setup(bot):
     bot.add_cog(Levelling(bot))

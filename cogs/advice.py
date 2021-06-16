@@ -9,7 +9,7 @@ class Advice(commands.Cog):
         self.bot = bot
 
     
-    @commands.command(name="stock")
+    @commands.command(name="stock", help="market, shares, prices, types, brokers")
     async def stock(self, ctx, args=""):
         def em(title, description):
             embed = discord.Embed(title=title, description=description, color=discord.Color.green())
@@ -50,7 +50,7 @@ class Advice(commands.Cog):
             await asyncio.sleep(1.5)
             await ctx.message.delete()
 
-    @commands.command(name="index-funds", aliases=["etfs", "etf", "funds"])
+    @commands.command(name="index-funds", aliases=["etfs", "etf", "funds"], help="Information on index funds.")
     async def index_and_etf(self, ctx):
         embed = discord.Embed(title="Index Funds And ETF'S",
                               description='- ETFs and Index Funds are both great ways to diversify investments, but how are they different? The main and biggest differences for the investor is cost, ETFs and Index Funds will have different costs associated with them for the investor. Index Funds are rebalanced daily which come in the form of commissions and other costs. ETFs on the other hand have another system as defined by Investopedia, " ETFs have a unique process called creation/redemption in-kind (meaning shares of ETFs can be created and redeemed with a like basket of securities) that avoids these transaction costs." Index Funds also have the cost of cash drag, which  ETFs do not have to deal with. However an advantage that Index Funds have over ETFs is when it comes to dividends. Index Funds will immediately reinvest their dividends compared to ETFs which pool them up and pay them out at the end of each quarter. ETFs also have lower management fees. However the biggest cost in ETFs is the shareholder transaction cost, which is usually 0 for Index Funds. \n[Index Funds](https://www.investopedia.com/terms/i/indexfund.asp) \n[ETF](https://www.investopedia.com/terms/e/etf.asp)', color=discord.Color.green())
@@ -59,7 +59,7 @@ class Advice(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
-    @commands.command(name="freetrade")
+    @commands.command(name="freetrade", help="Promo code for freetrade.")
     async def freetrade(self, ctx):
         embed = discord.Embed(title="Get A Free Stock On FreeTrade!",
                               description="[Mark Tilbury's Promo Code Here... :smile:](https://freetrade.app.link/DiVJxPU22bb?_p=c11c32dc9e0b7af1e61890f4e0)", color=discord.Color.green())
@@ -68,7 +68,7 @@ class Advice(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
-    @commands.command(name="public")
+    @commands.command(name="public", help="Promo code for public.")
     async def public(self, ctx):
         embed = discord.Embed(title="Get A Free Stock On Public!",
                               description="[Mark Tilbury's Promo Code Here... :smile:](https://public.com/mark)", color=discord.Color.green())
@@ -77,7 +77,7 @@ class Advice(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
-    @commands.command(name="free-stocks")
+    @commands.command(name="free-stocks", help="Free available stocks.")
     async def free_stocks(self, ctx):
         embed = discord.Embed(title="Free Stocks Offered By Mark",
                               description="[FreeTrade Promo Code](https://freetrade.app.link/DiVJxPU22bb?_p=c11c32dc9e0b7af1e61890f4e0)\n[Public Promo Code](https://public.com/mark)", color=discord.Color.green())
@@ -86,16 +86,7 @@ class Advice(commands.Cog):
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
-    @commands.command(name="trading-patterns")
-    async def trading_patterns(self, ctx):
-        embed = discord.Embed(title="Trading Patterns",
-                              description="Throughout the trading scheme, we see many trading patterns which can somewhat predict what is going to happen next with a stock. We use these to be smart, and notice when it is the right time to buy or sell, it is essential to know some of these key features. [Link to key trading patterns](https://www.investopedia.com/articles/technical/112601.asp)\n[A PDF for analyzing chart patterns](http://i.investopedia.com/inv/pdf/tutorials/AnalyzingChartPatterns.pdf)", color=discord.Color.green())
-        embed.set_footer(text="@Copyright Alfie Phillips")
-        await ctx.send(embed=embed)
-        await asyncio.sleep(1.5)
-        await ctx.message.delete()
-
-    @commands.command(name="dropshipping", aliases=["drop-shipping"])
+    @commands.command(name="dropshipping", aliases=["drop-shipping"], help="definition, guide, profits, products")
     async def drop_shipping(self, ctx, args=""):
         if args == "":
             embed = discord.Embed(title="Drop Shipping Commands",
@@ -138,12 +129,6 @@ class Advice(commands.Cog):
             await asyncio.sleep(1.5)
             await ctx.message.delete()
 
-        elif args == "setup":
-            pass
-
-        elif args == "links":
-            pass
-
         else:
             embed = discord.Embed(title="Please use these commands for help on dropshipping!", 
                                     description="M.dropshipping, M.dropshipping definition, M.dropshipping guide, M.dropshippinh profits, M.dropshipping products, M.dropshipping setup, M.dropshipping links", color=discord.Color.green())
@@ -151,21 +136,21 @@ class Advice(commands.Cog):
             return await ctx.send(embed=embed)
 
 
-    @commands.command(name="crypto", aliases=["crypto-currency"])
+    @commands.command(name="crypto", aliases=["crypto-currency"], help="Help on cryptocurrency.")
     async def crypto_currency(self, ctx, args):
         if args == "":
             pass
         else:
             pass
 
-    @commands.command(name="digital-marketing", aliases=["marketing"])
+    @commands.command(name="digital-marketing", aliases=["marketing"], help="Help on digital marketing.")
     async def digital_marketing(self, ctx, args):
         if args == "":
             pass
         else:
             pass
 
-    @commands.command(name="real-estate")
+    @commands.command(name="real-estate", help="Help on real estate.")
     async def real_estate(self, ctx, args):
         if args == "":
             pass

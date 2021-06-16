@@ -12,6 +12,7 @@ from .utils.helpers import to_pages_by_lines
 from main import db
 
 collection = db["Points"]
+suggestion_channel = 747165320510308393
 
 
 class Commands(commands.Cog):
@@ -29,14 +30,14 @@ class Commands(commands.Cog):
     def em(title: str, description: str):
         return discord.Embed(title=title, description=description)
 
-    @commands.command(name="ping", help="test")
+    @commands.command(name="ping", help="Test the bots ping.")
     async def ping(self, ctx):
         embed = discord.Embed(title="My Current Ping!", description=f"{round(self.bot.latency * 1000, 1)}ms!", color=discord.Color.green())
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
 
-    @commands.command(name="nick")
+    @commands.command(name="nick", help="Give yourself a nickname.")
     async def nick(self, ctx, name):
         user_id = {
             "id": ctx.author.id
@@ -67,7 +68,7 @@ class Commands(commands.Cog):
 
         return await ctx.send(embed=embed)
 
-    @commands.command(name="users")
+    @commands.command(name="users", help="Get all current users on the server.")
     async def users(self, ctx):
         """Information about users"""
         members = self.members()
@@ -77,7 +78,7 @@ class Commands(commands.Cog):
                        f'DND: {members["dnd"]}\n'
                        f'Offline: {members["offline"]}```')
 
-    @commands.command(name="members")
+    @commands.command(name="members", help="Member count.")
     async def member_count(self, ctx):
         """Member Count"""
         embed = discord.Embed(title=f"Members Of The Mark Tilbury Discord", description=f"{ctx.guild.member_count} members!", color=discord.Color.green())
@@ -96,7 +97,7 @@ class Commands(commands.Cog):
         url = f'{base_url}/blob/{branch}/{location}.py#L{firstlineno}-L{firstlineno + len(lines) - 1}'
         return url
 
-    @commands.command()
+    @commands.command(name="source", help="Source code for this discord bot, and documentation for every line of code.")
     async def source(self, ctx, *, command: str = None):
         """Get source code for the bot or any command."""
         base_url = "https://github.com/Alfie-Phillips/mark-tilbury"
@@ -123,10 +124,10 @@ class Commands(commands.Cog):
             await ctx.send(f'```py\n{page}```')
 
 
-    @commands.command(name="suggestion", aliases=["suggest", "s"])
+    @commands.command(name="suggestion", aliases=["suggest", "s"], help="Send a server suggestion through this command.")
     async def server_suggestion(self, ctx, *, suggestion: str):
         now = datetime.now()
-        channel = self.bot.get_channel(747165320510308393)
+        channel = self.bot.get_channel(suggestion_channel)
         if not ctx.guild:
             return
 
@@ -142,64 +143,6 @@ class Commands(commands.Cog):
         message = await channel.send(embed=embed)
         await message.add_reaction(":Yes:")
         await message.add_reaction(":No:")
-
-    @commands.command(name="accept")
-    @commands.has_role("Moderator")
-    async def accept(self, ctx, message_id: int, *, reason="None"):
-        if not ctx.guild:
-            return
-
-        channel = self.bot.get_channel(747165320510308393)
-        try:
-            message = await channel.fetch_message(message_id)
-            await ctx.message.delete()
-
-            author = message.embeds[0].author
-            suggestion = message.embeds[0].fields[0].value
-            name = author.name
-            icon_url = author.icon_url
-            em = discord.Embed(color=3340850)
-            em.set_author(name=f"{name}", icon_url=f"{icon_url}")
-            em.set_thumbnail(
-                url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
-            em.add_field(name=f"Suggestion:", value=f"{suggestion}\n\n", inline=True)
-            em.add_field(name=f"Status", value="Accepted ✅", inline=False)
-            em.add_field(name=f"Staff answer by @{ctx.author.name}", value=f"{reason}")
-            em.set_footer(text="@Copyright Alfie Phillips")
-            return await message.edit(embed=em)
-
-        except:
-            await ctx.message.delete()
-            return await ctx.send(f"{ctx.author.mention}. Message with id: {str(message_id)} was not found!")
-
-    @commands.command(name="decline")
-    @commands.has_role("Admin")
-    async def decline(self, ctx, message_id: int, *, reason="None"):
-        if not ctx.guild:
-            return
-
-        channel = self.bot.get_channel(747165320510308393)
-        try:
-            message = await channel.fetch_message(message_id)
-            await ctx.message.delete()
-
-            author = message.embeds[0].author
-            suggestion = message.embeds[0].fields[0].value
-            name = author.name
-            icon_url = author.icon_url
-            em = discord.Embed(color=16718080)
-            em.set_author(name=f"{name}", icon_url=f"{icon_url}")
-            em.set_thumbnail(
-                url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
-            em.add_field(name=f"Suggestion:", value=f"{suggestion}\n\n", inline=True)
-            em.add_field(name=f"Status", value="Declined ❌", inline=False)
-            em.add_field(name=f"Staff answer by @{ctx.author.name}", value=f"{reason}")
-            em.set_footer(text="@Copyright Alfie Phillips")
-            await message.edit(embed=em)
-
-        except:
-            await ctx.message.delete()
-            return await ctx.send(f"{ctx.author.mention}. Message with id: ({str(message_id)}) was not found!")
 
 
 def setup(bot):

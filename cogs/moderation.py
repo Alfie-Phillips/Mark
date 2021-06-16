@@ -14,7 +14,7 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.cooldown(1, 30, commands.BucketType.user)
-    @commands.command(name="report")
+    @commands.command(name="report", help="Report a user to the staff team.")
     async def report(self, ctx, user: discord.Member, *reason):
         collection = db["Reports"]
         mod_channel = self.bot.get_channel(734883606555656334)
@@ -40,23 +40,26 @@ class Moderation(commands.Cog):
                 "reported-user-id": user.id,
                 "reported-user-name": user.name,
                 "reason": None,
-                "message-link": f"https://discordapp.com/channels/{ctx.guild.id}/{message.channel.id}/{message.id}",
+                "message-link": f"https://discordapp.com/channels/{ctx.guild.id}/{ctx.message.channel.id}/{ctx.message.id}",
                 "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}"
             }
-            collection.insert_one(query)
-            return
+            try:
+                collection.insert_one(query)
+            except Exception as e:
+                print(e)
+                return await ctx.send(embed=discord.Embed(title="Error!", description="Error making the report! Please try again."))
         else:
             await ctx.message.delete()
             em = discord.Embed(title=f"{author.mention} has reported {user.mention}", color=discord.Color.light_grey())
             em.add_field(name="Reason", value=f"{rearray}", inline=False)
-            await mod_channel.send(embed=embed)
+            await mod_channel.send(embed=em)
             query = {
                 "author-id": ctx.author.id,
                 "author-name": ctx.author.name,
                 "reported-user-id": user.id,
                 "reported-user-name": user.name,
                 "reason": rearray,
-                "message-link": f"https://discord.com/channels/{ctx.guild.id}/{message.channel.id}/{message.id}",
+                "message-link": f"https://discord.com/channels/{ctx.guild.id}/{ctx.message.channel.id}/{ctx.message.id}",
                 "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}"
             }
             try:
