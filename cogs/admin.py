@@ -117,11 +117,11 @@ class Admin(commands.Cog):
                 return await ctx.send(embed=discord.Embed(title="Error!", description="Error removing points!", color=discord.Color.red()))
 
     
-    @commands.command(name="get-reports", help="This is a staff command.")
-    @commands.has_role("Moderator")
-    async def get_reports(self, ctx, limit=10):
-        data = reports.find({}).limit(limit)
-        pass
+    # @commands.command(name="get-reports", help="This is a staff command.")
+    # @commands.has_role("Moderator")
+    # async def get_reports(self, ctx, limit=10):
+    #     data = reports.find({}).limit(limit)
+    #     pass
 
 def setup(bot):
     bot.add_cog(Admin(bot))

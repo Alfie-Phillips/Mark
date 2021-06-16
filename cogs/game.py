@@ -6,7 +6,6 @@ import random
 import logging
 
 import discord
-from proto import MESSAGE
 import yfinance
 from discord.ext import commands
 from time import sleep
