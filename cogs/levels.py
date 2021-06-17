@@ -9,7 +9,8 @@ invalid_channels = [741634902851846195, 734883763678478417, 734883606555656334, 
 
 level = ["Level 5", "Level 10", "Level 20", "Level 30", "Level 50", "Level 75", "Level 100"]
 levelnum = [5, 10, 20, 30, 50, 75, 100]
-roleColor = ["@Red", "@Yellow", "@Green", "@Blue", "@Pink", "@Cyan", "@Black"]
+roleColor = ["Red", "Yellow", "Green", "Blue", "Pink", "Cyan", "Black"]
+levelChannels = ["<#855017777931616306>", "<#855017863668695050>", "<#855017918378672158>", "<#855017968437035008>", "<#855018003786366976>", "<#855018157148209202>", "<#855018209270169620>"]
 
 levelling = db["Levelling"]
 
@@ -51,12 +52,15 @@ class Levelling(commands.Cog):
                     if xp == 0:
                         for i in range(len(level)):
                             if lvl == levelnum[i]:
-                                await message.author.add_roles(discord.utils.get(message.author.guild.roles, name=level[i]))
-                                await channel.send(message.author.mention)
-                                embed = discord.Embed(title="New Role!", description=f"{message.author.display_name} you have reached level {str(lvl)}. You have unlocked the role **{roleColor[i]}**! Please head to Reaction Roles to claim your role.", color=discord.Color.green())
-                                embed.set_thumbnail(url=message.author.avatar_url)
-                                await channel.send(embed=embed)
+                                for role in level:
+                                    userRole = discord.utils.get(message.author.guild.roles, name=role)
+                                    await message.author.remove_roles(userRole)
 
+                                await message.author.add_roles(discord.utils.get(message.author.guild.roles, name=level[i]))
+                                return await channel.send(f"{message.author.mention} you have reached level {str(lvl)}! You have unlocked the color **{roleColor[i]}**. Please visit {levelChannels[i]} for your prize!")
+
+
+                        return await channel.send(f"{message.author.mention} you have reached level {str(lvl)}!")
 
     @commands.command(name="rank", help="Check your xp.")
     async def rank(self, ctx, user: discord.Member=None):
