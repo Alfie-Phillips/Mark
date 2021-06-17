@@ -224,7 +224,7 @@ class Games(commands.Cog):
             return
 
         if leverage > 2:
-            return await ctx.send("You must not use above 5x Leverage!")
+            return await ctx.send("You must not use above 2x Leverage!")
 
         points = user["points"]
 
