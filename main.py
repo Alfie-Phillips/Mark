@@ -52,7 +52,7 @@ class Mark(commands.AutoShardedBot):
 
     async def on_ready(self):
         print(f'Successfully logged in as {self.user}\nSharded to {len(self.guilds)} guilds')
-        self.guild = self.get_guild(806526222884143116)
+        self.guild = self.get_guild(734739379364429844)
         await self.change_presence(activity=discord.Game(name='Use the prefix "M."'))
 
         for ext in initial_cogs:
@@ -61,7 +61,7 @@ class Mark(commands.AutoShardedBot):
 
     async def on_member_join(self, member):
         await self.wait_until_ready()
-        if member.guild.id == 806526222884143116:
+        if member.guild.id == 734739379364429844:
             await member.send('Welcome to the Mark Tilbury Server, we hope you have a great time here!')
 
     async def on_message(self, message):
@@ -77,6 +77,8 @@ class Mark(commands.AutoShardedBot):
 
         await self.process_commands(message)
 
+    yesCount = 0
+    noCount = 0
     async def on_raw_reaction_add(self, payload):
         if payload.channel_id == 747165320510308393:
             channel = self.get_channel(747165320510308393)
@@ -95,14 +97,9 @@ class Mark(commands.AutoShardedBot):
             em.add_field(name="Message ID", value=f"{payload.message_id}", inline=False)
             em.set_footer(text="@Copyright Alfie Phillips")
             for reaction in message.reactions:
-                if reaction.emoji == "✅":
-                    if int(reaction.count) == 10:
-                        return await mod_channel.send(embed=em)
-
-                elif reaction.emoji == "❌":
-                    if int(reaction.count) == 10:
-                        return await message.delete()
-
+                if str(reaction.emoji) not in ["<:Yes:741648526089519134>", "<:No:741648556493897818>"]:
+                    await message.remove_reaction(reaction, payload.member)
+                
     async def process_commands(self, message):
         if message.author.bot:
             return 
@@ -113,7 +110,7 @@ class Mark(commands.AutoShardedBot):
             return 
 
         if ctx.command.name in ['member_count', 'server_messages', 'messages', 'users', 'source', 'lb', 'glb', 'hilo']:
-            if ctx.channel.id not in [741634902851846195, 806528778846994463]:
+            if ctx.channel.id not in [741634902851846195, 741641800183447602]:
                 return await message.channel.send("**Please use the <#741634902851846195> channel**")
 
         return await self.invoke(ctx)
@@ -132,10 +129,6 @@ class Mark(commands.AutoShardedBot):
         if isinstance(error, (BadUnionArgument, PrivateMessageOnly,
                               NoPrivateMessage, MissingRequiredArgument, ConversionError)):
             return await ctx.send(str(error))
-
-        # elif isinstance(error, commands.CommandOnCooldown):
-        #     em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
-        #     await ctx.send(embed=em)
 
         elif isinstance(error, BotMissingPermissions):
             await ctx.send('I am missing these permissions to do this command:'
