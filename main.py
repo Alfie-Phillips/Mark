@@ -78,9 +78,9 @@ class Mark(commands.AutoShardedBot):
         await self.process_commands(message)
 
     async def on_raw_reaction_add(self, payload):
-        if payload.channel_id == 806584030908645486:
-            channel = self.get_channel(806584030908645486)
-            mod_channel = self.get_channel(806530966105096195)
+        if payload.channel_id == 747165320510308393:
+            channel = self.get_channel(747165320510308393)
+            mod_channel = self.get_channel(734883606555656334)
             message = await channel.fetch_message(payload.message_id)
             author = message.embeds[0].author
             suggestion = message.embeds[0].fields[0].value
@@ -112,7 +112,7 @@ class Mark(commands.AutoShardedBot):
         if ctx.command is None:
             return 
 
-        if ctx.command.name in ['help', 'member_count', 'server_messages', 'messages', 'users', 'source']:
+        if ctx.command.name in ['member_count', 'server_messages', 'messages', 'users', 'source', 'lb', 'glb', 'hilo']:
             if ctx.channel.id not in [741634902851846195, 806528778846994463]:
                 return await message.channel.send("**Please use the <#741634902851846195> channel**")
 
@@ -133,9 +133,9 @@ class Mark(commands.AutoShardedBot):
                               NoPrivateMessage, MissingRequiredArgument, ConversionError)):
             return await ctx.send(str(error))
 
-        elif isinstance(error, commands.CommandOnCooldown):
-            em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
-            await ctx.send(embed=em)
+        # elif isinstance(error, commands.CommandOnCooldown):
+        #     em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.")
+        #     await ctx.send(embed=em)
 
         elif isinstance(error, BotMissingPermissions):
             await ctx.send('I am missing these permissions to do this command:'
@@ -181,6 +181,5 @@ class Mark(commands.AutoShardedBot):
 
 
 if __name__ == "__main__":
-    # keep_alive()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(Mark.setup())

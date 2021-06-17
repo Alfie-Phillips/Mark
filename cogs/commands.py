@@ -124,7 +124,7 @@ class Commands(commands.Cog):
             await ctx.send(f'```py\n{page}```')
 
 
-    @commands.command(name="suggestion", aliases=["suggest", "s"], help="Send a server suggestion through this command.")
+    @commands.command(name="suggestion", aliases=["suggest"], help="Send a server suggestion through this command.")
     async def server_suggestion(self, ctx, *, suggestion: str):
         now = datetime.now()
         channel = self.bot.get_channel(suggestion_channel)
@@ -141,8 +141,8 @@ class Commands(commands.Cog):
         embed.add_field(name=f"Status", value="This is still awaiting a response from a staff member!", inline=False)
         embed.set_footer(text="@Copyright Alfie Phillips")
         message = await channel.send(embed=embed)
-        await message.add_reaction(":Yes:")
-        await message.add_reaction(":No:")
+        await message.add_reaction("✅")
+        await message.add_reaction("❌")
 
 
 def setup(bot):

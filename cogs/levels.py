@@ -7,8 +7,9 @@ from random import randrange
 bot_channel = 741634902851846195
 invalid_channels = [741634902851846195, 734883763678478417, 734883606555656334, 831600676680499261, 813403856263184414, 741641800183447602, 741041891222618152, 809046706401706024, 835226363748941824]
 
-level = ["Caveman", "Noob", "Amateur", "Professional", "Expert", "God", "Mark"]
-levelnum = [1, 5, 10, 15, 20, 30, 50]
+level = ["Level 5", "Level 10", "Level 20", "Level 30", "Level 50", "Level 75", "Level 100"]
+levelnum = [5, 10, 20, 30, 50, 75, 100]
+roleColor = ["@Red", "@Yellow", "@Green", "@Blue", "@Pink", "@Cyan", "@Black"]
 
 levelling = db["Levelling"]
 
@@ -19,6 +20,7 @@ class Levelling(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         now = datetime.now()
+        channel = self.bot.get_channel(bot_channel)
         if message.channel.id not in invalid_channels:
             stats = levelling.find_one({"id": message.author.id})
             if not message.author.bot:
@@ -35,9 +37,6 @@ class Levelling(commands.Cog):
                     except Exception as e:
                         print(e)
                         return await message.channel.send("There has been an error registering your message, please report this to a staff member!")
-                    
-                    await message.channel.send(embed=discord.Embed(title="Your First Message!", description=f"Well done {message.author.mention}! You have sent your first message!", color=discord.Color.green()))
-                    # await message.author.add_roles(discord.utils.get(message.author.guild.roles, name=level[0]))
 
                 else:
                     xp = stats["xp"] + 5
@@ -50,13 +49,13 @@ class Levelling(commands.Cog):
 
                     xp -= ((50 * ((lvl - 1)**2)) + (50 * (lvl - 1)))
                     if xp == 0:
-                        await message.channel.send(embed=discord.Embed(title="Levelled Up!", description=f"Well done {message.author.mention}! You leveled up to **level {str(lvl)}**!", color=discord.Color.green()))
                         for i in range(len(level)):
                             if lvl == levelnum[i]:
-                                # await message.author.add_roles(discord.utils.get(message.author.guild.roles, name=level[i]))
-                                embed = discord.Embed(title="New Role!", description=f"{message.author.mention} you have gotten role **{level[i]}**!", color=discord.Color.green())
+                                await message.author.add_roles(discord.utils.get(message.author.guild.roles, name=level[i]))
+                                await channel.send(message.author.mention)
+                                embed = discord.Embed(title="New Role!", description=f"{message.author.display_name} you have reached level {str(lvl)}. You have unlocked the role **{roleColor[i]}**! Please head to Reaction Roles to claim your role.", color=discord.Color.green())
                                 embed.set_thumbnail(url=message.author.avatar_url)
-                                await message.channel.send(embed=embed)
+                                await channel.send(embed=embed)
 
 
     @commands.command(name="rank", help="Check your xp.")

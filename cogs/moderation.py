@@ -2,6 +2,7 @@
 
 import asyncio
 from datetime import datetime
+import time
 
 import discord
 from discord.ext import commands
@@ -13,13 +14,14 @@ class Moderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.cooldown(1, 120, commands.BucketType.user)
     @commands.command(name="report", help="Report a user to the staff team.")
     async def report(self, ctx, user: discord.Member, *reason):
+        now = datetime.now()
+        ordinal = time.time()
         collection = db["Reports"]
         mod_channel = self.bot.get_channel(734883606555656334)
         author = ctx.message.author
-        now = datetime.now()
         rearray = ' '.join(reason[:])
         if user.bot:
             message = await ctx.send(f"You can't report a bot! {ctx.author.mention}")
@@ -33,7 +35,7 @@ class Moderation(commands.Cog):
         elif not rearray:
             await ctx.message.delete()
             await mod_channel.send(
-                f"{author.mention} has reported {user.mention}\nReason: Not provided\n\n<@&734889524303495279>")
+                f"{author.display_name} has reported {user.display_name}\nReason: Not provided\n\n<@&734889524303495279>")
             query = {
                 "author-id": ctx.author.id,
                 "author-name": ctx.author.name,
@@ -41,7 +43,8 @@ class Moderation(commands.Cog):
                 "reported-user-name": user.name,
                 "reason": None,
                 "message-link": f"https://discordapp.com/channels/{ctx.guild.id}/{ctx.message.channel.id}/{ctx.message.id}",
-                "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}"
+                "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}",
+                "ordinal": ordinal
             }
             try:
                 collection.insert_one(query)
@@ -50,7 +53,7 @@ class Moderation(commands.Cog):
                 return await ctx.send(embed=discord.Embed(title="Error!", description="Error making the report! Please try again."))
         else:
             await ctx.message.delete()
-            em = discord.Embed(title=f"{author.mention} has reported {user.mention}", color=discord.Color.light_grey())
+            em = discord.Embed(title=f"{author.display_name} has reported {user.display_name}", color=discord.Color.light_grey())
             em.add_field(name="Reason", value=f"{rearray}", inline=False)
             await mod_channel.send(embed=em)
             query = {
@@ -60,7 +63,8 @@ class Moderation(commands.Cog):
                 "reported-user-name": user.name,
                 "reason": rearray,
                 "message-link": f"https://discord.com/channels/{ctx.guild.id}/{ctx.message.channel.id}/{ctx.message.id}",
-                "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}"
+                "time-created": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}",
+                "ordinal": ordinal
             }
             try:
                 collection.insert_one(query)

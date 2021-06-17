@@ -171,7 +171,7 @@ class Games(commands.Cog):
                 return await ctx.send("You have not created an account yet!")
 
     @commands.command(name="glb", aliases=["games-leaderboard"], help="Games leaderboard.")
-    async def leaderboard(self, ctx, amount=3):
+    async def leaderboard(self, ctx, amount=5):
         if amount > 20:
             return await ctx.send("You can't have a higher amount than 20 players!")
         collection = db["Points"]
@@ -203,7 +203,7 @@ class Games(commands.Cog):
             print(e)
             return await ctx.send("Showing the leaderboards has failed!")
 
-    @commands.cooldown(1, 20, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command(name="hilo", help="Higher or Lower game.")
     async def hilo(self, ctx, bet=5, leverage=1):
         collection = db["Points"]
@@ -223,7 +223,7 @@ class Games(commands.Cog):
         if not ctx.guild:
             return
 
-        if leverage > 5:
+        if leverage > 2:
             return await ctx.send("You must not use above 5x Leverage!")
 
         points = user["points"]
@@ -392,6 +392,10 @@ class Games(commands.Cog):
             em = discord.Embed(title="Slow it down!", description=f"Try again in {error.retry_after:.2f}s.", color=discord.Color.red())
             em.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=em)
+
+    @commands.command(name="give", help="Give your fellow players some points!")
+    async def give(self, ctx, args, user:discord.Member, amount=10):
+        pass
 
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))

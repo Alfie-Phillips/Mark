@@ -120,8 +120,16 @@ class Admin(commands.Cog):
     # @commands.command(name="get-reports", help="This is a staff command.")
     # @commands.has_role("Moderator")
     # async def get_reports(self, ctx, limit=10):
-    #     data = reports.find({}).limit(limit)
-    #     pass
+    #     if limit > 50:
+    #         return await ctx.send("")
+    #     data = reports.find({}).limit(limit).sort("ordinal", 1)
+    #     leaderboard = {}
+    #     for entry in data:
+    #         print(entry)
+
+
+
+        
 
 def setup(bot):
     bot.add_cog(Admin(bot))
