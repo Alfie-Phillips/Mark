@@ -141,8 +141,8 @@ class Commands(commands.Cog):
         embed.add_field(name=f"Status", value="This is still awaiting a response from a staff member!", inline=False)
         embed.set_footer(text="@Copyright Alfie Phillips")
         message = await channel.send(embed=embed)
-        await message.add_reaction("✅")
-        await message.add_reaction("❌")
+        await message.add_reaction("<:Yes:741648526089519134>")
+        await message.add_reaction("<:No:741648556493897818>")
 
 
 def setup(bot):
