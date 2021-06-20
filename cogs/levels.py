@@ -125,7 +125,7 @@ class Levelling(commands.Cog):
             return await ctx.send(embed=discord.Embed(title="Error!", description="Please use the bots channel!", color=discord.Color.red()))
 
 
-    @commands.command(name="lb", aliases=["leaderboard", "leader-board"], help="XP leaderboard")
+    @commands.command(name="lb", aliases=["leaderboard"], help="XP leaderboard")
     async def leaderboard(self, ctx):
         if ctx.channel.id == bot_channel:
             rankings = levelling.find({}).sort("xp", -1)

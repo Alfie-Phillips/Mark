@@ -12,7 +12,14 @@ from time import sleep
 
 from main import db
 
+points = db["Points"]
+inventory = db["Inventory"]
 
+shop = [
+                {"name": "Watch", "price": 2500000000000, "description": "Time"},
+                {"name": "Laptop", "price": 5000000000000, "description": "Work"},
+                {"name": "PC", "price": 10000000000000, "description": "Gaming"}
+            ]
 
 # Start Games Class
 class Games(commands.Cog):
@@ -35,7 +42,7 @@ class Games(commands.Cog):
                 _id = user["id"]
                 username = user["username"]
                 time_created = user["time-created"]
-                points = user["points"]
+                points = int(user["points"])
                 nickname = user['nickname']
 
                 if nickname is None:
@@ -82,9 +89,17 @@ class Games(commands.Cog):
                 "points": 0
             }  # Our query for User accounts
 
+            inventoryQuery = {
+                "id": ctx.author.id,
+                "username": ctx.author.name,
+                "items": [],
+                "hand": 0
+            }
+
             message = await ctx.send("Loading...")  # Loading time for inserting query
             try:
                 collection.insert_one(query)
+                inventory.insert_one(inventoryQuery)
             except Exception as e:
                 print(e)
                 return await ctx.send(f"Failed creating an account for {ctx.author.mention}!")
@@ -135,6 +150,7 @@ class Games(commands.Cog):
                             loading = await ctx.send("Loading...")
 
                             collection.delete_one(query)
+                            inventory.delete_one(query)
 
                             await loading.delete()
                             return await ctx.send("Your account has been deleted!")
@@ -156,7 +172,8 @@ class Games(commands.Cog):
         elif args == "points":
             try:
                 score = collection.find_one(user_id)
-                points = str(score["points"])
+                points = int(round(score["points"]))
+                points = str(points)
 
                 embed = discord.Embed(
                     title="Your Game Points!",
@@ -188,7 +205,8 @@ class Games(commands.Cog):
             )
             em.set_footer(text="@Copyright Alfie Phillips")
             for item in data:
-                em.add_field(name=f"{str(index)}. {item['username']}", value=f"{str(item['points'])} points",
+                points = int(round(item["points"]))
+                em.add_field(name=f"{str(index)}. {item['username']}", value=f"{str(points)} points",
                              inline=False)
 
                 if index == amount:
@@ -205,13 +223,15 @@ class Games(commands.Cog):
 
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command(name="hilo", help="Higher or Lower game.")
-    async def hilo(self, ctx, bet=5, leverage=1):
+    async def hilo(self, ctx, bet: int=5, leverage=1):
+        
         collection = db["Points"]
         stocks = [
             'GME', 'TSLA', 'GOOGL', 'NCR', 'NIO',
             'AMC', "AMZN", "AAPL", "TWTR", "MSFT",
             "MVIS", "NOK", "NVDA", "ATVI", "PLTR",
-            "SNDL", "VGAC", "BP"
+            "SNDL", "BP", "ME", "WISH", "SQSP",
+            "WKHS",
         ]
 
         query = {"id": ctx.author.id, "username": ctx.author.name}
@@ -292,8 +312,8 @@ class Games(commands.Cog):
 
             collection = db["Points"]
 
-            winning_amount = round((float(bet) * float(leverage)), 1)
-            losing_amount = round((float(bet) * float(leverage)), 1)
+            winning_amount = round((int(bet) * int(leverage)), 0)
+            losing_amount = round((int(bet) * int(leverage)), 0)
             drawing_amount = (bet / 2)
 
             if reply == "1":
@@ -393,9 +413,200 @@ class Games(commands.Cog):
             em.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=em)
 
-    @commands.command(name="give", help="Give your fellow players some points!")
-    async def give(self, ctx, args, user:discord.Member, amount=10):
-        pass
+    # @commands.command(name="create", help="Create a new item to sell or create a shop!")
+    # async def create(self, ctx, options=""):
+    #     if options == "":
+    #         return await ctx.send("Please provide the correct arguments, either item or shop!")
+
+    #     if options == "shop":
+    #         pass
+
+    #     if options == "item":
+    #         pass
+
+    @commands.command(name="shop", help="Spend your points!")
+    async def shop(self, ctx, options="global"):
+        if not ctx.guild:
+            return
+
+        if options == "global" or "g":
+
+            em = discord.Embed(title="Shop")
+
+            for index, item in enumerate(shop, 1):
+                name = item["name"]
+                price = item["price"]
+                description = item["description"]
+
+                em.add_field(name=f"[{index}]: {name}", value=f"{price} points | {description}", inline=False)
+
+            return await ctx.send(embed=em)
+
+        if isinstance(options, discord.Member):
+            pass
+
+    @commands.command(name="buy", help="Buy from the shop.")
+    async def buy(self, ctx, index, amount=1):
+        query = {"id": ctx.author.id}
+        user = points.find_one(query)
+        userPoints = user["points"]
+        mod_channel = self.bot.get_channel(734883606555656334)
+
+        if not user:
+            return await ctx.send("You have not initialized an account yet! M.account init to start!")
+        
+        inv = inventory.find_one(query)
+
+        for i, val in enumerate(shop, 1):
+            name = val["name"]
+            price = val["price"]
+            if str(i) == str(index):
+                if price > userPoints:
+                    amount = price - userPoints
+                    return await ctx.send(f"Invalid Funds! You need {amount} more points!")
+            
+                items = inv["items"]
+                
+                index = int(index)
+                
+                if shop[index-1] in items:
+                    return await ctx.send(f"You already have a {name}.")
+                
+                    
+                message = await ctx.send("Loading...")
+                
+                try:
+                    points.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                                              {"$inc": {"points": -price}})
+                except Exception as e:
+                    print(e)
+                    return await ctx.send("There has been an error buying this product, please contact a staff member!")
+
+                await message.delete()
+
+
+                try:
+                    inventory.update({"id": ctx.author.id}, {"$push": {"items": val}})
+                except Exception as e:
+                    print(e)
+                    await mod_channel.send(f"{ctx.author.mention} | id: {ctx.author.id} | Has not been able to recieve item: {name}")
+                    return await ctx.send("Error adding item to your inventory, this will be notified to staff members please be patient.")
+                
+                return await ctx.send(f"{name} bought for {price} points!")
+
+        return await ctx.send("Please pick an item within the constraints either an index or the name.")
+
+    @commands.command(name="sell", help="Sell your items.")
+    async def sell(self, ctx, index):
+        query = {"id": ctx.author.id}
+        
+        errorEmbed = discord.Embed(title="Error!", description="Error finding your account!", color=discord.Color.red())
+        
+        try:
+            user = points.find_one(query)
+            inv = inventory.find_one(query)
+        except Exception as e:
+            print(e)
+            return await ctx.send(embed=errorEmbed)
+        
+        userPoints = user["points"]
+        mod_channel = self.bot.get_channel(734883606555656334)
+        
+        if not user:
+            return await ctx.send("You have not initialized an account yet! M.account init to start!")
+        
+        inv = inv["items"]
+        
+        if inv == []:
+            return await ctx.send("You have no items to sell!")
+                                  
+        for i, item in enumerate(inv, 1):
+            name = item["name"]
+            price = item["price"]
+            
+            print(name)
+            print(price)
+            
+            if int(i) == int(index):
+                try:
+                    index = int(index)
+                    price = int(price)
+                    print(inv[i-1])
+                    inventory.update_one(query, {"$pull": {"items": inv[i-1]}})
+                    points.update_one(query, {"$inc": {"points": price}})
+                except Exception as e:
+                    print(e)
+                    return await ctx.send("Error selling item, please try again!")
+                
+                print(name)
+                
+                return await ctx.send(f"{name} sold for {str(price)} points!")
+            
+            
+        return await ctx.send("Please pick an item within the constraints either an index or the name.")
+        
+        
+
+    @commands.command(name="inventory", aliases=["inv"], help="Check out your inventory!")
+    async def inventory(self, ctx):
+        query = {"id": ctx.author.id}
+
+        errorEmbed = discord.Embed(title="Error!", description="Error finding your account!", color=discord.Color.red())
+
+        try:
+            user = points.find_one(query)
+            inv = inventory.find_one(query)
+        except Exception as e:
+            print(e)
+            return await ctx.send(embed=errorEmbed)
+
+
+        noItemsEmbed = discord.Embed(title="Inventory", description="You have no items!", color=discord.Color.red())
+
+        if not user:
+            return await ctx.send("You have not initialized an account yet! M.account init to start!")
+        
+        
+        if not inv:
+            return await ctx.send("You have not initialized an account yet! M.account init to start!")
+        
+
+        inv = inv["items"]
+        
+        if inv == []:
+            return await ctx.send(embed=noItemsEmbed)
+
+        embed = discord.Embed(title="Inventory", color=discord.Color.green())
+
+        for i, item in enumerate(inv, 1):
+            name = item["name"]
+            price = item["price"]
+
+            embed.add_field(name=f"[{i}]: {name}", value=f"Value: {price} points", inline=False)
+
+        return await ctx.send(embed=embed)
+    
+    # @commands.command(name="hand", help="Check out how many points are in your hand, or check the leaderboard on who has the most in hand.")
+    # async def hand(self, ctx, options=""):
+    #     query = {"id": ctx.author.id}
+        
+    #     try:
+    #         user = points.find_one(query)
+    #         inv = inventory.find_one(query)
+    #     except Exception as e:
+    #         print(e)
+    #         return await ctx.send(embed=errorEmbed)
+        
+        
+    
+    # @commands.command(name="give", help="Give your fellow players some points!")
+    # async def give(self, ctx, points, user:discord.Member, amount=10):
+    #     pass
+
+    # @commands.command(name="trade", help="Trade items with your friends.")
+    # async def trade(self, ctx, item, price, member: discord.Member):
+    #     pass
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(Games(bot=bot))

@@ -4,6 +4,7 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 
+import random
 import inspect
 
 from flask import helpers
@@ -136,13 +137,27 @@ class Commands(commands.Cog):
         embed = discord.Embed(color=696969)
         embed.set_author(name=f"{ctx.author}", icon_url=f"{ctx.author.avatar_url}")
         embed.set_thumbnail(
-            url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
+            url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj"
+            )
+        
         embed.add_field(name=f"Suggestion:", value=f"{suggestion}\n\n", inline=True)
         embed.add_field(name=f"Status", value="This is still awaiting a response from a staff member!", inline=False)
         embed.set_footer(text="@Copyright Alfie Phillips")
         message = await channel.send(embed=embed)
+        
         await message.add_reaction("<:Yes:741648526089519134>")
         await message.add_reaction("<:No:741648556493897818>")
+
+    @commands.command(name="revive", help="Revive the chat.")
+    async def revive(self, ctx):
+        choices = [
+               "Wake up! Let's get this chat moving.",
+               "Time to revive the chat",
+               "Dead chat.",
+               "What did you do today?",
+        ]
+        
+        return await ctx.send(random.choice(choices))
 
 
 def setup(bot):

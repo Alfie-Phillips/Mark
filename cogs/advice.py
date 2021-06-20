@@ -88,15 +88,8 @@ class Advice(commands.Cog):
 
     @commands.command(name="dropshipping", aliases=["drop-shipping"], help="definition, guide, profits, products")
     async def drop_shipping(self, ctx, args=""):
-        if args == "":
-            embed = discord.Embed(title="Drop Shipping Commands",
-                                  description="M.drop-shipping-definition\nM.drop-shipping-guide\nM.drop-shipping-profits", color=discord.Color.green())
-            embed.set_footer(text="@Copyright Alfie Phillips")
-            await ctx.send(embed=embed)
-            await asyncio.sleep(1.5)
-            await ctx.message.delete()
 
-        elif args == "definition":
+        if args == "definition":
             embed = discord.Embed(title="What is dropshipping?",
                                   description="Dropshipping is a business model that you can use to run your store without ever holding any inventory. Once you've made a sale, your supplier will ship your products from their warehouse, straight to your customer's doorstep meaning that you'll never need to worry about stoing, packaging, or shipping your products. For example, you can sell an item for $20, give $5 and the address to your supplier, and your supplier will ship it directly to your customer, and you make $15 profit. Written by Frog#1582\n[More Info Here... :smile:](https://www.shopify.co.uk/blog/what-is-dropshipping#definition)", color=discord.Color.green())
             embed.set_footer(text="@Copyright Alfie Phillips")

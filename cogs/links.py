@@ -11,6 +11,7 @@ class Links(commands.Cog):
     @commands.command(name="website", help="Get Mark's website")
     async def website(self, ctx):
         """Links for Mark's Website"""
+        
         embed = discord.Embed(title="Mark's Website", description="[Link Here... :smile:](https://marktilbury.net/)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
         await ctx.send(embed=embed)
@@ -20,6 +21,7 @@ class Links(commands.Cog):
     @commands.command(name="tiktok", help="Get Mark's Tiktok")
     async def tiktok(self, ctx):
         """Links for Mark's socials"""
+        
         embed = discord.Embed(title="Mark's TikTok",
                               description="[Link Here... :smile:](https://www.tiktok.com/@marktilbury?lang=en)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
@@ -30,6 +32,7 @@ class Links(commands.Cog):
     @commands.command(name="instagram", aliases=["insta"], help="Get Mark's Instagram")
     async def instagram(self, ctx):
         """Links for Mark's Instagram"""
+        
         embed = discord.Embed(title="Mark's Instagram",
                               description="[Link Here... :smile:](https://www.instagram.com/marktilbury)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
@@ -40,6 +43,7 @@ class Links(commands.Cog):
     @commands.command(name="facebook", help="Get Mark's facebook")
     async def facebook(self, ctx):
         """Links for Mark's Facebook"""
+        
         embed = discord.Embed(title="Mark's Facebook",
                               description="[Link Here... :smile:](https://www.facebook.com/RealMarkTilbury)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
@@ -50,6 +54,7 @@ class Links(commands.Cog):
     @commands.command(name="youtube", help="Get Mark's youtube channel")
     async def youtube(self, ctx):
         """Links for Mark's Youtube"""
+        
         embed = discord.Embed(title="Mark's Youtube Channel",
                               description="[Link Here... :smile:](https://www.youtube.com/channel/UCxgAuX3XZROujMmGphN_scA)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
@@ -59,6 +64,7 @@ class Links(commands.Cog):
 
     @commands.command(name="socials", aliases=["links", "social-media"], help="Mark's socials")
     async def socials(self, ctx):
+        
         embed = discord.Embed(title="Mark's Social Links! :smile:",
                               description="[Website](https://marktilbury.net/)\n[TikTok](https://www.tiktok.com/@marktilbury?lang=en)\n[Instagram](https://www.instagram.com/marktilbury)\n[Facebook](https://www.facebook.com/RealMarkTilbury)\n[Youtube](https://www.youtube.com/channel/UCxgAuX3XZROujMmGphN_scA)\n", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
@@ -68,6 +74,7 @@ class Links(commands.Cog):
 
     @commands.command(name="link-tree", help="Mark's link tree")
     async def link_tree(self, ctx):
+        
         embed = discord.Embed(title="Mark's Link Tree!",
                               description="[Link to it here... :smile:](https://marktilbury.net/clickhere)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
