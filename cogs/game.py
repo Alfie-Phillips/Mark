@@ -262,7 +262,6 @@ class Games(commands.Cog):
             ticker_two = yfinance.Ticker(symbol2)
             ticker_one_data = ticker_one.history(period="1d")
             ticker_two_data = ticker_two.history(period="1d")
-
         except Exception as e:
             print(e)
             await ctx.send("Error grabbing current stock prices!")
@@ -586,16 +585,20 @@ class Games(commands.Cog):
 
         return await ctx.send(embed=embed)
     
-    # @commands.command(name="hand", help="Check out how many points are in your hand, or check the leaderboard on who has the most in hand.")
-    # async def hand(self, ctx, options=""):
-    #     query = {"id": ctx.author.id}
+    @commands.command(name="hand", help="Check out how many points are in your hand, or check the leaderboard on who has the most in hand.")
+    async def hand(self, ctx, options=""):
+        query = {"id": ctx.author.id}
         
-    #     try:
-    #         user = points.find_one(query)
-    #         inv = inventory.find_one(query)
-    #     except Exception as e:
-    #         print(e)
-    #         return await ctx.send(embed=errorEmbed)
+        try:
+            user = points.find_one(query)
+        except Exception as e:
+            print(e)
+            return await ctx.send(embed=errorEmbed)
+        
+        currHand = user["hand"]
+        
+        if currHand <= 0:
+            return await ctx.send("You have no points!")
         
         
     
