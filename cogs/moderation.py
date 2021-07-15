@@ -86,6 +86,11 @@ class Moderation(commands.Cog):
                 
                 print(error)
                 return await ctx.send(embed=discord.Embed(title="Error!", description="Error making the report! Please try again."))
+            
+    @commands.Cog.listener(name='on_message')
+    async def mark_twitter(self, message):
+        if "mark" in message.content.lower() and "twitter" in message.content.lower():
+            await ctx.send("Mark **DOES NOT** have a Twitter account. Please report and block the user.")
 
     @report.error
     async def report_error(self, ctx, error):
