@@ -90,7 +90,7 @@ class Moderation(commands.Cog):
     @commands.Cog.listener(name='on_message')
     async def mark_twitter(self, message):
         if "mark" in message.content.lower() and "twitter" in message.content.lower():
-            await ctx.send("Mark **DOES NOT** have a Twitter account. Please report and block the user.")
+            await message.channel.send("Mark **DOES NOT** have a Twitter account. Please report and block the user.")
 
     @report.error
     async def report_error(self, ctx, error):
