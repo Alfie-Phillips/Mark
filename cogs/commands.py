@@ -173,7 +173,6 @@ class Commands(commands.Cog):
         The reminder command allows users to remind themselves of tasks they need to accomplish/things they might forget
         The max reminder time (if the bot stays online long enough) is 90 days and the min is 5 minutes
         """
-        user = ctx.message.author
         embed = discord.Embed(color=0x55a7f7, timestamp=datetime.utcnow())
         seconds = 0
         if reminder is None:
