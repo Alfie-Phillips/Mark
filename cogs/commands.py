@@ -159,7 +159,7 @@ class Commands(commands.Cog):
                "Where do you see yourself in 15 years?",
                "What is your favorate social media platform?",
                "What is your biggest phobia?",
-               "If you could time travel only once, what year would you go to and why?".
+               "If you could time travel only once, what year would you go to and why?",
                "Does pineapple belong on pizza?",
                "What is your favorate song?",
                "Who is your favorate movie actor?",
