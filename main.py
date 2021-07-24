@@ -71,7 +71,7 @@ class Mark(commands.AutoShardedBot):
             return
 
         if "mark" in message.content.lower() and "twitter" in message.content.lower():
-            return await message.channel.send("Mark ***DOES NOT*** have a twitter account. Please report the user to staff.") 
+            return await message.channel.send("Mark **DOES NOT** have a Twitter account. Please report and block the user on twitter.") 
 
         print(f"{message.channel}: {message.author}: {message.clean_content}")
 
