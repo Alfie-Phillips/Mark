@@ -6,6 +6,7 @@ from discord.ext import commands
 
 import random
 import inspect
+import uuid
 
 from flask import helpers
 from .utils.helpers import to_pages_by_lines
@@ -13,6 +14,7 @@ from .utils.helpers import to_pages_by_lines
 from main import db
 
 collection = db["Points"]
+reminders = db["Reminders"]
 suggestion_channel = 747165320510308393
 
 
@@ -151,19 +153,19 @@ class Commands(commands.Cog):
     @commands.command(name="revive", help="Revive the chat.")
     async def revive(self, ctx):
         choices = [
-               "What is your favorate investment you have made?",
-               "If you had $1m right now what would you do?",
-               "What is something you've always wanted to do, but have yet do do?",
-               "What is your biggest accompleshment?",
+               "What is your favourite investment you have made?",
+               "If you recieved all the money in the world, what would you do with it?",
+               "What is something you've always wanted to do, but have yet to do?",
+               "What is your biggest accomplishment?",
                "What was the worst investment you have ever made?",
                "Where do you see yourself in 15 years?",
-               "What is your favorate social media platform?",
+               "What is your favourite social media platform?",
                "What is your biggest phobia?",
                "If you could time travel only once, what year would you go to and why?",
                "Does pineapple belong on pizza?",
-               "What is your favorate song?",
-               "Who is your favorate movie actor?",
-               "What is your favorate movie/tv show?"
+               "What is your favourite song?",
+               "Who is your favourite movie actor?",
+               "What is your favourite movie/tv show?"
         ]
         return await ctx.send(random.choice(choices))
 
@@ -173,7 +175,9 @@ class Commands(commands.Cog):
         The reminder command allows users to remind themselves of tasks they need to accomplish/things they might forget
         The max reminder time (if the bot stays online long enough) is 90 days and the min is 5 minutes
         """
+
         member = ctx.author
+        randomId = uuid.uuid4()
         embed = discord.Embed(color=0x55a7f7, timestamp=datetime.utcnow())
         seconds = 0
         if reminder is None:
@@ -190,6 +194,23 @@ class Commands(commands.Cog):
         elif time.lower().endswith("s"):
             seconds += int(time[:-1])
             counter = f"{seconds} seconds"
+
+        now = datetime.now()
+
+        query = {
+            "reminderId": randomId,
+            "userId": ctx.author.id,
+            "time": counter,
+            "reminder": str(reminder),
+            "timeCreated": f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}",
+            "status": "DURING"
+        }
+
+        try:
+            reminders.insert_one(query)
+        except Exception as error:
+            return await ctx.send("Error adding reminder, please inform a staff member!")
+
         if seconds == 0:
             embed.add_field(name='Warning',
                             value='Please specify a proper duration, send `reminder_help` for more information.')
@@ -201,9 +222,25 @@ class Commands(commands.Cog):
         else:
             await ctx.send(f"Alright, I will remind you about `{reminder}` in {counter}.")
             await asyncio.sleep(seconds)
+
+            query = {
+                "reminderId": randomId
+            }
+
+            value = {
+                "$set": {
+                    "status": "FINISHED"
+                }
+            }
+
+            try:
+                reminders.update_one(query, value)
+            except Exception as error:
+                return await ctx.send("Error updating reminder, please inform a staff member!")
             await member.send(f"Hi, you asked me to remind you about `{reminder}` {counter} ago.")
             return
-        await member.send(embed=embed)
+
+        return await member.send(embed=embed)
 
 
 def setup(bot):
