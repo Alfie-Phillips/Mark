@@ -86,8 +86,8 @@ class Admin(commands.Cog):
     @commands.has_role("Moderator")
     async def add(self, ctx, name, user: discord.Member, amount=100):
         
-        if amount > 10000:
-            return await ctx.send("You can't add over 10000 at a time!")
+        if amount > 100000:
+            return await ctx.send("You can't add over 100000 at a time!")
 
         if name == "xp":
             try:
@@ -140,17 +140,6 @@ class Admin(commands.Cog):
                 
                 print(e)
                 return await ctx.send(embed=discord.Embed(title="Error!", description="Error removing points!", color=discord.Color.red()))
-
-    
-    # @commands.command(name="get-reports", help="This is a staff command.")
-    # @commands.has_role("Moderator")
-    # async def get_reports(self, ctx, limit=10):
-    #     if limit > 50:
-    #         return await ctx.send("")
-    #     data = reports.find({}).limit(limit).sort("ordinal", 1)
-    #     leaderboard = {}
-    #     for entry in data:
-    #         print(entry)
 
 
 

@@ -77,8 +77,6 @@ class Mark(commands.AutoShardedBot):
 
         await self.process_commands(message)
 
-    yesCount = 0
-    noCount = 0
     async def on_raw_reaction_add(self, payload):
         if payload.channel_id == 747165320510308393:
             channel = self.get_channel(747165320510308393)

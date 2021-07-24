@@ -167,12 +167,13 @@ class Commands(commands.Cog):
         ]
         return await ctx.send(random.choice(choices))
 
-    @commands.command(case_insensitive = True, aliases = ["remind", "remindme", "remind_me"])
+    @commands.command(name="remind", case_insensitive = True, aliases=["reminder", "remindme", "remind_me"])
     async def reminder(self, ctx, time, *, reminder):
         """
         The reminder command allows users to remind themselves of tasks they need to accomplish/things they might forget
         The max reminder time (if the bot stays online long enough) is 90 days and the min is 5 minutes
         """
+        member = ctx.author
         embed = discord.Embed(color=0x55a7f7, timestamp=datetime.utcnow())
         seconds = 0
         if reminder is None:
@@ -200,9 +201,9 @@ class Commands(commands.Cog):
         else:
             await ctx.send(f"Alright, I will remind you about `{reminder}` in {counter}.")
             await asyncio.sleep(seconds)
-            await ctx.send(f"Hi, you asked me to remind you about `{reminder}` {counter} ago.")
+            await member.send(f"Hi, you asked me to remind you about `{reminder}` {counter} ago.")
             return
-        await ctx.send(embed=embed)
+        await member.send(embed=embed)
 
 
 def setup(bot):
