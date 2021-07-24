@@ -151,13 +151,58 @@ class Commands(commands.Cog):
     @commands.command(name="revive", help="Revive the chat.")
     async def revive(self, ctx):
         choices = [
-               "Wake up! Let's get this chat moving.",
-               "Time to revive the chat",
-               "Dead chat.",
-               "What did you do today?",
+               "What is your favorate investment you have made?",
+               "If you had $1m right now what would you do?",
+               "What is something you've always wanted to do, but have yet do do?",
+               "What is your biggest accompleshment?",
+               "What was the worst investment you have ever made?",
+               "Where do you see yourself in 15 years?",
+               "What is your favorate social media platform?",
+               "What is your biggest phobia?",
+               "If you could time travel only once, what year would you go to and why?",
+               "Does pineapple belong on pizza?",
+               "What is your favorate song?",
+               "Who is your favorate movie actor?",
+               "What is your favorate movie/tv show?"
         ]
-        
         return await ctx.send(random.choice(choices))
+
+    @commands.command(case_insensitive = True, aliases = ["remind", "remindme", "remind_me"])
+    async def reminder(self, ctx, time, *, reminder):
+        """
+        The reminder command allows users to remind themselves of tasks they need to accomplish/things they might forget
+        The max reminder time (if the bot stays online long enough) is 90 days and the min is 5 minutes
+        """
+        embed = discord.Embed(color=0x55a7f7, timestamp=datetime.utcnow())
+        seconds = 0
+        if reminder is None:
+            embed.add_field(name='Warning', value='Please specify what do you want me to remind you about.')
+        if time.lower().endswith("d"):
+            seconds += int(time[:-1]) * 60 * 60 * 24
+            counter = f"{seconds // 60 // 60 // 24} days"
+        if time.lower().endswith("h"):
+            seconds += int(time[:-1]) * 60 * 60
+            counter = f"{seconds // 60 // 60} hours"
+        elif time.lower().endswith("m"):
+            seconds += int(time[:-1]) * 60
+            counter = f"{seconds // 60} minutes"
+        elif time.lower().endswith("s"):
+            seconds += int(time[:-1])
+            counter = f"{seconds} seconds"
+        if seconds == 0:
+            embed.add_field(name='Warning',
+                            value='Please specify a proper duration, send `reminder_help` for more information.')
+        elif seconds < 300:
+            embed.add_field(name='Warning',
+                            value='You have specified a too short duration!\nMinimum duration is 5 minutes.')
+        elif seconds > 7776000:
+            embed.add_field(name='Warning', value='You have specified a too long duration!\nMaximum duration is 90 days.')
+        else:
+            await ctx.send(f"Alright, I will remind you about `{reminder}` in {counter}.")
+            await asyncio.sleep(seconds)
+            await ctx.send(f"Hi, you asked me to remind you about `{reminder}` {counter} ago.")
+            return
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
