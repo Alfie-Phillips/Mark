@@ -14,6 +14,7 @@ from main import db
 
 points = db["Points"]
 inventory = db["Inventory"]
+shops = db["Shops"]
 
 shop = [
                 {"name": "Watch", "price": 2500000000000, "description": "Time"},
@@ -234,7 +235,10 @@ class Games(commands.Cog):
             "WKHS",
         ]
 
-        query = {"id": ctx.author.id, "username": ctx.author.name}
+        query = {
+            "id": ctx.author.id
+            }
+
         user = collection.find_one(query)
 
         if not user:
@@ -412,17 +416,6 @@ class Games(commands.Cog):
             em.set_footer(text="@Copyright Alfie Phillips")
             await ctx.send(embed=em)
 
-    # @commands.command(name="create", help="Create a new item to sell or create a shop!")
-    # async def create(self, ctx, options=""):
-    #     if options == "":
-    #         return await ctx.send("Please provide the correct arguments, either item or shop!")
-
-    #     if options == "shop":
-    #         pass
-
-    #     if options == "item":
-    #         pass
-
     @commands.command(name="shop", help="Spend your points!")
     async def shop(self, ctx, options="global"):
         if not ctx.guild:
@@ -443,6 +436,7 @@ class Games(commands.Cog):
 
         if isinstance(options, discord.Member):
             pass
+            
 
     @commands.command(name="buy", help="Buy from the shop.")
     async def buy(self, ctx, index, amount=1):

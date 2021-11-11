@@ -1,17 +1,16 @@
 import asyncio
 import datetime
 import os
-
 import discord
-from aiohttp import ClientSession
-from config import TOKEN, MONGO_URI
+import logging
+
 from discord.ext import commands
 from discord.ext.commands.errors import *
+
+from aiohttp import ClientSession
+from config import TOKEN, MONGO_URI
 from pymongo import MongoClient
-
 from cogs.utils.context import TheContext
-
-import logging
 
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
@@ -45,12 +44,18 @@ class Mark(commands.AutoShardedBot):
 
         logging.basicConfig(level=logging.INFO)
 
-        " Listening for events "
+        "Listening for events"
 
     async def on_connect(self):
+        """
+        Connecting to discord servers.
+        """
         print("Bot is connected...")
 
     async def on_ready(self):
+        """
+        On bot load.
+        """
         print(f'Successfully logged in as {self.user}\nSharded to {len(self.guilds)} guilds')
         self.guild = self.get_guild(734739379364429844)
         await self.change_presence(activity=discord.Game(name='Use the prefix "M."'))
@@ -59,17 +64,19 @@ class Mark(commands.AutoShardedBot):
             self.load_extension(ext)
         print("All extensions have loaded!")
 
-    async def on_member_join(self, member):
-        await self.wait_until_ready()
-        if member.guild.id == 734739379364429844:
-            await member.send('Welcome to the Mark Tilbury Server, we hope you have a great time here!')
-
     async def on_message(self, message):
+        """
+        On every message sent by a normal user.
+        """
         await self.wait_until_ready()
 
         if message.author.bot:
             return
 
+        
+        """
+        A common question that will now recieve an automated response.
+        """
         if "mark" in message.content.lower() and "twitter" in message.content.lower():
             return await message.channel.send("Mark **DOES NOT** have a Twitter account. Please report and block the user on twitter.") 
 
@@ -81,8 +88,13 @@ class Mark(commands.AutoShardedBot):
         await self.process_commands(message)
 
     async def on_raw_reaction_add(self, payload):
-        if payload.channel_id == 747165320510308393:
-            channel = self.get_channel(747165320510308393)
+        """
+        On every reaction add in a server
+        """
+
+        suggestionChannelId = 747165320510308393
+        if payload.channel_id == suggestionChannelId:
+            channel = self.get_channel(suggestionChannelId)
             mod_channel = self.get_channel(734883606555656334)
             message = await channel.fetch_message(payload.message_id)
             author = message.embeds[0].author
@@ -102,6 +114,9 @@ class Mark(commands.AutoShardedBot):
                     await message.remove_reaction(reaction, payload.member)
                 
     async def process_commands(self, message):
+        """
+        Process all commands with certain prefix.
+        """
         if message.author.bot:
             return 
 
@@ -110,7 +125,7 @@ class Mark(commands.AutoShardedBot):
         if ctx.command is None:
             return 
 
-        if ctx.command.name in ['member_count', 'server_messages', 'messages', 'users', 'source', 'lb', 'glb', 'hilo']:
+        if ctx.command.name in ['member_count', 'server_messages', 'messages', 'users', 'source', 'lb', 'glb', 'hilo', "remind"]:
             if ctx.channel.id not in [741634902851846195, 741641800183447602]:
                 return await message.channel.send("**Please use the <#741634902851846195> channel**")
 

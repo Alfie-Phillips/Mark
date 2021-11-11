@@ -1,5 +1,4 @@
-version: "3.9"
-name: Discord Bot Container
+version: "3.7"
 
 services:
   app:

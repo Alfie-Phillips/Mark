@@ -150,6 +150,7 @@ class Commands(commands.Cog):
         await message.add_reaction("<:Yes:741648526089519134>")
         await message.add_reaction("<:No:741648556493897818>")
 
+    @commands.cooldown(1, 1800, commands.BucketType.guild)
     @commands.command(name="revive", help="Revive the chat.")
     async def revive(self, ctx):
         choices = [
@@ -165,9 +166,23 @@ class Commands(commands.Cog):
                "Does pineapple belong on pizza?",
                "What is your favourite song?",
                "Who is your favourite movie actor?",
-               "What is your favourite movie/tv show?"
+               "What is your favourite movie/tv show?",
+               "If you could go to the past, what would you change?",
+               "What are your top 3 wishes for the future?",
         ]
+
+        await ctx.send("<@&734889524303495279>")
         return await ctx.send(random.choice(choices))
+
+    @revive.error
+    async def revive_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            
+            em = discord.Embed(title="Slow it down!", description=f"This command is on cooldown for {error.retry_after:.2f}s.", color=discord.Color.red())
+            await ctx.send(embed=em)
+            
+        else:
+            print(error)
 
     @commands.command(name="remind", case_insensitive = True, aliases=["reminder", "remindme", "remind_me"])
     async def reminder(self, ctx, time, *, reminder):

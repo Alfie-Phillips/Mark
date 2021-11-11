@@ -1,11 +1,9 @@
 discord
 datetime
 aiohttp
-distest
 pymongo
 config
 yfinance
 dnspython
 jishaku
-flask
 python-dotenv
