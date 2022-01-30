@@ -136,7 +136,7 @@ class Mark(commands.AutoShardedBot):
                     await member.send("You have been verified!")
                     return await member.add_roles(role)
 
-            except asyncio.TimeoutError:
+            except:
                 return await member.send("Timeout! Verification failed. Please try again!")
 
 
