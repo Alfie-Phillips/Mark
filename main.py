@@ -5,7 +5,6 @@ import discord
 import logging
 import string
 import random
-import ssl
 
 from discord.ext import commands
 from discord.ext.commands.errors import *
@@ -35,7 +34,7 @@ initial_cogs = [
     'cogs.admin'
 ]
 
-cluster = MongoClient(MONGO_URI, ssl_cert_reqs=ssl.CERT_NONE)
+cluster = MongoClient(MONGO_URI)
 db = cluster["Users"]
 
 
