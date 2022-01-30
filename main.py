@@ -83,57 +83,58 @@ class Mark(commands.AutoShardedBot):
         return await channel.send(embed=embed, components=[button])
 
     async def on_button_click(self, interaction):
-        member = interaction.user
-        guild = self.get_guild(734739379364429844)
-        role = guild.get_role(937338231672963114)
+        return await interaction.send("Hey")
+        # member = interaction.user
+        # guild = self.get_guild(734739379364429844)
+        # role = guild.get_role(937338231672963114)
 
-        if interaction.component.label == "Verify":
-            """
-            Sends the user an image of a random string
-            to verify themselves on the server.
-            """
+        # if interaction.component.label == "Verify":
+        #     """
+        #     Sends the user an image of a random string
+        #     to verify themselves on the server.
+        #     """
 
             
 
 
-            if role in member.roles:
-                return await interaction.send("You are already verified!")
+        #     if role in member.roles:
+        #         return await interaction.send("You are already verified!")
 
-            # Verification message
-            message = discord.Embed(title="Verification", description="Please type the following string to verify yourself. You have 30 seconds!", color=0x00ff00)
-            message.set_footer(text="@Copyright Alfie Phillips")
+        #     # Verification message
+        #     message = discord.Embed(title="Verification", description="Please type the following string to verify yourself. You have 30 seconds!", color=0x00ff00)
+        #     message.set_footer(text="@Copyright Alfie Phillips")
 
-            # Define the string length to use for verification
-            STRING_LENGTH = random.randint(5, 7)
+        #     # Define the string length to use for verification
+        #     STRING_LENGTH = random.randint(5, 7)
 
-            # if not os.path.exists("captchas"):
-            #     os.mkdir("captchas")
+        #     # if not os.path.exists("captchas"):
+        #     #     os.mkdir("captchas")
 
-            chars = ""
+        #     chars = ""
 
-            # Generate a random string
-            for i in range(STRING_LENGTH):
-                chars = chars + random.choice(string.ascii_lowercase + string.digits)
+        #     # Generate a random string
+        #     for i in range(STRING_LENGTH):
+        #         chars = chars + random.choice(string.ascii_lowercase + string.digits)
             
-            # Create the image
-            image = ImageCaptcha(width=280, height=80, font_sizes=(40, 50))
-            image.write(chars, f'captchas/{chars}.png')
+        #     # Create the image
+        #     image = ImageCaptcha(width=280, height=80, font_sizes=(40, 50))
+        #     image.write(chars, f'captchas/{chars}.png')
 
 
-            await interaction.send("Check your dms!")
+        #     await interaction.send("Check your dms!")
 
-            await member.send(embed=message)
-            await member.send(file=discord.File(fp=f'captchas/{chars}.png'))
+        #     await member.send(embed=message)
+        #     await member.send(file=discord.File(fp=f'captchas/{chars}.png'))
 
-            reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
+        #     reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
             
-            if reply.content != chars:
-                return await member.send("Verification failed! Please try again!")
+        #     if reply.content != chars:
+        #         return await member.send("Verification failed! Please try again!")
 
-            else:
-                # Add new role
-                await member.send("You have been verified!")
-                return await member.add_roles(role)
+        #     else:
+        #         # Add new role
+        #         await member.send("You have been verified!")
+        #         return await member.add_roles(role)
 
 
     async def on_message(self, message):
