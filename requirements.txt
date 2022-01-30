@@ -8,4 +8,5 @@ dnspython
 jishaku
 python-dotenv
 captcha
+flask
 discord_components
