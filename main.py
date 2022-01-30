@@ -3,6 +3,8 @@ import datetime
 import os
 import discord
 import logging
+import string
+import random
 
 from discord.ext import commands
 from discord.ext.commands.errors import *
@@ -11,6 +13,10 @@ from aiohttp import ClientSession
 from config import TOKEN, MONGO_URI
 from pymongo import MongoClient
 from cogs.utils.context import TheContext
+
+from discord_components import Button
+from captcha.image import ImageCaptcha
+
 
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
@@ -56,6 +62,7 @@ class Mark(commands.AutoShardedBot):
         """
         On bot load.
         """
+
         print(f'Successfully logged in as {self.user}\nSharded to {len(self.guilds)} guilds')
         self.guild = self.get_guild(734739379364429844)
         await self.change_presence(activity=discord.Game(name='Use the prefix "M."'))
@@ -63,6 +70,70 @@ class Mark(commands.AutoShardedBot):
         for ext in initial_cogs:
             self.load_extension(ext)
         print("All extensions have loaded!")
+
+        embed = discord.Embed(title="Verification", description="This is to make sure you are not a bot!", color=0x00ff00)
+
+        channel = self.get_channel(937339343377428540)
+
+        button = Button(label="Verify")
+
+        return await channel.send(embed=embed, components=[button])
+
+    async def on_button_click(self, interaction):
+        member = interaction.user
+        guild = self.get_guild(734739379364429844)
+        role = guild.get_role(937338231672963114)
+
+        if interaction.component.label == "Verify":
+            """
+            Sends the user an image of a random string
+            to verify themselves on the server.
+            """
+
+            
+
+
+            if role in member.roles:
+                return await interaction.send("You are already verified!")
+
+            # Verification message
+            message = discord.Embed(title="Verification", description="Please type the following string to verify yourself. You have 30 seconds!", color=0x00ff00)
+            message.set_footer(text="@Copyright Alfie Phillips")
+
+            # Define the string length to use for verification
+            STRING_LENGTH = random.randint(5, 7)
+
+            if not os.path.exists("captcha"):
+                os.mkdir("captcha")
+
+            chars = ""
+
+            # Generate a random string
+            for i in range(STRING_LENGTH):
+                chars = chars + random.choice(string.ascii_lowercase + string.digits)
+            
+            # Create the image
+            image = ImageCaptcha(width=280, height=80, font_sizes=(40, 50))
+            image.write(chars, f'captchas/{chars}.png')
+
+
+            await interaction.send("Check your dms!")
+
+            await member.send(embed=message)
+            await member.send(file=discord.File(fp=f'captchas/{chars}.png'))
+
+            reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
+
+            os.remove(f'captchas/{chars}.png')
+            
+            if reply.content != chars:
+                return await member.send("Verification failed! Please try again!")
+
+            else:
+                # Add new role
+                await member.send("You have been verified!")
+                return await member.add_roles(role)
+
 
     async def on_message(self, message):
         """
