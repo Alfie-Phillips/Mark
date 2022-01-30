@@ -111,13 +111,13 @@ class Mark(commands.AutoShardedBot):
             
             # Create the image
             image = ImageCaptcha(width=280, height=80, font_sizes=(40, 50))
-            image.write(chars, f'captchas/{chars}.png')
+            image.write(chars, f'{chars}.png')
 
 
             await interaction.send("Check your dms!")
 
             await member.send(embed=message)
-            await member.send(file=discord.File(fp=f'captchas/{chars}.png'))
+            await member.send(file=discord.File(fp=f"{chars}.png"))
 
             reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
             
