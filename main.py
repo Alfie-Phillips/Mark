@@ -106,8 +106,8 @@ class Mark(commands.AutoShardedBot):
             # Define the string length to use for verification
             STRING_LENGTH = random.randint(5, 7)
 
-            if not os.path.exists("captchas"):
-                os.mkdir("captchas")
+            # if not os.path.exists("captchas"):
+            #     os.mkdir("captchas")
 
             chars = ""
 
@@ -126,8 +126,6 @@ class Mark(commands.AutoShardedBot):
             await member.send(file=discord.File(fp=f'captchas/{chars}.png'))
 
             reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
-
-            os.remove(f'captchas/{chars}.png')
             
             if reply.content != chars:
                 return await member.send("Verification failed! Please try again!")
