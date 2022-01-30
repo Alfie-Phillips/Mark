@@ -7,3 +7,5 @@ yfinance
 dnspython
 jishaku
 python-dotenv
+captcha
+discord_components
