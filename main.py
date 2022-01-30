@@ -100,7 +100,7 @@ class Mark(commands.AutoShardedBot):
                 return await interaction.send("You are already verified!")
 
             # Verification message
-            message = discord.Embed(title="Verification", description="Please type the following string to verify yourself. You have 30 seconds!", color=0x00ff00)
+            message = discord.Embed(title="Verification", description="Please type the following string to verify yourself.", color=0x00ff00)
             message.set_footer(text="@Copyright Alfie Phillips")
 
             # Define the string length to use for verification
@@ -122,22 +122,18 @@ class Mark(commands.AutoShardedBot):
             await member.send(embed=message)
             await member.send(file=discord.File(fp=os.getcwd() + "/captchas/" + str(chars) + ".png"))
             
-            try:
 
-                reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
+            reply = await self.wait_for("message", check=lambda message: message.author == interaction.author)
 
-                os.remove(os.getcwd() + "/captchas/" + str(chars) + ".png")
+            os.remove(os.getcwd() + "/captchas/" + str(chars) + ".png")
                 
-                if reply.content != chars:
-                    return await member.send("Verification failed! Please try again!")
+            if reply.content != chars:
+                return await member.send("Verification failed! Please try again!")
 
-                else:
-                    # Add new role
-                    await member.send("You have been verified!")
-                    return await member.add_roles(role)
-
-            except:
-                return await member.send("Timeout! Verification failed. Please try again!")
+            else:
+                # Add new role
+                await member.send("You have been verified!")
+                return await member.add_roles(role)
 
 
     async def on_message(self, message):
