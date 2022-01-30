@@ -92,6 +92,9 @@ class Mark(commands.AutoShardedBot):
             to verify themselves on the server.
             """
 
+            if not os.path.exists(os.getcwd() + "/captchas"):
+                os.mkdir(os.getcwd() + "/captchas")
+
 
             if role in member.roles:
                 return await interaction.send("You are already verified!")
@@ -111,13 +114,13 @@ class Mark(commands.AutoShardedBot):
             
             # Create the image
             image = ImageCaptcha(width=280, height=80, font_sizes=(40, 50))
-            image.write(chars, f'{chars}.png')
+            image.write(chars, os.getcwd() + "/captchas/" + str(chars) + ".png")
 
 
             await interaction.send("Check your dms!")
 
             await member.send(embed=message)
-            await member.send(file=discord.File(fp=f"{chars}.png"))
+            await member.send(file=discord.File(fp=os.getcwd() + "/captchas/" + str(chars) + ".png"))
 
             reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
             
