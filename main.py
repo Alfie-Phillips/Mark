@@ -121,18 +121,23 @@ class Mark(commands.AutoShardedBot):
 
             await member.send(embed=message)
             await member.send(file=discord.File(fp=os.getcwd() + "/captchas/" + str(chars) + ".png"))
-
-            reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
-
-            os.remove(os.getcwd() + "/captchas/" + str(chars) + ".png")
             
-            if reply.content != chars:
-                return await member.send("Verification failed! Please try again!")
+            try:
 
-            else:
-                # Add new role
-                await member.send("You have been verified!")
-                return await member.add_roles(role)
+                reply = await self.wait_for("message", check=lambda message: message.author == interaction.author, timeout=30)
+
+                os.remove(os.getcwd() + "/captchas/" + str(chars) + ".png")
+                
+                if reply.content != chars:
+                    return await member.send("Verification failed! Please try again!")
+
+                else:
+                    # Add new role
+                    await member.send("You have been verified!")
+                    return await member.add_roles(role)
+
+            except asyncio.TimeoutError:
+                return await member.send("Timeout! Verification failed. Please try again!")
 
 
     async def on_message(self, message):
