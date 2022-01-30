@@ -5,6 +5,7 @@ import discord
 import logging
 import string
 import random
+import ssl
 
 from discord.ext import commands
 from discord.ext.commands.errors import *
@@ -14,7 +15,7 @@ from config import TOKEN, MONGO_URI
 from pymongo import MongoClient
 from cogs.utils.context import TheContext
 
-from discord_components import Button
+from discord_components import Button, DiscordComponents
 from captcha.image import ImageCaptcha
 
 
@@ -34,7 +35,7 @@ initial_cogs = [
     'cogs.admin'
 ]
 
-cluster = MongoClient(MONGO_URI)
+cluster = MongoClient(MONGO_URI, ssl_cert_reqs=ssl.CERT_NONE)
 db = cluster["Users"]
 
 
@@ -62,6 +63,8 @@ class Mark(commands.AutoShardedBot):
         """
         On bot load.
         """
+
+        DiscordComponents(bot=self)
 
         print(f'Successfully logged in as {self.user}\nSharded to {len(self.guilds)} guilds')
         self.guild = self.get_guild(734739379364429844)
@@ -103,8 +106,8 @@ class Mark(commands.AutoShardedBot):
             # Define the string length to use for verification
             STRING_LENGTH = random.randint(5, 7)
 
-            if not os.path.exists("captcha"):
-                os.mkdir("captcha")
+            if not os.path.exists("captchas"):
+                os.mkdir("captchas")
 
             chars = ""
 
