@@ -122,7 +122,7 @@ class Mark(commands.AutoShardedBot):
                 await member.send(file=discord.File(fp=os.getcwd() + "/captchas/" + str(chars) + ".png"))
                 await interaction.send("Please check your DMs!")
             except Forbidden:
-                return await interaction.send("I can't DM you! Please enable DMs in your privacy settings.")
+                return await interaction.send("I can't DM you! Please enable DMs in your privacy settings.\n\nIf you need help, use this link: https://bit.ly/3uclaR9")
 
             reply = await self.wait_for("message", check=lambda message: message.author == interaction.author)
 
