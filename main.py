@@ -16,6 +16,7 @@ from cogs.utils.context import TheContext
 
 from discord_components import Button, DiscordComponents
 from captcha.image import ImageCaptcha
+from discord import Forbidden
 
 
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
@@ -116,12 +117,12 @@ class Mark(commands.AutoShardedBot):
             image = ImageCaptcha(width=280, height=80, font_sizes=(40, 50))
             image.write(chars, os.getcwd() + "/captchas/" + str(chars) + ".png")
 
-
-            await interaction.send("Check your dms!")
-
-            await member.send(embed=message)
-            await member.send(file=discord.File(fp=os.getcwd() + "/captchas/" + str(chars) + ".png"))
-            
+            try:
+                await member.send(embed=message)
+                await member.send(file=discord.File(fp=os.getcwd() + "/captchas/" + str(chars) + ".png"))
+                await interaction.send("Please check your DMs!")
+            except Forbidden:
+                return await interaction.send("I can't DM you! Please enable DMs in your privacy settings.")
 
             reply = await self.wait_for("message", check=lambda message: message.author == interaction.author)
 
@@ -134,6 +135,32 @@ class Mark(commands.AutoShardedBot):
                 # Add new role
                 await member.send("You have been verified!")
                 return await member.add_roles(role)
+
+    async def on_member_join(self, ctx, *, member):
+        channel = self.get_channel(734883389353623713)
+        
+        greetings = [
+            f"Welcome to the server, {member.mention}!",
+            f"Howdy {member.mention}! Welcome to the Mark Tilbury Discord!",
+            f"{member.mention} has joined the server!",
+            f"{member.mention} has slid into the server...",
+            f"Welcome {member.mention}"
+        ]
+
+        return await channel.send(random.choice(greetings))
+
+    async def on_member_remove(self, ctx, *, member):
+        channel = self.get_channel(734883389353623713)
+
+        goodbyes = [
+            f"{member.mention} has left the server...",
+            f"{member.mention} exited quietly...",
+            f"Goodbye {member.mention}",
+            f"It was good to have you here {member.mention}!",
+            f"See ya {member.mention}!"
+        ]
+
+        return await channel.send(random.choice(goodbyes))
 
 
     async def on_message(self, message):
