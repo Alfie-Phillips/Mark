@@ -136,7 +136,7 @@ class Mark(commands.AutoShardedBot):
                 await member.send("You have been verified!")
                 return await member.add_roles(role)
 
-    async def on_member_join(self, ctx, *, member):
+    async def on_member_join(self, member):
         channel = self.get_channel(734883389353623713)
         
         greetings = [
@@ -149,7 +149,7 @@ class Mark(commands.AutoShardedBot):
 
         return await channel.send(random.choice(greetings))
 
-    async def on_member_remove(self, ctx, *, member):
+    async def on_member_remove(self, member):
         channel = self.get_channel(734883389353623713)
 
         goodbyes = [
