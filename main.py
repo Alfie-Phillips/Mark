@@ -149,20 +149,6 @@ class Mark(commands.AutoShardedBot):
 
         return await channel.send(random.choice(greetings))
 
-    async def on_member_remove(self, member):
-        channel = self.get_channel(734883389353623713)
-
-        goodbyes = [
-            f"{member.mention} has left the server...",
-            f"{member.mention} exited quietly...",
-            f"Goodbye {member.mention}",
-            f"It was good to have you here {member.mention}!",
-            f"See ya {member.mention}!"
-        ]
-
-        return await channel.send(random.choice(goodbyes))
-
-
     async def on_message(self, message):
         """
         On every message sent by a normal user.
