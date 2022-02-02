@@ -1,7 +1,7 @@
 import asyncio
-from datetime import datetime
-
 import discord
+
+from datetime import datetime
 from discord.ext import commands
 
 class Links(commands.Cog):
@@ -12,8 +12,11 @@ class Links(commands.Cog):
     async def website(self, ctx):
         """Links for Mark's Website"""
         
+        # Create new embed message
         embed = discord.Embed(title="Mark's Website", description="[Link Here... :smile:](https://marktilbury.net/)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
+
+        # Send the message to the channel origin
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -25,6 +28,7 @@ class Links(commands.Cog):
         embed = discord.Embed(title="Mark's TikTok",
                               description="[Link Here... :smile:](https://www.tiktok.com/@marktilbury?lang=en)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
+
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
@@ -32,10 +36,11 @@ class Links(commands.Cog):
     @commands.command(name="instagram", aliases=["insta"], help="Get Mark's Instagram")
     async def instagram(self, ctx):
         """Links for Mark's Instagram"""
-        
+
         embed = discord.Embed(title="Mark's Instagram",
                               description="[Link Here... :smile:](https://www.instagram.com/marktilbury)", color=discord.Color.green())
         embed.set_footer(text="@Copyright Alfie Phillips")
+
         await ctx.send(embed=embed)
         await asyncio.sleep(1.5)
         await ctx.message.delete()
