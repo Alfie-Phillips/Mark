@@ -4,6 +4,7 @@ from main import db
 from datetime import datetime
 from random import randrange
 
+# Define channel ids
 bot_channel = 741634902851846195
 invalid_channels = [
     741634902851846195, 
@@ -16,11 +17,14 @@ invalid_channels = [
     809046706401706024, 
     835226363748941824]
 
+
+# Roles for specific levels
 level = ["Level 5", "Level 10", "Level 20", "Level 30", "Level 50", "Level 75", "Level 100"]
 levelnum = [5, 10, 20, 30, 50, 75, 100]
 roleColor = ["Red", "Yellow", "Green", "Blue", "Pink", "Cyan", "Black"]
 levelChannels = ["<#855017777931616306>", "<#855017863668695050>", "<#855017918378672158>", "<#855017968437035008>", "<#855018003786366976>", "<#855018157148209202>", "<#855018209270169620>"]
 
+# Database schema
 levelling = db["Levelling"]
 
 class Levelling(commands.Cog):
@@ -29,11 +33,19 @@ class Levelling(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        """
+        Listen to every message
+        """
+
         now = datetime.now()
         channel = self.bot.get_channel(bot_channel)
+
+        # Check if the channel isn't an invalid way of earning xp
         if message.channel.id not in invalid_channels:
+            # Find the user
             stats = levelling.find_one({"id": message.author.id})
             if not message.author.bot:
+                # If 'stats' doesn't exist, create a new user
                 if stats is None:
                     new_user = {
                         "id": int(message.author.id),
@@ -42,16 +54,22 @@ class Levelling(commands.Cog):
                         "time-created": str(f"{now.year}/{now.month}/{now.day}/{now.hour}:{now.minute}.{now.second}")
                     }
 
+                    # Insert the new user
                     try:
                         levelling.insert_one(new_user)
-                    except Exception as e:
-                        print(e)
+                    except Exception as error:
+                        # Handle database rejection
+
+                        raise error
                         return await message.channel.send("There has been an error registering your message, please report this to a staff member!")
 
                 else:
+                    # Increment the xp by 5
                     xp = stats["xp"] + 5
                     levelling.update_one({"id": message.author.id}, {"$set": {"xp": xp}})
                     lvl = 0
+
+                    # The following code is an algorithm for levelling - kinda not my code
                     while True:
                         if xp < ((50 * (lvl**2)) + (50 * (lvl - 1))):
                             break
@@ -62,6 +80,7 @@ class Levelling(commands.Cog):
                         for i in range(len(level)):
                             if lvl == levelnum[i]:
                                 for role in level:
+                                    # Add the new role to the user
                                     userRole = discord.utils.get(message.author.guild.roles, name=role)
                                     await message.author.remove_roles(userRole)
 
@@ -73,6 +92,13 @@ class Levelling(commands.Cog):
 
     @commands.command(name="rank", help="Check your xp.")
     async def rank(self, ctx, user: discord.Member=None):
+        """
+        Check the message senders rank
+        OR
+        Check the specified users rank in params
+        """
+
+        # Get the user level based on their xp
         if ctx.channel.id == bot_channel:
             if user == None:
                 stats = levelling.find_one({"id": ctx.author.id})
@@ -94,12 +120,15 @@ class Levelling(commands.Cog):
                         rank += 1
                         if stats["id"] == x["id"]:
                             break
+
+                    # Create new embed message
                     embed = discord.Embed(title=f"{ctx.author.name}'s level stats", color=discord.Color.blue())
                     embed.add_field(name="Level", value=f"{lvl}")
                     embed.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}", inline=True)
                     embed.add_field(name="Rank", value=f"{rank}/{ctx.guild.member_count}", inline=True)
                     embed.add_field(name="Progress Bar [lvl]", value=boxes * ":blue_square:" + (20 - boxes) * ":white_large_square:", inline=False)
                     embed.set_thumbnail(url=ctx.author.avatar_url)
+
                     return await ctx.channel.send(embed=embed)
 
             else:
@@ -122,12 +151,15 @@ class Levelling(commands.Cog):
                         rank += 1
                         if stats["id"] == x["id"]:
                             break
+
+                    # Create new embed message
                     embed = discord.Embed(title=f"{user.name}'s level stats", color=discord.Color.blue())
                     embed.add_field(name="Level", value=f"{lvl}")
                     embed.add_field(name="XP", value=f"{xp}/{int(200*((1/2)*lvl))}", inline=True)
                     embed.add_field(name="Rank", value=f"{rank}/{ctx.guild.member_count}", inline=True)
                     embed.add_field(name="Progress Bar [lvl]", value=boxes * ":blue_square:" + (20 - boxes) * ":white_large_square:", inline=False)
                     embed.set_thumbnail(url=user.avatar_url)
+
                     return await ctx.channel.send(embed=embed)
 
         else:
@@ -136,22 +168,28 @@ class Levelling(commands.Cog):
 
     @commands.command(name="lb", aliases=["leaderboard"], help="XP leaderboard")
     async def leaderboard(self, ctx):
+        """
+        View the current leaderboard for levels
+        """
+
         if ctx.channel.id == bot_channel:
             rankings = levelling.find({}).sort("xp", -1)
             i = 1
             embed = discord.Embed(title="Top 10 Rankings", color=discord.Color.blue())
             for x in rankings:
+                # Find the top 10 rankings based on their xp
                 try:
                     tempxp = x["xp"]
                     tempname = x["user"]
                     embed.add_field(name=f"{i}: {tempname}", value=f"Total XP: {tempxp}", inline=False)
                     i+= 1
-                except Exception as e:
-                    print(e)
+                except Exception as error:
+                    raise error
                     return await ctx.send(embed=discord.Embed(title="Error!", description="Failed getting the leaderboard!", color=discord.Color.red()))
                 if i == 11:
                     break
-            await ctx.channel.send(embed=embed)
+                
+            return await ctx.channel.send(embed=embed)
         else:
             return await ctx.channel.send(embed=discord.Embed(title="Error!", description="Please use the bots channel!", color=discord.Color.red()))
 
