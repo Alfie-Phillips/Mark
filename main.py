@@ -8,17 +8,16 @@ import random
 
 from discord.ext import commands
 from discord.ext.commands.errors import *
-
-from aiohttp import ClientSession
-from config import TOKEN, MONGO_URI
-from pymongo import MongoClient
-from cogs.utils.context import TheContext
-
 from discord_components import Button, DiscordComponents
-from captcha.image import ImageCaptcha
 from discord import Forbidden
 
+from aiohttp import ClientSession
+from config import *
+from pymongo import MongoClient
+from cogs.utils.context import TheContext
+from captcha.image import ImageCaptcha
 
+# Log options
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
 os.environ["JISHAKU_HIDE"] = "True"
@@ -35,6 +34,7 @@ initial_cogs = [
     'cogs.admin'
 ]
 
+# Database setup
 cluster = MongoClient(MONGO_URI)
 db = cluster["Users"]
 
@@ -48,6 +48,8 @@ class Mark(commands.AutoShardedBot):
         self.session = ClientSession(loop=self.loop)
         self.start_time = datetime.datetime.utcnow()
         self.clean_text = commands.clean_content(escape_markdown=True, fix_channel_mentions=True)
+        self.guild = self.get_guild(SERVER_ID)
+        self.logger = logging.Logger("logger", level="DEBUG")
 
         logging.basicConfig(level=logging.INFO)
 
@@ -57,35 +59,37 @@ class Mark(commands.AutoShardedBot):
         """
         Connecting to discord servers.
         """
-        print("Bot is connected...")
+
+        self.logger.info("Bot has connected.")
 
     async def on_ready(self):
         """
-        On bot load.
+        When the bot has loading all components and extensions.
         """
 
+        # Initialize discord components
         DiscordComponents(bot=self)
 
-        print(f'Successfully logged in as {self.user}\nSharded to {len(self.guilds)} guilds')
-        self.guild = self.get_guild(734739379364429844)
+        # Changing the current bot status
+        self.logger.info(f'Successfully logged in as {self.user}\nSharded to {len(self.guilds)} guilds')
         await self.change_presence(activity=discord.Game(name='Use the prefix "M."'))
 
+        # Load our extensions to register commands in each specific sector
         for ext in initial_cogs:
             self.load_extension(ext)
-        print("All extensions have loaded!")
+        self.logger.info("All extensions have loaded!")
 
-        embed = discord.Embed(title="Verification", description="This is to make sure you are not a bot!", color=0x00ff00)
-
-        channel = self.get_channel(937339343377428540)
-
+        # Send a new verification message on every reinstation of the bot
+        embed = em(title="Verification", description="This is to make sure you are not a bot!", color=0x00ff00)
         button = Button(label="Verify")
+
+        channel = self.get_channel(VERIFICATION_CHANNEL)
 
         return await channel.send(embed=embed, components=[button])
 
     async def on_button_click(self, interaction):
         member = interaction.user
-        guild = self.get_guild(734739379364429844)
-        role = guild.get_role(937338231672963114)
+        role = guild.get_role(MEMBER_ROLE_ID)
 
         if interaction.component.label == "Verify":
             """
@@ -93,10 +97,11 @@ class Mark(commands.AutoShardedBot):
             to verify themselves on the server.
             """
 
+            # Create the directory for the captcha images
             if not os.path.exists(os.getcwd() + "/captchas"):
                 os.mkdir(os.getcwd() + "/captchas")
 
-
+            # Check user is already verified on the server
             if role in member.roles:
                 return await interaction.send("You are already verified!")
 
@@ -118,17 +123,22 @@ class Mark(commands.AutoShardedBot):
             image.write(chars, os.getcwd() + "/captchas/" + str(chars) + ".png")
 
             try:
+                # Try to send the user a message
                 await member.send(embed=message)
                 await member.send(file=discord.File(fp=os.getcwd() + "/captchas/" + str(chars) + ".png"))
                 await interaction.send("Please check your DMs!")
             except Forbidden:
+                # If the user has DMs disabled, alert an error to them
                 return await interaction.send("I can't DM you! Please enable DMs in your privacy settings.\n\nIf you need help, use this link: https://bit.ly/3uclaR9")
 
+            # Await a reply from the user
             reply = await self.wait_for("message", check=lambda message: message.author == interaction.author)
 
+            # Remove the captcha image to save storage
             os.remove(os.getcwd() + "/captchas/" + str(chars) + ".png")
                 
             if reply.content != chars:
+                # Verification has failed
                 return await member.send("Verification failed! Please try again!")
 
             else:
@@ -137,8 +147,9 @@ class Mark(commands.AutoShardedBot):
                 return await member.add_roles(role)
 
     async def on_member_join(self, member):
-        channel = self.get_channel(734883389353623713)
+        channel = self.get_channel(WELCOME_CHANNEL)
         
+        # Define random greetings to send when a new user joins the server
         greetings = [
             f"Welcome to the server, {member.mention}!",
             f"Howdy {member.mention}! Welcome to the Mark Tilbury Discord!",
@@ -154,7 +165,8 @@ class Mark(commands.AutoShardedBot):
         On every message sent by a normal user.
         """
         await self.wait_until_ready()
-
+        
+        # Do not respond to another bot
         if message.author.bot:
             return
 
@@ -162,14 +174,16 @@ class Mark(commands.AutoShardedBot):
         """
         A common question that will now recieve an automated response.
         """
-        if "mark" in message.content.lower() and "twitter" in message.content.lower():
-            return await message.channel.send("Mark **DOES NOT** have a Twitter account. Please report and block the user on twitter.") 
 
-        print(f"{message.channel}: {message.author}: {message.clean_content}")
+        if "mark" in message.content.lower() and "twitter" in message.content.lower():
+            return await message.channel.send("If the message above is imposing that Mark has a twitter, please report the user to our staff team. Mark **DOES NOT** have a Twitter account.") 
+
+        self.logger.info(f"{message.channel}: {message.author}: {message.clean_content}")
 
         if not message.guild:
-            return 
+            return
 
+        # Process the commands
         await self.process_commands(message)
 
     async def on_raw_reaction_add(self, payload):
@@ -177,23 +191,30 @@ class Mark(commands.AutoShardedBot):
         On every reaction add in a server
         """
 
-        suggestionChannelId = 747165320510308393
-        if payload.channel_id == suggestionChannelId:
-            channel = self.get_channel(suggestionChannelId)
-            mod_channel = self.get_channel(734883606555656334)
+        if payload.channel_id == SUGGESTION_CHANNEL:
+            channel = self.get_channel(SUGGESTION_CHANNEL)
+            mod_channel = self.get_channel(MODERATOR_CHANNEL)
+
+            # Find the message in the 'server-suggestions' channel
             message = await channel.fetch_message(payload.message_id)
+
+            # Grab the field values of the corresponding message
             author = message.embeds[0].author
             suggestion = message.embeds[0].fields[0].value
             name = author.name
             icon_url = author.icon_url
-            em = discord.Embed(color=696969)
-            em.set_author(name=f"{name}", icon_url=f"{icon_url}")
-            em.set_thumbnail(
+
+            # Create a new embed message to replace the old one
+            embed = em(color=696969)
+            embed.set_author(name=f"{name}", icon_url=f"{icon_url}")
+            embed.set_thumbnail(
                 url="https://yt3.ggpht.com/ytc/AAUvwnhl2_dBWn3rL1fe5j7O0qDMKuAK-eorFyMk1NyiVQ=s900-c-k-c0x00ffffff-no-rj")
-            em.add_field(name=f"New Suggestion!", value=f"{suggestion}\n\n", inline=True)
-            em.add_field(name=f"Status", value="Undecided", inline=False)
-            em.add_field(name="Message ID", value=f"{payload.message_id}", inline=False)
-            em.set_footer(text="@Copyright Alfie Phillips")
+            embed.add_field(name=f"New Suggestion!", value=f"{suggestion}\n\n", inline=True)
+            embed.add_field(name=f"Status", value="Undecided", inline=False)
+            embed.add_field(name="Message ID", value=f"{payload.message_id}", inline=False)
+            embed.set_footer(text="@Copyright Alfie Phillips")
+
+            # Check if the reaction added is a valid emoji
             for reaction in message.reactions:
                 if str(reaction.emoji) not in ["<:Yes:741648526089519134>", "<:No:741648556493897818>"]:
                     await message.remove_reaction(reaction, payload.member)
@@ -210,6 +231,7 @@ class Mark(commands.AutoShardedBot):
         if ctx.command is None:
             return 
 
+        # Validate the command
         if ctx.command.name in ['member_count', 'server_messages', 'messages', 'users', 'source', 'lb', 'glb', 'hilo', "remind"]:
             if ctx.channel.id not in [741634902851846195, 741641800183447602]:
                 return await message.channel.send("**Please use the <#741634902851846195> channel**")
@@ -218,6 +240,10 @@ class Mark(commands.AutoShardedBot):
 
     async def on_command_error(self, ctx, exception):
         await self.wait_until_ready()
+
+        """
+        Error handling for unhandled exceptions
+        """
 
         error = getattr(exception, 'original', exception)
 
