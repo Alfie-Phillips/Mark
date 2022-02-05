@@ -154,6 +154,7 @@ class Mark(commands.AutoShardedBot):
         account_name = (member.name).lower().strip(" ")
         display_name = (member.display_name).lower().strip(" ")
 
+        # Check if the user's name is mark tilbury
         if "marktilbury" in account_name or "mark tilbury" in display_name:
             await member.send("You must not have the name Mark Tilbury to join this server!")
             return await member.kick()

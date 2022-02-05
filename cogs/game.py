@@ -9,7 +9,7 @@ import discord
 import yfinance
 from discord.ext import commands
 from time import sleep
-
+from ..config import *
 from main import db
 
 points = db["Points"]
@@ -29,12 +29,13 @@ class Games(commands.Cog):
 
     @commands.command(name="account", help="init, delete, points")
     async def account(self, ctx, args=""):
+        """
+        Everything linked towards the user's game account
+        """
         user_id = {"id": ctx.author.id}
 
         if not ctx.guild:
             return  # Check if it is written in the server.
-
-        collection = db["Points"]
 
         if args == "":  # We check if the argument given is empty, to be able to show just the account
 
@@ -69,7 +70,7 @@ class Games(commands.Cog):
             return await ctx.send("You have not created an account yet!")
 
         elif args == "init":  # Initiating an account
-            users = collection.find(user_id)
+            users = points.find(user_id)
 
             for result in users:
                 # Iterating through all the users to check if the author id, matches the result id's
@@ -98,11 +99,14 @@ class Games(commands.Cog):
             }
 
             message = await ctx.send("Loading...")  # Loading time for inserting query
+            
+            # Insert queries into the database
             try:
-                collection.insert_one(query)
+                points.insert_one(query)
                 inventory.insert_one(inventoryQuery)
-            except Exception as e:
-                print(e)
+            except Exception as error:
+                # Handle database rejection
+                raise error
                 return await ctx.send(f"Failed creating an account for {ctx.author.mention}!")
 
             await message.delete()
@@ -115,7 +119,7 @@ class Games(commands.Cog):
             return await ctx.send(embed=embed)
 
         elif args == "delete":  # Deleting accounts
-            user = collection.find_one(user_id)
+            user = points.find_one(user_id)
 
             if user:
 
@@ -132,6 +136,7 @@ class Games(commands.Cog):
                 await message.add_reaction("✅")
                 await message.add_reaction("❌")
 
+                # Try to get a reaction from the user
                 try:
                     reaction, user = await self.bot.wait_for(
                         "reaction_add",
@@ -141,46 +146,45 @@ class Games(commands.Cog):
                     )
 
                     if reaction:
-                        collection = db["Points"]
                         query = {"id": ctx.author.id}
-                        delete = collection.delete_one(query)
+                        delete = points.delete_one(query)
 
                         try:
                             await message.delete()
 
                             loading = await ctx.send("Loading...")
 
-                            collection.delete_one(query)
+                            points.delete_one(query)
                             inventory.delete_one(query)
 
                             await loading.delete()
                             return await ctx.send("Your account has been deleted!")
 
-                        except Exception as e:
+                        except Exception as error:
+                            # Handle database rejection
                             await message.delete()
-
-                            print(e)
-
+                            raise error
                             return await ctx.send("There was an error deleting your account, please try again!")
 
                 except asyncio.TimeoutError:
-
+                    # Handle timeout error
                     await message.delete()
                     return await ctx.send("Timed Out!")
 
             return await ctx.send("You do not have an account to delete!")
 
         elif args == "points":
+            # Try to get the user's points
             try:
-                score = collection.find_one(user_id)
-                points = int(round(score["points"]))
-                points = str(points)
+                score = points.find_one(user_id)
+                user_points = str(int(round(score["points"])))
 
                 embed = discord.Embed(
                     title="Your Game Points!",
-                    description=f"{points}",
+                    description=f"{user_points}",
                     color=discord.Color.blue()
                 )
+
                 embed.set_footer(text="@Copyright Alfie Phillips")
 
                 return await ctx.send(embed=embed)
@@ -190,24 +194,29 @@ class Games(commands.Cog):
 
     @commands.command(name="glb", aliases=["games-leaderboard"], help="Games leaderboard.")
     async def leaderboard(self, ctx, amount=5):
+        """
+        View the game leaderboard
+        """
+
         if amount > 20:
             return await ctx.send("You can't have a higher amount than 20 players!")
-        collection = db["Points"]
+
         leaderboard = {}
         query = {}
 
         try:
-            data = collection.find(query).limit(amount).sort('points', -1)
+            data = points.find(query).limit(amount).sort('points', -1)
             index = 1
             em = discord.Embed(
                 title=f"Top {str(amount)} Players on {ctx.guild}",
                 description="This is decided upon the amount of points you have in your game account. If you don't have one, do M.account init!",
                 color=discord.Color(0xfa43ee)
             )
+
             em.set_footer(text="@Copyright Alfie Phillips")
             for item in data:
-                points = int(round(item["points"]))
-                em.add_field(name=f"{str(index)}. {item['username']}", value=f"{str(points)} points",
+                user_points = int(round(item["points"]))
+                em.add_field(name=f"{str(index)}. {item['username']}", value=f"{str(user_points)} points",
                              inline=False)
 
                 if index == amount:
@@ -218,15 +227,19 @@ class Games(commands.Cog):
 
             return await ctx.send(embed=em)
 
-        except Exception as e:
-            print(e)
+        except Exception as error:
+            # Handle database rejection
+            raise error
+
             return await ctx.send("Showing the leaderboards has failed!")
 
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command(name="hilo", help="Higher or Lower game.")
     async def hilo(self, ctx, bet: int=5, leverage=1):
-        
-        collection = db["Points"]
+        """
+        Higher or Lower game
+        """
+
         stocks = [
             'GME', 'TSLA', 'GOOGL', 'NCR', 'NIO',
             'AMC', "AMZN", "AAPL", "TWTR", "MSFT",
@@ -239,7 +252,7 @@ class Games(commands.Cog):
             "id": ctx.author.id
             }
 
-        user = collection.find_one(query)
+        user = points.find_one(query)
 
         if not user:
             return await ctx.send("You have not initialized an account yet! M.account init to start!")
@@ -250,9 +263,9 @@ class Games(commands.Cog):
         if leverage > 2:
             return await ctx.send("You must not use above 2x Leverage!")
 
-        points = user["points"]
+        user_points = user["points"]
 
-        if bet > points + 5:
+        if bet > user_points + 5:
             return await ctx.send("You can't bet more than what you already have!")
 
         symbol1 = random.choice(stocks)
@@ -267,8 +280,10 @@ class Games(commands.Cog):
             ticker_one_data = ticker_one.history(period="1d")
             ticker_two_data = ticker_two.history(period="1d")
         except Exception as e:
-            print(e)
-            await ctx.send("Error grabbing current stock prices!")
+            # Handle rejection on getting the current stock data from yahoo finance api
+            raise error
+
+            return await ctx.send("Error grabbing current stock prices!")
 
         stock_one = round(ticker_one_data['Close'][0], 2)
         stock_two = round(ticker_two_data['Close'][0], 2)
@@ -313,8 +328,6 @@ class Games(commands.Cog):
 
             reply = reply.content.lower().strip()
 
-            collection = db["Points"]
-
             winning_amount = round((int(bet) * int(leverage)), 0)
             losing_amount = round((int(bet) * int(leverage)), 0)
             drawing_amount = (bet / 2)
@@ -322,7 +335,7 @@ class Games(commands.Cog):
             if reply == "1":
                 if stock_one > stock_two:
                     try:
-                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                        points.update_one({"id": ctx.author.id, "username": ctx.author.name},
                                               {"$inc": {"points": winning_amount}})
                         return await ctx.send(
                             embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one,
@@ -334,79 +347,89 @@ class Games(commands.Cog):
                 elif stock_one < stock_two:
                     try:
                         if user["points"] - losing_amount <= 0:
-                            collection.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                            points.update_one({"id": ctx.author.id, "username": ctx.author.name},
                                                   {"$set": {"points": 0}})
                             return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2,
                                                                      stock_one=stock_one, stock_two=stock_two,
                                                                      amount=losing_amount))
-                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                        points.update_one({"id": ctx.author.id, "username": ctx.author.name},
                                               {"$inc": {"points": -losing_amount}})
                         return await ctx.send(
                             embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one,
                                                stock_two=stock_two, amount=losing_amount))
 
-                    except Exception as e:
-                        print(e)
+                    except Exception as error:
+                        # Handle database rejection
+                        raise error
+
                         return await ctx.send("Error sending confirmation message, please contact a member of staff!")
 
                 elif stock_one == stock_two:
                     try:
-                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                        points.update_one({"id": ctx.author.id, "username": ctx.author.name},
                                               {"$inc": {"points": drawing_amount}})
                         return await ctx.send(
                             embed=drawing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one,
                                                 stock_two=stock_two, amount=drawing_amount))
 
-                    except Exception as e:
-                        print(e)
+                    except Exception as error:
+                        # Handle database rejection
+                        raise error
+
                         return await ctx.send("Error sending confirmation message, please contact a member of staff!")
 
             elif reply == "2":
                 if stock_two > stock_one:
                     try:
-                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                        points.update_one({"id": ctx.author.id, "username": ctx.author.name},
                                               {"$inc": {"points": winning_amount}})
                         return await ctx.send(
                             embed=winning_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one,
                                                 stock_two=stock_two, amount=winning_amount))
-                    except Exception as e:
-                        print(e)
+                    except Exception as error:
+                        # Handle database rejection
+                        raise error
+
                         return await ctx.send("Error sending confirmation message, please contact a member of staff!")
 
                 elif stock_two < stock_one:
                     try:
                         if user["points"] - losing_amount <= 0:
-                            collection.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                            points.update_one({"id": ctx.author.id, "username": ctx.author.name},
                                                   {"$set": {"points": 0}})
                             return await ctx.send(embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2,
                                                                      stock_one=stock_one, stock_two=stock_two,
                                                                      amount=losing_amount))
-                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                        points.update_one({"id": ctx.author.id, "username": ctx.author.name},
                                               {"$inc": {"points": -losing_amount}})
                         return await ctx.send(
                             embed=losing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one,
                                                stock_two=stock_two, amount=losing_amount))
 
-                    except Exception as e:
-                        print(e)
+                    except Exception as error:
+                        # Handle database rejection
+                        raise error
+
                         return await ctx.send("Error sending confirmation message, please contact a member of staff!")
 
                 elif stock_two == stock_one:
                     try:
-                        collection.update_one({"id": ctx.author.id, "username": ctx.author.name},
+                        points.update_one({"id": ctx.author.id, "username": ctx.author.name},
                                               {"$inc": {"points": drawing_amount}})
                         return await ctx.send(
                             embed=drawing_embed(ctx.author.name, symbol1=symbol1, symbol2=symbol2, stock_one=stock_one,
                                                 stock_two=stock_two, amount=drawing_amount))
 
-                    except Exception as e:
-                        print(e)
+                    except Exception as error:
+                        # Handle database rejection
+                        raise error
                         return await ctx.send("Error sending confirmation message, please contact a member of staff!")
 
             else:
                 return await ctx.send("Invalid reply! Please try again.")
 
         except asyncio.TimeoutError:
+            # Handle timeout error
             return await ctx.send("Time has ran out!")
 
     @hilo.error
@@ -443,7 +466,7 @@ class Games(commands.Cog):
         query = {"id": ctx.author.id}
         user = points.find_one(query)
         userPoints = user["points"]
-        mod_channel = self.bot.get_channel(734883606555656334)
+        mod_channel = self.bot.get_channel(MODERATOR_CHANNEL)
 
         if not user:
             return await ctx.send("You have not initialized an account yet! M.account init to start!")
@@ -503,7 +526,7 @@ class Games(commands.Cog):
             return await ctx.send(embed=errorEmbed)
         
         userPoints = user["points"]
-        mod_channel = self.bot.get_channel(734883606555656334)
+        mod_channel = self.bot.get_channel(MODERATOR_CHANNEL)
         
         if not user:
             return await ctx.send("You have not initialized an account yet! M.account init to start!")
