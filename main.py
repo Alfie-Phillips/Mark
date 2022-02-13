@@ -146,16 +146,30 @@ class Mark(commands.AutoShardedBot):
                 await member.send("You have been verified!")
                 return await member.add_roles(role)
 
-    async def on_member_join(self, member):
+    async def on_member_join(self, member: discord.member):
+        """
+        Checks to run when a new member joins the server.
+        """
+
+        account_name = (member.name).lower().strip(" ")
+        display_name = (member.display_name).lower().strip(" ")
+
+        # Check if the user's name is mark tilbury
+        if "marktilbury" in account_name or "marktilbury" in display_name:
+            await member.send("You must not have the name Mark Tilbury to join this server!")
+            return await member.kick()
+
         channel = self.get_channel(WELCOME_CHANNEL)
+        member_count = len([member for member in self.guild.members if not member.bot])
         
         # Define random greetings to send when a new user joins the server
         greetings = [
             f"Welcome to the server, {member.mention}!",
             f"Howdy {member.mention}! Welcome to the Mark Tilbury Discord!",
             f"{member.mention} has joined the server!",
-            f"{member.mention} has slid into the server...",
-            f"Welcome {member.mention}"
+            f"{member.mention} has slid into the server.",
+            f"Welcome {member.mention}.",
+            f"Welcome to our discord {member.mention}. You are our {str(member_count)}th member!",
         ]
 
         return await channel.send(random.choice(greetings))
