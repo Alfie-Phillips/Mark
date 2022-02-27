@@ -88,7 +88,10 @@ class Mark(commands.AutoShardedBot):
 
         return await channel.send(embed=embed, components=[button])
 
-    async def on_button_click(self, interaction):
+    async def on_button_click(self, interaction: DiscordComponents.Interaction):
+        if interaction.responded:
+            return
+        
         member_id = interaction.user.id
         member = get(self.get_all_members(), id=member_id)
         role = interaction.guild.get_role(int(MEMBER_ROLE_ID))
@@ -105,7 +108,7 @@ class Mark(commands.AutoShardedBot):
 
             # Check user is already verified on the server
             if role in member.roles:
-                return await interaction.send("You are already verified!")
+                return await member.send("You are already verified!")
 
             # Verification message
             message = discord.Embed(title="Verification", description="Please type the following string to verify yourself.", color=0x00ff00)
