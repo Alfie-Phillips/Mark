@@ -8,4 +8,4 @@ jishaku==2.3.2
 python-dotenv==0.10.3
 captcha==0.1.0
 flask==2.0.0
-discord_components==1.0.0
+discord_components==2.1.2
