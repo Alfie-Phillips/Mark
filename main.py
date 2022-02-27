@@ -12,7 +12,7 @@ from discord_components import Button, DiscordComponents
 from discord import Forbidden
 
 from aiohttp import ClientSession
-from config import *
+from envconfig import *
 from pymongo import MongoClient
 from cogs.utils.context import TheContext
 from captcha.image import ImageCaptcha
@@ -48,7 +48,7 @@ class Mark(commands.AutoShardedBot):
         self.session = ClientSession(loop=self.loop)
         self.start_time = datetime.datetime.utcnow()
         self.clean_text = commands.clean_content(escape_markdown=True, fix_channel_mentions=True)
-        self.guild = self.get_guild(SERVER_ID)
+        self.guild = self.get_guild(int(SERVER_ID))
         self.logger = logging.Logger("logger", level="DEBUG")
 
         logging.basicConfig(level=logging.INFO)
@@ -80,16 +80,16 @@ class Mark(commands.AutoShardedBot):
         self.logger.info("All extensions have loaded!")
 
         # Send a new verification message on every reinstation of the bot
-        embed = em(title="Verification", description="This is to make sure you are not a bot!", color=0x00ff00)
+        embed = self.em(title="Verification", description="This is to make sure you are not a bot!", color=0x00ff00)
         button = Button(label="Verify")
 
-        channel = self.get_channel(VERIFICATION_CHANNEL)
+        channel = self.get_channel(int(VERIFICATION_CHANNEL))
 
         return await channel.send(embed=embed, components=[button])
 
     async def on_button_click(self, interaction):
         member = interaction.user
-        role = guild.get_role(MEMBER_ROLE_ID)
+        role = guild.get_role(int(MEMBER_ROLE_ID))
 
         if interaction.component.label == "Verify":
             """
@@ -159,7 +159,7 @@ class Mark(commands.AutoShardedBot):
             await member.send("You must not have the name Mark Tilbury to join this server!")
             return await member.kick()
 
-        channel = self.get_channel(WELCOME_CHANNEL)
+        channel = self.get_channel(int(WELCOME_CHANNEL))
         member_count = len([member for member in self.guild.members if not member.bot])
         
         # Define random greetings to send when a new user joins the server
@@ -205,9 +205,9 @@ class Mark(commands.AutoShardedBot):
         On every reaction add in a server
         """
 
-        if payload.channel_id == SUGGESTION_CHANNEL:
-            channel = self.get_channel(SUGGESTION_CHANNEL)
-            mod_channel = self.get_channel(MODERATOR_CHANNEL)
+        if payload.channel_id == int(SUGGESTION_CHANNEL):
+            channel = self.get_channel(int(SUGGESTION_CHANNEL))
+            mod_channel = self.get_channel(int(MODERATOR_CHANNEL))
 
             # Find the message in the 'server-suggestions' channel
             message = await channel.fetch_message(payload.message_id)

@@ -2,7 +2,7 @@ import asyncio
 import time
 import discord
 
-from ..config import *
+from envconfig import *
 from datetime import datetime
 from discord.ext import commands
 from main import db
@@ -23,7 +23,7 @@ class Moderation(commands.Cog):
         now = datetime.now()
         ordinal = time.time()
         collection = db["Reports"]
-        mod_channel = self.bot.get_channel(MODERATOR_CHANNEL)
+        mod_channel = self.bot.get_channel(int(MODERATOR_CHANNEL))
         author = ctx.message.author
         rearray = ' '.join(reason[:])
         

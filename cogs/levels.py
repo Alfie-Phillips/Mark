@@ -19,7 +19,7 @@ invalid_channels = [
 
 
 # Roles for specific levels
-level = ["Level 5", "Level 10", "Level 20", "Level 30", "Level 50", "Level 75", "Level 100"]
+level = ["Level 5-9", "Level 10-19", "Level 20-29", "Level 30-49", "Level 50-74", "Level 75-99", "Level 100+"]
 levelnum = [5, 10, 20, 30, 50, 75, 100]
 roleColor = ["Red", "Yellow", "Green", "Blue", "Pink", "Cyan", "Black"]
 levelChannels = ["<#855017777931616306>", "<#855017863668695050>", "<#855017918378672158>", "<#855017968437035008>", "<#855018003786366976>", "<#855018157148209202>", "<#855018209270169620>"]

@@ -9,7 +9,7 @@ import discord
 import yfinance
 from discord.ext import commands
 from time import sleep
-from ..config import *
+from envconfig import *
 from main import db
 
 points = db["Points"]
@@ -466,7 +466,7 @@ class Games(commands.Cog):
         query = {"id": ctx.author.id}
         user = points.find_one(query)
         userPoints = user["points"]
-        mod_channel = self.bot.get_channel(MODERATOR_CHANNEL)
+        mod_channel = self.bot.get_channel(int(MODERATOR_CHANNEL))
 
         if not user:
             return await ctx.send("You have not initialized an account yet! M.account init to start!")
@@ -526,7 +526,7 @@ class Games(commands.Cog):
             return await ctx.send(embed=errorEmbed)
         
         userPoints = user["points"]
-        mod_channel = self.bot.get_channel(MODERATOR_CHANNEL)
+        mod_channel = self.bot.get_channel(int(MODERATOR_CHANNEL))
         
         if not user:
             return await ctx.send("You have not initialized an account yet! M.account init to start!")
