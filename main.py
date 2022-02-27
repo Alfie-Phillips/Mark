@@ -10,6 +10,7 @@ from discord.ext import commands
 from discord.ext.commands.errors import *
 from discord_components import Button, DiscordComponents
 from discord import Forbidden
+from discord.utils import get
 
 from aiohttp import ClientSession
 from envconfig import *
@@ -89,7 +90,7 @@ class Mark(commands.AutoShardedBot):
 
     async def on_button_click(self, interaction):
         member_id = interaction.user.id
-        member = self.get_user(id=member_id)
+        member = get(self.get_all_members(), id=member_id)
         role = interaction.guild.get_role(int(MEMBER_ROLE_ID))
 
         if interaction.component.label == "Verify":
