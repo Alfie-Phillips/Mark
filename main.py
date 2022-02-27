@@ -88,7 +88,7 @@ class Mark(commands.AutoShardedBot):
         return await channel.send(embed=embed, components=[button])
 
     async def on_button_click(self, interaction):
-        member = interaction.member
+        member = interaction.user
         role = interaction.guild.get_role(int(MEMBER_ROLE_ID))
 
         if interaction.component.label == "Verify":
@@ -102,7 +102,7 @@ class Mark(commands.AutoShardedBot):
                 os.mkdir(os.getcwd() + "/captchas")
 
             # Check user is already verified on the server
-            if role in member.roles:
+            if member.has_role(role):
                 return await interaction.send("You are already verified!")
 
             # Verification message
