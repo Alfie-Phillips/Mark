@@ -88,7 +88,7 @@ class Mark(commands.AutoShardedBot):
         return await channel.send(embed=embed, components=[button])
 
     async def on_button_click(self, interaction):
-        member = interaction.user
+        member = interaction.member
         role = interaction.guild.get_role(int(MEMBER_ROLE_ID))
 
         if interaction.component.label == "Verify":
