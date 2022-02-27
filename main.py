@@ -18,6 +18,8 @@ from pymongo import MongoClient
 from cogs.utils.context import TheContext
 from captcha.image import ImageCaptcha
 
+from discord_components.interaction import Interaction
+
 # Log options
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
@@ -88,7 +90,7 @@ class Mark(commands.AutoShardedBot):
 
         return await channel.send(embed=embed, components=[button])
 
-    async def on_button_click(self, interaction: DiscordComponents.Interaction):
+    async def on_button_click(self, interaction: Interaction):
         if interaction.responded:
             return
         
@@ -108,7 +110,7 @@ class Mark(commands.AutoShardedBot):
 
             # Check user is already verified on the server
             if role in member.roles:
-                return await member.send("You are already verified!")
+                return await interaction.send("You are already verified!")
 
             # Verification message
             message = discord.Embed(title="Verification", description="Please type the following string to verify yourself.", color=0x00ff00)
