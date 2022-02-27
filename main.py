@@ -89,7 +89,7 @@ class Mark(commands.AutoShardedBot):
 
     async def on_button_click(self, interaction):
         member = interaction.user
-        role = discord.utils.get(self.guild.roles, name="Verified")
+        role = member.guild.get_role(int(MEMBER_ROLE_ID))
 
         if interaction.component.label == "Verify":
             """
