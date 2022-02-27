@@ -48,7 +48,7 @@ class Mark(commands.AutoShardedBot):
         self.session = ClientSession(loop=self.loop)
         self.start_time = datetime.datetime.utcnow()
         self.clean_text = commands.clean_content(escape_markdown=True, fix_channel_mentions=True)
-        self.guild = self.get_guild(int(SERVER_ID))
+        self.guild = self.get_guild(734739379364429844)
         self.logger = logging.Logger("logger", level="DEBUG")
 
         logging.basicConfig(level=logging.INFO)
