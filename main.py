@@ -89,7 +89,7 @@ class Mark(commands.AutoShardedBot):
 
     async def on_button_click(self, interaction):
         member = interaction.user
-        role = member.guild.get_role(int(MEMBER_ROLE_ID))
+        role = interaction.guild.get_role(int(VERIFIED_ROLE))
 
         if interaction.component.label == "Verify":
             """
