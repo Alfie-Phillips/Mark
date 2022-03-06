@@ -235,7 +235,7 @@ class Games(commands.Cog):
 
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.command(name="hilo", help="Higher or Lower game.")
-    async def hilo(self, ctx, bet: int=5, leverage=1):
+    async def hilo(self, ctx, bet=5, leverage=1):
         """
         Higher or Lower game
         """
@@ -265,7 +265,7 @@ class Games(commands.Cog):
 
         user_points = user["points"]
         if bet == "all" or bet == "*":
-            bet = user_points
+            bet = int(user_points)
 
         if bet > user_points + 5:
             return await ctx.send("You can't bet more than what you already have!")
