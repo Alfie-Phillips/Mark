@@ -264,6 +264,8 @@ class Games(commands.Cog):
             return await ctx.send("You must not use above 2x Leverage!")
 
         user_points = user["points"]
+        if bet == "all" or bet == "*":
+            bet = user_points
 
         if bet > user_points + 5:
             return await ctx.send("You can't bet more than what you already have!")
@@ -274,8 +276,6 @@ class Games(commands.Cog):
         symbol2 = random.choice(stocks)
         stocks.remove(symbol2)
 
-        if bet == "all" or bet == "*":
-            bet = user_points
 
         try:
             ticker_one = yfinance.Ticker(symbol1)
