@@ -166,6 +166,13 @@ class Mark(commands.AutoShardedBot):
             await member.send("You must not have the name Mark Tilbury to join this server!")
             return await member.kick()
 
+        team_names = ["curtistilbury", "LD", "dawoud", "profitset", "bloberto", "alistair<T>()", "opengl", "roni", "расплатаздесь"]
+
+        for name in team_names:
+            if name in account_name or name in display_name:
+                await member.send("You must not have the name of a team member to join this server!")
+                return await member.kick()
+
         channel = self.get_channel(int(WELCOME_CHANNEL))
         member_count = len([member for member in self.guild.members if not member.bot])
         

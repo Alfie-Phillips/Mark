@@ -274,6 +274,9 @@ class Games(commands.Cog):
         symbol2 = random.choice(stocks)
         stocks.remove(symbol2)
 
+        if bet == "all" or bet == "*":
+            bet = user_points
+
         try:
             ticker_one = yfinance.Ticker(symbol1)
             ticker_two = yfinance.Ticker(symbol2)
