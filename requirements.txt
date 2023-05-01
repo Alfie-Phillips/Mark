@@ -7,5 +7,5 @@ dnspython==2.0.0
 jishaku==2.3.2
 python-dotenv==0.10.3
 captcha==0.3.0
-flask==2.0.0
+flask==2.3.2
 discord_components==2.1.2
